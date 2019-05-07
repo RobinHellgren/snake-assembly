@@ -22,13 +22,14 @@
   <FILE>Snake.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <matrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>15</LINE></matrix>
-  <snake><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>16</LINE></snake>
-  <init><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>25</LINE></init>
-  <loop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>49</LINE></loop>
-  <outputRow><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>80</LINE></outputRow>
-  <wait><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>55</LINE></wait>
-  <dim><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>69</LINE></dim>
-  <resetMatPoint><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>75</LINE></resetMatPoint>
+  <matrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>16</LINE></matrix>
+  <snake><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>17</LINE></snake>
+  <init><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>29</LINE></init>
+  <interup><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>454</LINE></interup>
+  <resetMatPoint><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>109</LINE></resetMatPoint>
+  <loop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>87</LINE></loop>
+  <outputRow><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>114</LINE></outputRow>
+  <wait><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>93</LINE></wait>
+  <dim><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinära\Snake\snake-assembly\Snake\main.asm</FILE><LINE>99</LINE></dim>
  </LABELS>
 </ASSEMBLER_INFO>
