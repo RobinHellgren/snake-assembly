@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Tue May 21 09:43:47 2019
+AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Tue May 21 11:51:49 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -698,7 +698,8 @@ EQU  INT_VECTORS_SIZE 00000034
 DEF  rTemp        r16
 DEF  rDirection   r23
 DEF  rZero        r17
-DEF  rMatIndex    r18
+DEF  rStickX      r18
+DEF  rStickY      r24
 DEF  rBOut        r19
 DEF  rDOut        r20
 DEF  rCOut        r21
@@ -708,9 +709,10 @@ EQU  MAX_LENGTH   00000019
 DSEG matrix       00000100
 DSEG snake        00000108
 CSEG init         00000034
-CSEG interup      00000127
-CSEG loop         00000048
-CSEG outputMatrix 00000055
-CSEG wait         0000004b
-CSEG dim          0000004e
-CSEG resetMatPoint 00000052
+CSEG interup      0000012c
+CSEG loop         0000004d
+CSEG outputMatrix 0000005a
+CSEG wait         00000050
+CSEG dim          00000053
+CSEG resetMatPoint 00000057
+CSEG stickXInput  0000012e

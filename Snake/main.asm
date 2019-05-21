@@ -2,7 +2,8 @@
 .DEF rTemp         = r16
 .DEF rDirection    = r23
 .DEF rZero         = r17
-.DEF rMatIndex	   = r18
+.DEF rStickX	   = r18
+.DEF rStickY	   = r24
 .DEF rBOut         = r19
 .DEF rDOut         = r20
 .DEF rCOut         = r21
@@ -40,6 +41,13 @@ init:
 	 ldi rTemp, 0b001
 	 sts TIMSK0, rTemp
 	 sei
+	 //configuration till AD convertern
+	 ldi rTemp, 0b0010000
+	 sts ADMUX, rTemp
+
+	 ldi rTemp, 0b01000111
+	 sts ADCSRA, rTemp
+
 	 //configuration till led enheten
 	 ldi rTemp, 0b00001111
 	 out DDRC, rTemp
@@ -50,7 +58,7 @@ init:
 	 //tilldela minne till matrixen
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
-	 ldi rMatIndex, 0
+	 
 
 	 //main progam loop
 	 loop:
@@ -419,3 +427,17 @@ init:
 	 interup:
 	 ldi rInter, 0b00000001
 	 reti
+
+	 stickXInput:
+	 push rTemp
+	 ldi rTemp, 0b1
+	 bst rTemp, 0
+	 
+	 push rTemp
+	 lds rTemp, ADMUX
+	 bld rTemp, 2
+	 sts ADMUX, rTemp
+	 pop rTemp
+	 
+	 stickXLoop:
+	 lds 
