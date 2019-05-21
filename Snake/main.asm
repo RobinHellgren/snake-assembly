@@ -32,86 +32,51 @@ init:
      out SPH, rTemp
      ldi rTemp, LOW(RAMEND)
      out SPL, rTemp
-	 
+	 //sätt interupt biten till 0
 	 ldi rInter, 0b00000000
-	 
+	 //configuration till timer enheten
 	 ldi rTemp, 0b00000011
 	 out TCCR0B, rTemp
 	 ldi rTemp, 0b001
 	 sts TIMSK0, rTemp
 	 sei
-
+	 //configuration till led enheten
 	 ldi rTemp, 0b00001111
 	 out DDRC, rTemp
 	 ldi rTemp, 0b11111111
 	 out DDRD, rTemp
 	 out DDRB, rTemp
 	 ldi rZero, 0
-	 
+	 //tilldela minne till matrixen
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
 	 ldi rMatIndex, 0
-	 
-	 //1
-	 ldi rTemp, 0b11000011
-	 st X, rTemp
-	 adiw X,1
-	 //2
-	 ldi rTemp, 0b10111101
-	 st X, rTemp
-	 adiw X,1
-	 //3
-	 ldi rTemp, 0b01011010
-	 st X, rTemp
-	 adiw X,1
-	 //4 
-	 ldi rTemp, 0b01111110
-	 st X, rTemp
-	 adiw X,1
-	 //5
-	 ldi rTemp, 0b01011010
-	 st X, rTemp
-	 adiw X,1
-	 //6
-	 ldi rTemp, 0b01100110
-	 st X, rTemp
-	 adiw X,1
-	 //7
-	 ldi rTemp, 0b10111101
-	 st X, rTemp
-	 adiw X,1
-	 //8
-	 ldi rTemp, 0b11000011
-	 st X, rTemp
-	 rcall resetMatPoint
+
+	 //main progam loop
 	 loop:
 
-	 rcall outputRow
+	 rcall outputMatrix
 	
 	 jmp loop
-
+	 //wait for interupt
 	 wait:
 	 cpi rInter, 0
 	 breq wait
-	 nop
 	 ret
-	 
+	 //turn off all the leds
 	 dim:
 	 out PortC, rZero
 	 out PortD, rZero
 	 out PortB, rZero
-	 nop
-	 nop
-	 nop
-	 nop
 	 ret
-
+	 //rest the matrix pointer
 	 resetMatPoint:
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
 	 ret
-
-	 outputRow:
+	 
+	 //output the matrix to the led display
+	 outputMatrix:
 	 //1
 	 ld rTemp, X+
 	 ldi rBOut, 0
@@ -283,7 +248,7 @@ init:
 	 //5
 	 ld rTemp, X+
 	 ldi rBOut, 0
-	 ldi rDOut, 0b00000001
+	 ldi rDOut, 0b00000100
 	 ldi rCOut, 0
 	 
 	 bst rTemp, 7
@@ -325,7 +290,7 @@ init:
 	 //6
 	 ld rTemp, X+
 	 ldi rBOut, 0
-	 ldi rDOut, 0b00000100
+	 ldi rDOut, 0b00001000
 	 ldi rCOut, 0
 	 
 	 bst rTemp, 7
@@ -367,7 +332,7 @@ init:
 	 //7
 	 ld rTemp, X+
 	 ldi rBOut, 0
-	 ldi rDOut, 0b00001000
+	 ldi rDOut, 0b00010000
 	 ldi rCOut, 0
 	 
 	 bst rTemp, 7
@@ -407,9 +372,9 @@ init:
 	 ldi rInter, 0
 	 
 	 //8	 
-	 ld rTemp, X+
+	 ld rTemp, X
 	 ldi rBOut, 0
-	 ldi rDOut, 0b00010000
+	 ldi rDOut, 0b00100000
 	 ldi rCOut, 0
 	 
 	 bst rTemp, 7
@@ -450,7 +415,7 @@ init:
 
 	 rcall resetMatPoint
 	 ret
-
+	 //interup subrutinen
 	 interup:
 	 ldi rInter, 0b00000001
 	 reti
