@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Tue May 21 11:51:49 2019
+AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Thu May 23 11:35:54 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -709,10 +709,19 @@ EQU  MAX_LENGTH   00000019
 DSEG matrix       00000100
 DSEG snake        00000108
 CSEG init         00000034
-CSEG interup      0000012c
+CSEG interup      0000012f
 CSEG loop         0000004d
-CSEG outputMatrix 0000005a
-CSEG wait         00000050
-CSEG dim          00000053
-CSEG resetMatPoint 00000057
-CSEG stickXInput  0000012e
+CSEG stickXInput  00000131
+CSEG stickYInput  0000015e
+CSEG outputMatrix 0000005d
+CSEG wait         00000053
+CSEG dim          00000056
+CSEG resetMatPoint 0000005a
+CSEG stickXLoop   00000149
+CSEG stickXLoopPop 00000148
+CSEG XPos         00000156
+CSEG XNeg         0000015a
+CSEG stickYLoop   00000176
+CSEG stickYLoopPop 00000175
+CSEG YPos         00000183
+CSEG YNeg         00000187

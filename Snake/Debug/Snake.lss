@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Tue May 21 11:51:49 2019
+AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Thu May 23 11:35:54 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -995,6 +995,7 @@ AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-ass
                                  .DEF rCOut         = r21
                                  .DEF rInter		   = r22
                                  
+                                 
                                  //[En lista med konstanter]
                                  .EQU NUM_COLUMNS   = 8
                                  .EQU MAX_LENGTH    = 25
@@ -1010,7 +1011,7 @@ AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-ass
 000000 940c 0034                      jmp init // Reset vector
                                  //... fler interrupts
                                  .ORG 0x0020
-000020 940c 012c                 	 jmp interup
+000020 940c 012f                 	 jmp interup
 000022 0000                      	 nop
                                  .ORG INT_VECTORS_SIZE
                                  init:
@@ -1028,7 +1029,7 @@ AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-ass
 00003c 9300 006e                 	 sts TIMSK0, rTemp
 00003e 9478                      	 sei
                                  	 //configuration till AD convertern
-00003f e100                      	 ldi rTemp, 0b0010000
+00003f e108                      	 ldi rTemp, 0b0011000
 000040 9300 007c                 	 sts ADMUX, rTemp
                                  
 000042 e407                      	 ldi rTemp, 0b01000111
@@ -1048,381 +1049,474 @@ AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-ass
                                  
                                  	 //main progam loop
                                  	 loop:
-                                 
-00004d d00c                      	 rcall outputMatrix
+00004d d0e3                      	 rcall stickXInput
+00004e d10f                      	 rcall stickYInput
+00004f 937c                      	 st X, rDirection
+000050 d00c                      	 rcall outputMatrix
                                  	
-00004e 940c 004d                 	 jmp loop
+000051 940c 004d                 	 jmp loop
                                  	 //wait for interupt
                                  	 wait:
-000050 3060                      	 cpi rInter, 0
-000051 f3f1                      	 breq wait
-000052 9508                      	 ret
+000053 3060                      	 cpi rInter, 0
+000054 f3f1                      	 breq wait
+000055 9508                      	 ret
                                  	 //turn off all the leds
                                  	 dim:
-000053 b918                      	 out PortC, rZero
-000054 b91b                      	 out PortD, rZero
-000055 b915                      	 out PortB, rZero
-000056 9508                      	 ret
+000056 b918                      	 out PortC, rZero
+000057 b91b                      	 out PortD, rZero
+000058 b915                      	 out PortB, rZero
+000059 9508                      	 ret
                                  	 //rest the matrix pointer
                                  	 resetMatPoint:
-000057 e0b1                      	 ldi XH, HIGH(matrix)
-000058 e0a0                      	 ldi XL, LOW(matrix)
-000059 9508                      	 ret
+00005a e0b1                      	 ldi XH, HIGH(matrix)
+00005b e0a0                      	 ldi XL, LOW(matrix)
+00005c 9508                      	 ret
                                  	 
                                  	 //output the matrix to the led display
                                  	 outputMatrix:
                                  	 //1
-00005a 910d                      	 ld rTemp, X+
-00005b e030                      	 ldi rBOut, 0
-00005c e040                      	 ldi rDOut, 0
-00005d e051                      	 ldi rCOut, 1
+00005d 910d                      	 ld rTemp, X+
+00005e e030                      	 ldi rBOut, 0
+00005f e040                      	 ldi rDOut, 0
+000060 e051                      	 ldi rCOut, 1
                                  	 
-00005e fb07                      	 bst rTemp, 7
-00005f f946                      	 bld rDOut, 6
+000061 fb07                      	 bst rTemp, 7
+000062 f946                      	 bld rDOut, 6
                                  
-000060 fb06                      	 bst rTemp, 6
-000061 f947                      	 bld rDOut, 7
+000063 fb06                      	 bst rTemp, 6
+000064 f947                      	 bld rDOut, 7
                                  
-000062 fb05                      	 bst rTemp, 5
-000063 f930                      	 bld rBOut, 0
+000065 fb05                      	 bst rTemp, 5
+000066 f930                      	 bld rBOut, 0
                                  
-000064 fb04                      	 bst rTemp, 4
-000065 f931                      	 bld rBOut, 1
+000067 fb04                      	 bst rTemp, 4
+000068 f931                      	 bld rBOut, 1
                                  
-000066 fb03                      	 bst rTemp, 3
-000067 f932                      	 bld rBOut, 2
+000069 fb03                      	 bst rTemp, 3
+00006a f932                      	 bld rBOut, 2
                                  
-000068 fb02                      	 bst rTemp, 2
-000069 f933                      	 bld rBOut, 3
+00006b fb02                      	 bst rTemp, 2
+00006c f933                      	 bld rBOut, 3
                                  
-00006a fb01                      	 bst rTemp, 1
-00006b f934                      	 bld rBOut, 4
+00006d fb01                      	 bst rTemp, 1
+00006e f934                      	 bld rBOut, 4
                                  
-00006c fb00                      	 bst rTemp, 0
-00006d f935                      	 bld rBOut, 5
+00006f fb00                      	 bst rTemp, 0
+000070 f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-00006e b94b                      	 out PortD, rDOut
-00006f b935                      	 out PortB, rBOut
-000070 b958                      	 out PortC, rCOut
+000071 b94b                      	 out PortD, rDOut
+000072 b935                      	 out PortB, rBOut
+000073 b958                      	 out PortC, rCOut
                                  	 
-000071 dfde                      	 rcall wait 
-000072 dfe0                      	 rcall dim
+000074 dfde                      	 rcall wait 
+000075 dfe0                      	 rcall dim
                                  	 
-000073 e060                      	 ldi rInter, 0
+000076 e060                      	 ldi rInter, 0
                                  
                                  	 //2
-000074 910d                      	 ld rTemp, X+
-000075 e030                      	 ldi rBOut, 0
-000076 e040                      	 ldi rDOut, 0
-000077 e052                      	 ldi rCOut, 2
+000077 910d                      	 ld rTemp, X+
+000078 e030                      	 ldi rBOut, 0
+000079 e040                      	 ldi rDOut, 0
+00007a e052                      	 ldi rCOut, 2
                                  	 
-000078 fb07                      	 bst rTemp, 7
-000079 f946                      	 bld rDOut, 6
+00007b fb07                      	 bst rTemp, 7
+00007c f946                      	 bld rDOut, 6
                                  
-00007a fb06                      	 bst rTemp, 6
-00007b f947                      	 bld rDOut, 7
+00007d fb06                      	 bst rTemp, 6
+00007e f947                      	 bld rDOut, 7
                                  
-00007c fb05                      	 bst rTemp, 5
-00007d f930                      	 bld rBOut, 0
+00007f fb05                      	 bst rTemp, 5
+000080 f930                      	 bld rBOut, 0
                                  
-00007e fb04                      	 bst rTemp, 4
-00007f f931                      	 bld rBOut, 1
+000081 fb04                      	 bst rTemp, 4
+000082 f931                      	 bld rBOut, 1
                                  
-000080 fb03                      	 bst rTemp, 3
-000081 f932                      	 bld rBOut, 2
+000083 fb03                      	 bst rTemp, 3
+000084 f932                      	 bld rBOut, 2
                                  
-000082 fb02                      	 bst rTemp, 2
-000083 f933                      	 bld rBOut, 3
+000085 fb02                      	 bst rTemp, 2
+000086 f933                      	 bld rBOut, 3
                                  
-000084 fb01                      	 bst rTemp, 1
-000085 f934                      	 bld rBOut, 4
+000087 fb01                      	 bst rTemp, 1
+000088 f934                      	 bld rBOut, 4
                                  
-000086 fb00                      	 bst rTemp, 0
-000087 f935                      	 bld rBOut, 5
+000089 fb00                      	 bst rTemp, 0
+00008a f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-000088 b94b                      	 out PortD, rDOut
-000089 b935                      	 out PortB, rBOut
-00008a b958                      	 out PortC, rCOut
+00008b b94b                      	 out PortD, rDOut
+00008c b935                      	 out PortB, rBOut
+00008d b958                      	 out PortC, rCOut
                                  	 
-00008b dfc4                      	 rcall wait 
-00008c dfc6                      	 rcall dim
+00008e dfc4                      	 rcall wait 
+00008f dfc6                      	 rcall dim
                                  	 
-00008d e060                      	 ldi rInter, 0	 
+000090 e060                      	 ldi rInter, 0	 
                                  	 
                                  	 //3
-00008e 910d                      	 ld rTemp, X+
-00008f e030                      	 ldi rBOut, 0
-000090 e040                      	 ldi rDOut, 0
-000091 e054                      	 ldi rCOut, 4
+000091 910d                      	 ld rTemp, X+
+000092 e030                      	 ldi rBOut, 0
+000093 e040                      	 ldi rDOut, 0
+000094 e054                      	 ldi rCOut, 4
                                  	 
-000092 fb07                      	 bst rTemp, 7
-000093 f946                      	 bld rDOut, 6
+000095 fb07                      	 bst rTemp, 7
+000096 f946                      	 bld rDOut, 6
                                  
-000094 fb06                      	 bst rTemp, 6
-000095 f947                      	 bld rDOut, 7
+000097 fb06                      	 bst rTemp, 6
+000098 f947                      	 bld rDOut, 7
                                  
-000096 fb05                      	 bst rTemp, 5
-000097 f930                      	 bld rBOut, 0
+000099 fb05                      	 bst rTemp, 5
+00009a f930                      	 bld rBOut, 0
                                  
-000098 fb04                      	 bst rTemp, 4
-000099 f931                      	 bld rBOut, 1
+00009b fb04                      	 bst rTemp, 4
+00009c f931                      	 bld rBOut, 1
                                  
-00009a fb03                      	 bst rTemp, 3
-00009b f932                      	 bld rBOut, 2
+00009d fb03                      	 bst rTemp, 3
+00009e f932                      	 bld rBOut, 2
                                  
-00009c fb02                      	 bst rTemp, 2
-00009d f933                      	 bld rBOut, 3
+00009f fb02                      	 bst rTemp, 2
+0000a0 f933                      	 bld rBOut, 3
                                  
-00009e fb01                      	 bst rTemp, 1
-00009f f934                      	 bld rBOut, 4
+0000a1 fb01                      	 bst rTemp, 1
+0000a2 f934                      	 bld rBOut, 4
                                  
-0000a0 fb00                      	 bst rTemp, 0
-0000a1 f935                      	 bld rBOut, 5
+0000a3 fb00                      	 bst rTemp, 0
+0000a4 f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-0000a2 b94b                      	 out PortD, rDOut
-0000a3 b935                      	 out PortB, rBOut
-0000a4 b958                      	 out PortC, rCOut
+0000a5 b94b                      	 out PortD, rDOut
+0000a6 b935                      	 out PortB, rBOut
+0000a7 b958                      	 out PortC, rCOut
                                  	 
-0000a5 dfaa                      	 rcall wait 
-0000a6 dfac                      	 rcall dim
+0000a8 dfaa                      	 rcall wait 
+0000a9 dfac                      	 rcall dim
                                  	 
-0000a7 e060                      	 ldi rInter, 0	 
+0000aa e060                      	 ldi rInter, 0	 
                                  	 
                                  	 //4
-0000a8 910d                      	 ld rTemp, X+
-0000a9 e030                      	 ldi rBOut, 0
-0000aa e040                      	 ldi rDOut, 0
-0000ab e058                      	 ldi rCOut, 8
+0000ab 910d                      	 ld rTemp, X+
+0000ac e030                      	 ldi rBOut, 0
+0000ad e040                      	 ldi rDOut, 0
+0000ae e058                      	 ldi rCOut, 8
                                  	 
-0000ac fb07                      	 bst rTemp, 7
-0000ad f946                      	 bld rDOut, 6
+0000af fb07                      	 bst rTemp, 7
+0000b0 f946                      	 bld rDOut, 6
                                  
-0000ae fb06                      	 bst rTemp, 6
-0000af f947                      	 bld rDOut, 7
+0000b1 fb06                      	 bst rTemp, 6
+0000b2 f947                      	 bld rDOut, 7
                                  
-0000b0 fb05                      	 bst rTemp, 5
-0000b1 f930                      	 bld rBOut, 0
+0000b3 fb05                      	 bst rTemp, 5
+0000b4 f930                      	 bld rBOut, 0
                                  
-0000b2 fb04                      	 bst rTemp, 4
-0000b3 f931                      	 bld rBOut, 1
+0000b5 fb04                      	 bst rTemp, 4
+0000b6 f931                      	 bld rBOut, 1
                                  
-0000b4 fb03                      	 bst rTemp, 3
-0000b5 f932                      	 bld rBOut, 2
+0000b7 fb03                      	 bst rTemp, 3
+0000b8 f932                      	 bld rBOut, 2
                                  
-0000b6 fb02                      	 bst rTemp, 2
-0000b7 f933                      	 bld rBOut, 3
+0000b9 fb02                      	 bst rTemp, 2
+0000ba f933                      	 bld rBOut, 3
                                  
-0000b8 fb01                      	 bst rTemp, 1
-0000b9 f934                      	 bld rBOut, 4
+0000bb fb01                      	 bst rTemp, 1
+0000bc f934                      	 bld rBOut, 4
                                  
-0000ba fb00                      	 bst rTemp, 0
-0000bb f935                      	 bld rBOut, 5
+0000bd fb00                      	 bst rTemp, 0
+0000be f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-0000bc b94b                      	 out PortD, rDOut
-0000bd b935                      	 out PortB, rBOut
-0000be b958                      	 out PortC, rCOut
+0000bf b94b                      	 out PortD, rDOut
+0000c0 b935                      	 out PortB, rBOut
+0000c1 b958                      	 out PortC, rCOut
                                  	 
-0000bf df90                      	 rcall wait 
-0000c0 df92                      	 rcall dim
+0000c2 df90                      	 rcall wait 
+0000c3 df92                      	 rcall dim
                                  	 
-0000c1 e060                      	 ldi rInter, 0	 
+0000c4 e060                      	 ldi rInter, 0	 
                                  	 
                                  	 //5
-0000c2 910d                      	 ld rTemp, X+
-0000c3 e030                      	 ldi rBOut, 0
-0000c4 e044                      	 ldi rDOut, 0b00000100
-0000c5 e050                      	 ldi rCOut, 0
+0000c5 910d                      	 ld rTemp, X+
+0000c6 e030                      	 ldi rBOut, 0
+0000c7 e044                      	 ldi rDOut, 0b00000100
+0000c8 e050                      	 ldi rCOut, 0
                                  	 
-0000c6 fb07                      	 bst rTemp, 7
-0000c7 f946                      	 bld rDOut, 6
+0000c9 fb07                      	 bst rTemp, 7
+0000ca f946                      	 bld rDOut, 6
                                  
-0000c8 fb06                      	 bst rTemp, 6
-0000c9 f947                      	 bld rDOut, 7
+0000cb fb06                      	 bst rTemp, 6
+0000cc f947                      	 bld rDOut, 7
                                  
-0000ca fb05                      	 bst rTemp, 5
-0000cb f930                      	 bld rBOut, 0
+0000cd fb05                      	 bst rTemp, 5
+0000ce f930                      	 bld rBOut, 0
                                  
-0000cc fb04                      	 bst rTemp, 4
-0000cd f931                      	 bld rBOut, 1
+0000cf fb04                      	 bst rTemp, 4
+0000d0 f931                      	 bld rBOut, 1
                                  
-0000ce fb03                      	 bst rTemp, 3
-0000cf f932                      	 bld rBOut, 2
+0000d1 fb03                      	 bst rTemp, 3
+0000d2 f932                      	 bld rBOut, 2
                                  
-0000d0 fb02                      	 bst rTemp, 2
-0000d1 f933                      	 bld rBOut, 3
+0000d3 fb02                      	 bst rTemp, 2
+0000d4 f933                      	 bld rBOut, 3
                                  
-0000d2 fb01                      	 bst rTemp, 1
-0000d3 f934                      	 bld rBOut, 4
+0000d5 fb01                      	 bst rTemp, 1
+0000d6 f934                      	 bld rBOut, 4
                                  
-0000d4 fb00                      	 bst rTemp, 0
-0000d5 f935                      	 bld rBOut, 5
+0000d7 fb00                      	 bst rTemp, 0
+0000d8 f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-0000d6 b94b                      	 out PortD, rDOut
-0000d7 b935                      	 out PortB, rBOut
-0000d8 b958                      	 out PortC, rCOut
+0000d9 b94b                      	 out PortD, rDOut
+0000da b935                      	 out PortB, rBOut
+0000db b958                      	 out PortC, rCOut
                                  	 
-0000d9 df76                      	 rcall wait 
-0000da df78                      	 rcall dim
+0000dc df76                      	 rcall wait 
+0000dd df78                      	 rcall dim
                                  	 
-0000db e060                      	 ldi rInter, 0	 
+0000de e060                      	 ldi rInter, 0	 
                                  	 
                                  	 //6
-0000dc 910d                      	 ld rTemp, X+
-0000dd e030                      	 ldi rBOut, 0
-0000de e048                      	 ldi rDOut, 0b00001000
-0000df e050                      	 ldi rCOut, 0
+0000df 910d                      	 ld rTemp, X+
+0000e0 e030                      	 ldi rBOut, 0
+0000e1 e048                      	 ldi rDOut, 0b00001000
+0000e2 e050                      	 ldi rCOut, 0
                                  	 
-0000e0 fb07                      	 bst rTemp, 7
-0000e1 f946                      	 bld rDOut, 6
+0000e3 fb07                      	 bst rTemp, 7
+0000e4 f946                      	 bld rDOut, 6
                                  
-0000e2 fb06                      	 bst rTemp, 6
-0000e3 f947                      	 bld rDOut, 7
+0000e5 fb06                      	 bst rTemp, 6
+0000e6 f947                      	 bld rDOut, 7
                                  
-0000e4 fb05                      	 bst rTemp, 5
-0000e5 f930                      	 bld rBOut, 0
+0000e7 fb05                      	 bst rTemp, 5
+0000e8 f930                      	 bld rBOut, 0
                                  
-0000e6 fb04                      	 bst rTemp, 4
-0000e7 f931                      	 bld rBOut, 1
+0000e9 fb04                      	 bst rTemp, 4
+0000ea f931                      	 bld rBOut, 1
                                  
-0000e8 fb03                      	 bst rTemp, 3
-0000e9 f932                      	 bld rBOut, 2
+0000eb fb03                      	 bst rTemp, 3
+0000ec f932                      	 bld rBOut, 2
                                  
-0000ea fb02                      	 bst rTemp, 2
-0000eb f933                      	 bld rBOut, 3
+0000ed fb02                      	 bst rTemp, 2
+0000ee f933                      	 bld rBOut, 3
                                  
-0000ec fb01                      	 bst rTemp, 1
-0000ed f934                      	 bld rBOut, 4
+0000ef fb01                      	 bst rTemp, 1
+0000f0 f934                      	 bld rBOut, 4
                                  
-0000ee fb00                      	 bst rTemp, 0
-0000ef f935                      	 bld rBOut, 5
+0000f1 fb00                      	 bst rTemp, 0
+0000f2 f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-0000f0 b94b                      	 out PortD, rDOut
-0000f1 b935                      	 out PortB, rBOut
-0000f2 b958                      	 out PortC, rCOut
+0000f3 b94b                      	 out PortD, rDOut
+0000f4 b935                      	 out PortB, rBOut
+0000f5 b958                      	 out PortC, rCOut
                                  	 
-0000f3 df5c                      	 rcall wait 
-0000f4 df5e                      	 rcall dim
+0000f6 df5c                      	 rcall wait 
+0000f7 df5e                      	 rcall dim
                                  	 
-0000f5 e060                      	 ldi rInter, 0	 
+0000f8 e060                      	 ldi rInter, 0	 
                                  	 
                                  	 //7
-0000f6 910d                      	 ld rTemp, X+
-0000f7 e030                      	 ldi rBOut, 0
-0000f8 e140                      	 ldi rDOut, 0b00010000
-0000f9 e050                      	 ldi rCOut, 0
+0000f9 910d                      	 ld rTemp, X+
+0000fa e030                      	 ldi rBOut, 0
+0000fb e140                      	 ldi rDOut, 0b00010000
+0000fc e050                      	 ldi rCOut, 0
                                  	 
-0000fa fb07                      	 bst rTemp, 7
-0000fb f946                      	 bld rDOut, 6
+0000fd fb07                      	 bst rTemp, 7
+0000fe f946                      	 bld rDOut, 6
                                  
-0000fc fb06                      	 bst rTemp, 6
-0000fd f947                      	 bld rDOut, 7
+0000ff fb06                      	 bst rTemp, 6
+000100 f947                      	 bld rDOut, 7
                                  
-0000fe fb05                      	 bst rTemp, 5
-0000ff f930                      	 bld rBOut, 0
+000101 fb05                      	 bst rTemp, 5
+000102 f930                      	 bld rBOut, 0
                                  
-000100 fb04                      	 bst rTemp, 4
-000101 f931                      	 bld rBOut, 1
+000103 fb04                      	 bst rTemp, 4
+000104 f931                      	 bld rBOut, 1
                                  
-000102 fb03                      	 bst rTemp, 3
-000103 f932                      	 bld rBOut, 2
+000105 fb03                      	 bst rTemp, 3
+000106 f932                      	 bld rBOut, 2
                                  
-000104 fb02                      	 bst rTemp, 2
-000105 f933                      	 bld rBOut, 3
+000107 fb02                      	 bst rTemp, 2
+000108 f933                      	 bld rBOut, 3
                                  
-000106 fb01                      	 bst rTemp, 1
-000107 f934                      	 bld rBOut, 4
+000109 fb01                      	 bst rTemp, 1
+00010a f934                      	 bld rBOut, 4
                                  
-000108 fb00                      	 bst rTemp, 0
-000109 f935                      	 bld rBOut, 5
+00010b fb00                      	 bst rTemp, 0
+00010c f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-00010a b94b                      	 out PortD, rDOut
-00010b b935                      	 out PortB, rBOut
-00010c b958                      	 out PortC, rCOut
+00010d b94b                      	 out PortD, rDOut
+00010e b935                      	 out PortB, rBOut
+00010f b958                      	 out PortC, rCOut
                                  	 
-00010d df42                      	 rcall wait 
-00010e df44                      	 rcall dim
+000110 df42                      	 rcall wait 
+000111 df44                      	 rcall dim
                                  	 
-00010f e060                      	 ldi rInter, 0
+000112 e060                      	 ldi rInter, 0
                                  	 
                                  	 //8	 
-000110 910c                      	 ld rTemp, X
-000111 e030                      	 ldi rBOut, 0
-000112 e240                      	 ldi rDOut, 0b00100000
-000113 e050                      	 ldi rCOut, 0
+000113 910c                      	 ld rTemp, X
+000114 e030                      	 ldi rBOut, 0
+000115 e240                      	 ldi rDOut, 0b00100000
+000116 e050                      	 ldi rCOut, 0
                                  	 
-000114 fb07                      	 bst rTemp, 7
-000115 f946                      	 bld rDOut, 6
+000117 fb07                      	 bst rTemp, 7
+000118 f946                      	 bld rDOut, 6
                                  
-000116 fb06                      	 bst rTemp, 6
-000117 f947                      	 bld rDOut, 7
+000119 fb06                      	 bst rTemp, 6
+00011a f947                      	 bld rDOut, 7
                                  
-000118 fb05                      	 bst rTemp, 5
-000119 f930                      	 bld rBOut, 0
+00011b fb05                      	 bst rTemp, 5
+00011c f930                      	 bld rBOut, 0
                                  
-00011a fb04                      	 bst rTemp, 4
-00011b f931                      	 bld rBOut, 1
+00011d fb04                      	 bst rTemp, 4
+00011e f931                      	 bld rBOut, 1
                                  
-00011c fb03                      	 bst rTemp, 3
-00011d f932                      	 bld rBOut, 2
+00011f fb03                      	 bst rTemp, 3
+000120 f932                      	 bld rBOut, 2
                                  
-00011e fb02                      	 bst rTemp, 2
-00011f f933                      	 bld rBOut, 3
+000121 fb02                      	 bst rTemp, 2
+000122 f933                      	 bld rBOut, 3
                                  
-000120 fb01                      	 bst rTemp, 1
-000121 f934                      	 bld rBOut, 4
+000123 fb01                      	 bst rTemp, 1
+000124 f934                      	 bld rBOut, 4
                                  
-000122 fb00                      	 bst rTemp, 0
-000123 f935                      	 bld rBOut, 5
+000125 fb00                      	 bst rTemp, 0
+000126 f935                      	 bld rBOut, 5
                                  
                                  	 
                                  	 //subi rMatIndex, -1
                                  
-000124 b94b                      	 out PortD, rDOut
-000125 b935                      	 out PortB, rBOut
-000126 b958                      	 out PortC, rCOut
+000127 b94b                      	 out PortD, rDOut
+000128 b935                      	 out PortB, rBOut
+000129 b958                      	 out PortC, rCOut
                                  	 
-000127 df28                      	 rcall wait 
-000128 df2a                      	 rcall dim
+00012a df28                      	 rcall wait 
+00012b df2a                      	 rcall dim
                                  	 
-000129 e060                      	 ldi rInter, 0
+00012c e060                      	 ldi rInter, 0
                                  
-00012a df2c                      	 rcall resetMatPoint
-00012b 9508                      	 ret
+00012d df2c                      	 rcall resetMatPoint
+00012e 9508                      	 ret
                                  	 //interup subrutinen
                                  	 interup:
-00012c e061                      	 ldi rInter, 0b00000001
-00012d 9518                      	 reti
+00012f e061                      	 ldi rInter, 0b00000001
+000130 9518                      	 reti
                                  
                                  	 stickXInput:
-00012e 930f                      	 push rTemp
-00012f e001                      	 ldi rTemp, 0b1
-000130 fb00                      	 bst rTemp, 0
-                                 	 
 000131 930f                      	 push rTemp
-000132 9100 007c                 	 lds rTemp, ADMUX
-000134 f902                      	 bld rTemp, 2
-000135 9300 007c                 	 sts ADMUX, rTemp
+                                 	 
+000132 e000                      	 ldi rTemp, 0b0
+000133 f900                      	 bld rTemp,0
+000134 930f                      	 push rTemp
+000135 fb00                      	 bst rTemp, 0
+000136 fb01                      	 bst rTemp, 1
+000137 fb02                      	 bst rTemp, 2
+000138 fb03                      	 bst rTemp, 3
+000139 9300 007c                 	 sts ADMUX, rTemp
+00013b 910f                      	 pop rTemp
+                                 
+00013c e001                      	 ldi rTemp, 0b1
+00013d f900                      	 bld rTemp, 0
+                                 	 
+00013e 930f                      	 push rTemp
+00013f 9100 007c                 	 lds rTemp, ADMUX
+000141 fb02                      	 bst rTemp, 2
+000142 fb05                      	 bst rTemp, 5
+000143 9300 007c                 	 sts ADMUX, rTemp
+000145 910f                      	 pop rTemp
+000146 940c 0149                 	 jmp stickXLoop
+                                 
+                                 	 stickXLoopPop:
+000148 910f                      	 pop rTemp
+                                 	 stickXLoop:
+000149 9100 0078                 	 lds rTemp, ADCL
+00014b 930f                      	 push rTemp
+00014c 9100 007c                 	 lds rTemp, ADMUX
+00014e fd05                      	 sbrc rTemp, 5
+00014f 940c 0148                 	 jmp stickXLoopPop
+                                 
+000151 910f                      	 pop rTemp
+                                 
+000152 3c08                      	 cpi rTemp, 200
+000153 f410                      	 brsh XPos
+000154 3302                      	 cpi rTemp, 50
+000155 f020                      	 brlo XNeg 
+                                 
+                                 	 XPos:
+000156 e001                      	 ldi rTemp, 0b1
+000157 f900                      	 bld rTemp, 0
+000158 fb71                      	 bst rDirection, 1
+000159 9508                      	 ret
+                                 	 XNeg:
+00015a e000                      	 ldi rTemp, 0b0
+00015b f900                      	 bld rTemp, 0
+00015c fb71                      	 bst rDirection, 1
+00015d 9508                      	 ret
+                                 
+                                 	 
+                                 	 stickYInput:
+00015e 930f                      	 push rTemp
+                                 
+00015f e000                      	 ldi rTemp, 0b0
+000160 f900                      	 bld rTemp,0
+000161 930f                      	 push rTemp
+000162 fb00                      	 bst rTemp, 0
+000163 fb01                      	 bst rTemp, 1
+000164 fb02                      	 bst rTemp, 2
+000165 fb03                      	 bst rTemp, 3
+000166 9300 007c                 	 sts ADMUX, rTemp
+000168 910f                      	 pop rTemp
+                                 
+000169 e001                      	 ldi rTemp, 0b1
+00016a f900                      	 bld rTemp, 0
+                                 	 
+00016b 930f                      	 push rTemp
+00016c 9100 007c                 	 lds rTemp, ADMUX
+00016e fb03                      	 bst rTemp, 3
+00016f fb05                      	 bst rTemp, 5
+000170 9300 007c                 	 sts ADMUX, rTemp
+000172 910f                      	 pop rTemp
+000173 940c 0176                 	 jmp stickYLoop
+                                 
+                                 	 stickYLoopPop:
+000175 910f                      	 pop rTemp
+                                 	 stickYLoop:
+000176 9100 0078                 	 lds rTemp, ADCL
+000178 930f                      	 push rTemp
+000179 9100 007c                 	 lds rTemp, ADMUX
+00017b fd05                      	 sbrc rTemp, 5
+00017c 940c 0175                 	 jmp stickYLoopPop
+                                 
+00017e 910f                      	 pop rTemp
+00017f 3c08                      	 cpi rTemp, 200
+000180 f410                      	 brsh YPos
+000181 3302                      	 cpi rTemp, 50
+000182 f020                      	 brlo YNeg 
+                                 
+                                 	 YPos:
+000183 e001                      	 ldi rTemp, 0b1
+000184 f900                      	 bld rTemp, 0
+000185 fb70                      	 bst rDirection, 0
+000186 9508                      	 ret
+                                 	 YNeg:
+000187 e000                      	 ldi rTemp, 0b0
+000188 f900                      	 bld rTemp, 0
+000189 fb70                      	 bst rDirection, 0
 
 
 RESOURCE USE INFORMATION
@@ -1440,39 +1534,39 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   8 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   9 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  96 r17:   4 r18:   0 r19:  64 r20:  32 
-r21:  16 r22:  11 r23:   0 r24:   0 r25:   0 r26:   2 r27:   2 r28:   0 
+r13:   0 r14:   0 r15:   0 r16: 149 r17:   4 r18:   0 r19:  64 r20:  32 
+r21:  16 r22:  11 r23:   5 r24:   0 r25:   0 r26:   2 r27:   2 r28:   0 
 r29:   0 r30:   0 r31:   0 
-Registers used: 9 out of 35 (25.7%)
+Registers used: 10 out of 35 (28.6%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   0 asr   :   0 bclr  :   0 bld   :  65 brbc  :   0 brbs  :   0 
+andi  :   0 asr   :   0 bclr  :   0 bld   :  72 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   1 brge  :   0 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :  65 call  :   0 cbi   :   0 cbr   :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :   2 brlt  :   0 brmi  :   0 
+brne  :   0 brpl  :   0 brsh  :   2 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :  80 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   1 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   3 
-ld    :   8 ldd   :   0 ldi   :  48 lds   :   1 lpm   :   0 lsl   :   0 
+cpi   :   5 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   7 
+ld    :   8 ldd   :   0 ldi   :  55 lds   :   6 lpm   :   0 lsl   :   0 
 lsr   :   0 mov   :   0 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   1 or    :   0 ori   :   0 out   :  33 pop   :   0 
-push  :   2 rcall :  18 ret   :   4 reti  :   1 rjmp  :   0 rol   :   0 
+neg   :   0 nop   :   1 or    :   0 ori   :   0 out   :  33 pop   :   8 
+push  :   8 rcall :  20 ret   :   8 reti  :   1 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
-sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
+sbiw  :   0 sbr   :   0 sbrc  :   2 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   4 
+sez   :   0 sleep :   0 spm   :   0 st    :   1 std   :   0 sts   :   7 
 sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 16 out of 113 (14.2%)
+Instructions used: 21 out of 113 (18.6%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00026e    528      0    528   32768   1.6%
+[.cseg] 0x000000 0x000316    696      0    696   32768   2.1%
 [.dseg] 0x000100 0x000122      0     34     34    2048   1.7%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

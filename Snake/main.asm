@@ -9,6 +9,7 @@
 .DEF rCOut         = r21
 .DEF rInter		   = r22
 
+
 //[En lista med konstanter]
 .EQU NUM_COLUMNS   = 8
 .EQU MAX_LENGTH    = 25
@@ -42,7 +43,7 @@ init:
 	 sts TIMSK0, rTemp
 	 sei
 	 //configuration till AD convertern
-	 ldi rTemp, 0b0010000
+	 ldi rTemp, 0b0011000
 	 sts ADMUX, rTemp
 
 	 ldi rTemp, 0b01000111
@@ -62,7 +63,9 @@ init:
 
 	 //main progam loop
 	 loop:
-
+	 rcall stickXInput
+	 rcall stickYInput
+	 st X, rDirection
 	 rcall outputMatrix
 	
 	 jmp loop
@@ -430,14 +433,102 @@ init:
 
 	 stickXInput:
 	 push rTemp
-	 ldi rTemp, 0b1
+	 
+	 ldi rTemp, 0b0
+	 bld rTemp,0
+	 push rTemp
 	 bst rTemp, 0
+	 bst rTemp, 1
+	 bst rTemp, 2
+	 bst rTemp, 3
+	 sts ADMUX, rTemp
+	 pop rTemp
+
+	 ldi rTemp, 0b1
+	 bld rTemp, 0
 	 
 	 push rTemp
 	 lds rTemp, ADMUX
-	 bld rTemp, 2
+	 bst rTemp, 2
+	 bst rTemp, 5
 	 sts ADMUX, rTemp
 	 pop rTemp
-	 
+	 jmp stickXLoop
+
+	 stickXLoopPop:
+	 pop rTemp
 	 stickXLoop:
-	 lds 
+	 lds rTemp, ADCL
+	 push rTemp
+	 lds rTemp, ADMUX
+	 sbrc rTemp, 5
+	 jmp stickXLoopPop
+
+	 pop rTemp
+
+	 cpi rTemp, 200
+	 brsh XPos
+	 cpi rTemp, 50
+	 brlo XNeg 
+
+	 XPos:
+	 ldi rTemp, 0b1
+	 bld rTemp, 0
+	 bst rDirection, 1
+	 ret
+	 XNeg:
+	 ldi rTemp, 0b0
+	 bld rTemp, 0
+	 bst rDirection, 1
+	 ret
+
+	 
+	 stickYInput:
+	 push rTemp
+
+	 ldi rTemp, 0b0
+	 bld rTemp,0
+	 push rTemp
+	 bst rTemp, 0
+	 bst rTemp, 1
+	 bst rTemp, 2
+	 bst rTemp, 3
+	 sts ADMUX, rTemp
+	 pop rTemp
+
+	 ldi rTemp, 0b1
+	 bld rTemp, 0
+	 
+	 push rTemp
+	 lds rTemp, ADMUX
+	 bst rTemp, 3
+	 bst rTemp, 5
+	 sts ADMUX, rTemp
+	 pop rTemp
+	 jmp stickYLoop
+
+	 stickYLoopPop:
+	 pop rTemp
+	 stickYLoop:
+	 lds rTemp, ADCL
+	 push rTemp
+	 lds rTemp, ADMUX
+	 sbrc rTemp, 5
+	 jmp stickYLoopPop
+
+	 pop rTemp
+	 cpi rTemp, 200
+	 brsh YPos
+	 cpi rTemp, 50
+	 brlo YNeg 
+
+	 YPos:
+	 ldi rTemp, 0b1
+	 bld rTemp, 0
+	 bst rDirection, 0
+	 ret
+	 YNeg:
+	 ldi rTemp, 0b0
+	 bld rTemp, 0
+	 bst rDirection, 0
+	 ret
