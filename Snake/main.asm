@@ -2,13 +2,14 @@
 .DEF rTemp         = r16
 .DEF rDirection    = r23
 .DEF rZero         = r17
-.DEF rStickX	   = r18
-.DEF rStickY	   = r24
 .DEF rBOut         = r19
 .DEF rDOut         = r20
 .DEF rCOut         = r21
 .DEF rInter		   = r22
-
+.DEF rTempBit      = r18
+.DEF rADMUXx	   = r24
+.DEF rADMUXy	   = r14
+.DEF rStickInp	   = r15
 
 //[En lista med konstanter]
 .EQU NUM_COLUMNS   = 8
@@ -29,6 +30,12 @@ snake:    .BYTE MAX_LENGTH+1
 	 nop
 .ORG INT_VECTORS_SIZE
 init:
+	 //Sätt värden på rADMUXx & rADMUXy
+	 
+	 ldi rTemp, 0b01100100
+	 mov rADMUXx, rTemp
+	 ldi rTemp, 0b01100101
+	 mov rADMUXy, rTemp	
      // Sätt stackpekaren till högsta minnesadressen
      ldi rTemp, HIGH(RAMEND)
      out SPH, rTemp
@@ -42,13 +49,6 @@ init:
 	 ldi rTemp, 0b001
 	 sts TIMSK0, rTemp
 	 sei
-	 //configuration till AD convertern
-	 ldi rTemp, 0b0011000
-	 sts ADMUX, rTemp
-
-	 ldi rTemp, 0b01000111
-	 sts ADCSRA, rTemp
-
 	 //configuration till led enheten
 	 ldi rTemp, 0b00001111
 	 out DDRC, rTemp
@@ -56,16 +56,25 @@ init:
 	 out DDRD, rTemp
 	 out DDRB, rTemp
 	 ldi rZero, 0
+	 ldi rDirection, 0
 	 //tilldela minne till matrixen
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
-	 
-
+	 //lägg in värden i matrixen
+	 ldi rTemp, 0b00000000
+	 sts matrix, rTemp
+	 sts matrix+1, rTemp
+	 sts matrix+2, rTemp
+	 sts matrix+3, rTemp
+	 sts matrix+4, rTemp
+	 sts matrix+5, rTemp
+	 sts matrix+6, rTemp
+	 sts matrix+7, rTemp
 	 //main progam loop
 	 loop:
 	 rcall stickXInput
 	 rcall stickYInput
-	 st X, rDirection
+	 sts matrix, rDirection
 	 rcall outputMatrix
 	
 	 jmp loop
@@ -432,103 +441,58 @@ init:
 	 reti
 
 	 stickXInput:
-	 push rTemp
-	 
-	 ldi rTemp, 0b0
-	 bld rTemp,0
-	 push rTemp
-	 bst rTemp, 0
-	 bst rTemp, 1
-	 bst rTemp, 2
-	 bst rTemp, 3
-	 sts ADMUX, rTemp
-	 pop rTemp
+	 sts ADMUX, rADMUXx
+	 ldi rTemp, 0b11000111
+	 sts ADCSRA, rTemp
 
-	 ldi rTemp, 0b1
-	 bld rTemp, 0
-	 
-	 push rTemp
-	 lds rTemp, ADMUX
-	 bst rTemp, 2
-	 bst rTemp, 5
-	 sts ADMUX, rTemp
-	 pop rTemp
-	 jmp stickXLoop
-
-	 stickXLoopPop:
-	 pop rTemp
 	 stickXLoop:
+	 lds rTemp, ADCSRA
+	 sbrc rTemp, ADSC
+	 jmp stickXLoop
 	 lds rTemp, ADCL
-	 push rTemp
-	 lds rTemp, ADMUX
-	 sbrc rTemp, 5
-	 jmp stickXLoopPop
-
-	 pop rTemp
-
-	 cpi rTemp, 200
+	 lds rStickInp, ADCH
+	 ldi rTemp, 200
+	 cp rStickInp, rTemp
 	 brsh XPos
-	 cpi rTemp, 50
+	 ldi rTemp, 50
+	 cp rStickInp, rTemp
 	 brlo XNeg 
-
+	 ret
 	 XPos:
-	 ldi rTemp, 0b1
-	 bld rTemp, 0
-	 bst rDirection, 1
+	 ldi rTempBit, 0b00000010
+	 or rDirection, rTempBit
 	 ret
 	 XNeg:
-	 ldi rTemp, 0b0
-	 bld rTemp, 0
-	 bst rDirection, 1
+	 ldi rTempBit, 0b11111101
+	 and rDirection, rTempBit
 	 ret
 
 	 
 	 stickYInput:
-	 push rTemp
+	 sts ADMUX, rADMUXy
+	 ldi rTemp, 0b11000111
+	 sts ADCSRA, rTemp
 
-	 ldi rTemp, 0b0
-	 bld rTemp,0
-	 push rTemp
-	 bst rTemp, 0
-	 bst rTemp, 1
-	 bst rTemp, 2
-	 bst rTemp, 3
-	 sts ADMUX, rTemp
-	 pop rTemp
-
-	 ldi rTemp, 0b1
-	 bld rTemp, 0
-	 
-	 push rTemp
-	 lds rTemp, ADMUX
-	 bst rTemp, 3
-	 bst rTemp, 5
-	 sts ADMUX, rTemp
-	 pop rTemp
-	 jmp stickYLoop
-
-	 stickYLoopPop:
-	 pop rTemp
 	 stickYLoop:
+	 lds rTemp, ADCSRA
+	 sbrc rTemp, ADSC
+	 jmp stickYLoop
 	 lds rTemp, ADCL
-	 push rTemp
-	 lds rTemp, ADMUX
-	 sbrc rTemp, 5
-	 jmp stickYLoopPop
-
-	 pop rTemp
-	 cpi rTemp, 200
+	 lds rStickInp, ADCH
+	 
+	 ldi rTemp, 200
+	 cp rStickInp, rTemp
 	 brsh YPos
-	 cpi rTemp, 50
-	 brlo YNeg 
-
+	 ldi rTemp, 50
+	 cp rStickInp, rTemp
+	 brlo YNeg
+	  
+	 ret
 	 YPos:
-	 ldi rTemp, 0b1
-	 bld rTemp, 0
-	 bst rDirection, 0
+	 ldi rTempBit, 0b00000001
+	 or rDirection, rTempBit
 	 ret
 	 YNeg:
-	 ldi rTemp, 0b0
-	 bld rTemp, 0
-	 bst rDirection, 0
+	 ldi rTempBit, 0b11111110
+	 and rDirection, rTempBit
 	 ret
