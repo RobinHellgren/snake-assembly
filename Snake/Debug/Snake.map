@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Thu May 23 15:58:45 2019
+AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Fri May 24 11:27:42 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -698,9 +698,9 @@ EQU  INT_VECTORS_SIZE 00000034
 DEF  rTemp        r16
 DEF  rDirection   r23
 DEF  rZero        r17
-DEF  rBOut        r19
-DEF  rDOut        r20
-DEF  rCOut        r21
+DEF  rTemp2       r19
+DEF  rTemp4       r20
+DEF  rTemp3       r21
 DEF  rInter       r22
 DEF  rTempBit     r18
 DEF  rADMUXx      r24
@@ -710,18 +710,21 @@ EQU  NUM_COLUMNS  00000008
 EQU  MAX_LENGTH   00000019
 DSEG matrix       00000100
 DSEG snake        00000108
+DSEG Bout         00000122
+DSEG Cout         00000123
+DSEG Dout         00000124
 CSEG init         00000034
-CSEG interup      00000140
+CSEG interup      000001e7
 CSEG loop         0000005d
-CSEG stickXInput  00000142
-CSEG stickYInput  0000015d
+CSEG stickXInput  000001e9
+CSEG stickYInput  00000204
 CSEG outputMatrix 0000006e
 CSEG wait         00000064
 CSEG dim          00000067
 CSEG resetMatPoint 0000006b
-CSEG stickXLoop   00000147
-CSEG XPos         00000157
-CSEG XNeg         0000015a
-CSEG stickYLoop   00000162
-CSEG YPos         00000172
-CSEG YNeg         00000175
+CSEG stickXLoop   000001ee
+CSEG XPos         000001fe
+CSEG XNeg         00000201
+CSEG stickYLoop   00000209
+CSEG YPos         00000219
+CSEG YNeg         0000021c

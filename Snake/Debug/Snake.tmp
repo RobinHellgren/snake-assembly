@@ -24,20 +24,23 @@
  <LABELS>
   <matrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>19</LINE></matrix>
   <snake><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>20</LINE></snake>
-  <init><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>32</LINE></init>
-  <interup><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>439</LINE></interup>
-  <loop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>74</LINE></loop>
-  <stickXInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>443</LINE></stickXInput>
-  <stickYInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>471</LINE></stickYInput>
-  <outputMatrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>99</LINE></outputMatrix>
-  <wait><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>82</LINE></wait>
-  <dim><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>87</LINE></dim>
-  <resetMatPoint><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>93</LINE></resetMatPoint>
-  <stickXLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>448</LINE></stickXLoop>
-  <XPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>461</LINE></XPos>
-  <XNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>465</LINE></XNeg>
-  <stickYLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>476</LINE></stickYLoop>
-  <YPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>491</LINE></YPos>
-  <YNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>495</LINE></YNeg>
+  <Bout><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>21</LINE></Bout>
+  <Cout><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>22</LINE></Cout>
+  <Dout><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>23</LINE></Dout>
+  <init><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>35</LINE></init>
+  <interup><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>497</LINE></interup>
+  <loop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>77</LINE></loop>
+  <stickXInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>501</LINE></stickXInput>
+  <stickYInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>529</LINE></stickYInput>
+  <outputMatrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>102</LINE></outputMatrix>
+  <wait><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>85</LINE></wait>
+  <dim><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>90</LINE></dim>
+  <resetMatPoint><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>96</LINE></resetMatPoint>
+  <stickXLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>506</LINE></stickXLoop>
+  <XPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>519</LINE></XPos>
+  <XNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>523</LINE></XNeg>
+  <stickYLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>534</LINE></stickYLoop>
+  <YPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>549</LINE></YPos>
+  <YNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>553</LINE></YNeg>
  </LABELS>
 </ASSEMBLER_INFO>

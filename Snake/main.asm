@@ -2,9 +2,9 @@
 .DEF rTemp         = r16
 .DEF rDirection    = r23
 .DEF rZero         = r17
-.DEF rBOut         = r19
-.DEF rDOut         = r20
-.DEF rCOut         = r21
+.DEF rTemp2         = r19
+.DEF rTemp4         = r20
+.DEF rTemp3         = r21
 .DEF rInter		   = r22
 .DEF rTempBit      = r18
 .DEF rADMUXx	   = r24
@@ -18,6 +18,9 @@
 .DSEG
 matrix:   .BYTE 8
 snake:    .BYTE MAX_LENGTH+1
+Bout:	  .BYTE 1
+Cout:      .BYTE 1
+Dout:	  .BYTE 1
 
 //[Kodsegmentet]
 .CSEG
@@ -99,40 +102,54 @@ init:
 	 outputMatrix:
 	 //1
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0
-	 ldi rCOut, 1
+	 ldi rTemp2, 1
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
@@ -141,298 +158,339 @@ init:
 
 	 //2
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0
-	 ldi rCOut, 2
+	 ldi rTemp2, 2
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
-	 ldi rInter, 0	 
+	 ldi rInter, 0
 	 
 	 //3
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0
-	 ldi rCOut, 4
+	 ldi rTemp2, 4
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
-	 ldi rInter, 0	 
-	 
-	 //4
-	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0
-	 ldi rCOut, 8
-	 
-	 bst rTemp, 7
-	 bld rDOut, 6
-
-	 bst rTemp, 6
-	 bld rDOut, 7
-
-	 bst rTemp, 5
-	 bld rBOut, 0
-
-	 bst rTemp, 4
-	 bld rBOut, 1
-
-	 bst rTemp, 3
-	 bld rBOut, 2
-
-	 bst rTemp, 2
-	 bld rBOut, 3
-
-	 bst rTemp, 1
-	 bld rBOut, 4
-
-	 bst rTemp, 0
-	 bld rBOut, 5
-
-	 
-	 //subi rMatIndex, -1
-
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
-	 
-	 rcall wait 
-	 rcall dim
-	 
-	 ldi rInter, 0	 
-	 
+	 ldi rInter, 0
 	 //5
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0b00000100
-	 ldi rCOut, 0
+	 ldi rTemp2, 0
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 ldi rTemp2, 4
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
-	 ldi rInter, 0	 
-	 
+	 ldi rInter, 0
 	 //6
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0b00001000
-	 ldi rCOut, 0
+	 ldi rTemp2, 0
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 ldi rTemp2, 8
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
-	 ldi rInter, 0	 
-	 
+	 ldi rInter, 0
 	 //7
 	 ld rTemp, X+
-	 ldi rBOut, 0
-	 ldi rDOut, 0b00010000
-	 ldi rCOut, 0
+	 ldi rTemp2, 0
+	 sts Cout, rTemp2
 	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 ldi rTemp2, 16
+	 sts Dout, rTemp2
+	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
 	 ldi rInter, 0
+	 //8
+	 ld rTemp, X+
+	 ldi rTemp2, 0
+	 sts Cout, rTemp2
 	 
-	 //8	 
-	 ld rTemp, X
-	 ldi rBOut, 0
-	 ldi rDOut, 0b00100000
-	 ldi rCOut, 0
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 ldi rTemp2, 32
+	 sts Dout, rTemp2
 	 
+
 	 bst rTemp, 7
-	 bld rDOut, 6
-
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 6
-	 bld rDOut, 7
-
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
 	 bst rTemp, 5
-	 bld rBOut, 0
-
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
 	 bst rTemp, 4
-	 bld rBOut, 1
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
 
 	 bst rTemp, 3
-	 bld rBOut, 2
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
 
 	 bst rTemp, 2
-	 bld rBOut, 3
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
 
 	 bst rTemp, 1
-	 bld rBOut, 4
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
 
 	 bst rTemp, 0
-	 bld rBOut, 5
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
 
-	 
-	 //subi rMatIndex, -1
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
 
-	 out PortD, rDOut
-	 out PortB, rBOut
-	 out PortC, rCOut
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
 	 
 	 rcall wait 
 	 rcall dim
 	 
 	 ldi rInter, 0
-
 	 rcall resetMatPoint
 	 ret
 	 //interup subrutinen
