@@ -1,0 +1,53 @@
+Snabbt körexempel:
+    avrboysim -d -t /sökväg/till/main.hex
+    cd samma/mapp/som/källkoden
+    avr-gdb -tui -ex "target remote localhost:50000" /sökväg/till/main.elf
+
+    -- där main.elf är en ELF-fil med debugsymboler för samma program som main.hex
+
+
+Exempel på en gdb-session med TUI (# anger kommentarer):
+    (gdb) lay reg  # layout regs (registers) -- visa registerinnehåll
+    (gdb) break main.asm:20  # sätt breakpoint på rad 20 i main.asm
+    (gdb) cont  # continue -- fortsätt simulera tills en breakpoint nås
+    ## -> gdb kör tills den stannar på main.S:20
+    ## -> man kan nu se innehållet i register, och närliggande kod
+    (gdb) s  # step -- kör en instruktion och stanna
+    (gdb) clear main.S:20  # ta bort breakpoint på rad 20 i main.S 
+    ## (för att ta bort alla breakpoints: "del br" -- delete breakpoints)
+    (gdb) quit  # avsluta gdb
+
+Exempel på en gdb-session utan TUI:
+    cd samma/mapp/som/källkoden
+    avr-gdb /sökväg/till/main.elf
+    (gdb) target remote localhost:50000  # ansluter till simulatorn (förutsatt att den körs i debugläge på localhost port 50000)
+    (gdb) list  # visar källkod runt den nuvarande positionen i programmet
+    (gdb) x/5i $pc  # visar fem dissasemblade instruktioner från och med nuvarande programräknaren
+    (gdb) info reg  # skriver ut innehållet i register
+    (gdb) cont  # fortsätter köra simulatorn
+    ## ctrl-C
+    (gdb) <...>  # gdb stannar programmet efter ctrl-c, och kan ta emot fler kommandon
+    (gdb) quit  # avslutar gdb
+
+ -- Förklarningar --
+
+För att debugga med simulatorn måste den startas i debugläge, och avr-gdb måste sedan anslutas till sessionen. gdb måste även ladda en elf-fil med debugsymboler. gdb måste också kunna hitta källkodsfilerna för att kunna visa dem, vilket enklast uppnås genom att stå i samma mapp som dem när gdb startas.
+
+Starta simulatorn i debug-läge på ett av följande sätt:
+    * ladda en .elf eller .o, inga övriga argument krävs
+    * ange --debug (eller -d) för att tvinga debugläge även för .hex
+
+Man kan även vilja använda använda --debug-halt (eller -t) för att starta AVR-programmet i ett pausat läge, så att man kan ansluta med GDB innan det börjat köra.
+
+För att ansluta avr-gdb till AVR-programmet simulatorn kör anger man kommandot:
+    target remote localhost:50000
+    (förutsatt att simulatorn lyssnar på den porten, vilket den skriver ut när den startas)
+
+Man kan starta avr-gdb så att kommandot körs direkt genom att ange flaggan -ex, alltså:
+    avr-gdb -ex "target remote localhost:50000"
+
+Ett annat användbart kommando för gdb är "tui", vilket ger en grafisk layout (kan även anges som flagga till gdb, som -tui)
+(detta läge är inte tillgängligt på windows, eller behöver speciellt byggda versioner av avr-gdb)
+
+
+gdb kan göra många fler saker, se: internet.

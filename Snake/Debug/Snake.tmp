@@ -1,18 +1,18 @@
 <ASSEMBLER_INFO>
  <VERSION>2.2.7</VERSION>
  <DEVICE>"ATmega328P"</DEVICE>
- <WORKING_DIR>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\Debug</WORKING_DIR>
+ <WORKING_DIR>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\Debug</WORKING_DIR>
  <INCLUDE_PATH>
   <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc</DIR>
   <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
-  <FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\Debug\Snake.obj</FILE>
+  <FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\Debug\Snake.obj</FILE>
  </OBJECT_FILES>
  <HEX_FILES>
   <FILE>Snake.hex</FILE>
@@ -22,22 +22,40 @@
   <FILE>Snake.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <matrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>19</LINE></matrix>
-  <snake><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>20</LINE></snake>
-  <init><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>32</LINE></init>
-  <interup><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>439</LINE></interup>
-  <loop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>74</LINE></loop>
-  <stickXInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>443</LINE></stickXInput>
-  <stickYInput><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>471</LINE></stickYInput>
-  <outputMatrix><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>99</LINE></outputMatrix>
-  <wait><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>82</LINE></wait>
-  <dim><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>87</LINE></dim>
-  <resetMatPoint><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>93</LINE></resetMatPoint>
-  <stickXLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>448</LINE></stickXLoop>
-  <XPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>461</LINE></XPos>
-  <XNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>465</LINE></XNeg>
-  <stickYLoop><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>476</LINE></stickYLoop>
-  <YPos><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>491</LINE></YPos>
-  <YNeg><FILE>C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm</FILE><LINE>495</LINE></YNeg>
+  <matrix><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>20</LINE></matrix>
+  <snake><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>21</LINE></snake>
+  <snakeLengthIndex><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>22</LINE></snakeLengthIndex>
+  <updateCounter><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>23</LINE></updateCounter>
+  <Bout><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>24</LINE></Bout>
+  <Cout><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>25</LINE></Cout>
+  <Dout><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>26</LINE></Dout>
+  <init><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>38</LINE></init>
+  <interup><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>515</LINE></interup>
+  <clearMatrix><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>105</LINE></clearMatrix>
+  <snakeSet><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>577</LINE></snakeSet>
+  <loop><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>73</LINE></loop>
+  <snakePaintInit><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>633</LINE></snakePaintInit>
+  <snakeUpdate><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>593</LINE></snakeUpdate>
+  <outputMatrix><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>118</LINE></outputMatrix>
+  <wait><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>84</LINE></wait>
+  <dim><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>89</LINE></dim>
+  <resetMatPoint><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>95</LINE></resetMatPoint>
+  <resetSnakePoint><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>101</LINE></resetSnakePoint>
+  <stickXInput><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>519</LINE></stickXInput>
+  <stickXLoop><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>524</LINE></stickXLoop>
+  <XPos><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>537</LINE></XPos>
+  <XNeg><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>541</LINE></XNeg>
+  <stickYInput><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>547</LINE></stickYInput>
+  <stickYLoop><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>552</LINE></stickYLoop>
+  <YPos><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>567</LINE></YPos>
+  <YNeg><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>571</LINE></YNeg>
+  <return><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>590</LINE></return>
+  <snakeUpdateSwitchBP><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>606</LINE></snakeUpdateSwitchBP>
+  <wallWrapX><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>623</LINE></wallWrapX>
+  <snakePaint><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>638</LINE></snakePaint>
+  <toggleMatrixrow><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>655</LINE></toggleMatrixrow>
+  <setBitMatrix><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>664</LINE></setBitMatrix>
+  <orOperationMatrix><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>677</LINE></orOperationMatrix>
+  <logicalShiftMatrixBit><FILE>C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm</FILE><LINE>671</LINE></logicalShiftMatrixBit>
  </LABELS>
 </ASSEMBLER_INFO>

@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\RoBzZ\Documents\Skolarbete\Maskinara\Snake\snake-assembly\Snake\main.asm Thu May 23 15:58:45 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Fri May 24 22:17:02 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -698,30 +698,49 @@ EQU  INT_VECTORS_SIZE 00000034
 DEF  rTemp        r16
 DEF  rDirection   r23
 DEF  rZero        r17
-DEF  rBOut        r19
-DEF  rDOut        r20
-DEF  rCOut        r21
+DEF  rTemp2       r19
+DEF  rTemp4       r20
+DEF  rTemp3       r21
 DEF  rInter       r22
 DEF  rTempBit     r18
 DEF  rADMUXx      r24
 DEF  rADMUXy      r14
 DEF  rStickInp    r15
+DEF  rCount       r25
 EQU  NUM_COLUMNS  00000008
 EQU  MAX_LENGTH   00000019
 DSEG matrix       00000100
 DSEG snake        00000108
+DSEG snakeLengthIndex 00000122
+DSEG updateCounter 00000123
+DSEG Bout         00000124
+DSEG Cout         00000125
+DSEG Dout         00000126
 CSEG init         00000034
-CSEG interup      00000140
-CSEG loop         0000005d
-CSEG stickXInput  00000142
-CSEG stickYInput  0000015d
-CSEG outputMatrix 0000006e
-CSEG wait         00000064
-CSEG dim          00000067
-CSEG resetMatPoint 0000006b
-CSEG stickXLoop   00000147
-CSEG XPos         00000157
-CSEG XNeg         0000015a
-CSEG stickYLoop   00000162
-CSEG YPos         00000172
-CSEG YNeg         00000175
+CSEG interup      000001eb
+CSEG clearMatrix  00000060
+CSEG snakeSet     00000223
+CSEG loop         0000004e
+CSEG snakePaintInit 00000253
+CSEG snakeUpdate  00000230
+CSEG outputMatrix 00000072
+CSEG wait         00000053
+CSEG dim          00000056
+CSEG resetMatPoint 0000005a
+CSEG resetSnakePoint 0000005d
+CSEG stickXInput  000001ed
+CSEG stickXLoop   000001f2
+CSEG XPos         00000202
+CSEG XNeg         00000205
+CSEG stickYInput  00000208
+CSEG stickYLoop   0000020d
+CSEG YPos         0000021d
+CSEG YNeg         00000220
+CSEG return       0000022f
+CSEG snakeUpdateSwitchBP 0000023d
+CSEG wallWrapX    0000024d
+CSEG snakePaint   00000256
+CSEG toggleMatrixrow 00000263
+CSEG setBitMatrix 00000269
+CSEG orOperationMatrix 00000272
+CSEG logicalShiftMatrixBit 0000026e

@@ -1,0 +1,13 @@
+avrboysim is copyright (c) 2019 Tim Johansson.
+
+This license permits use of avrboysim for educational purposes at Högskolan i Skövde.
+
+The above copyright and permission notice shall be included with all copies of this software.
+
+This software is provided "as-is"; there is no warranty. The author shall not be held responsible for any damages or costs arising from use of this software.
+
+avrboysim uses SFML2 and simavr, and is built with gcc and MinGW-w64.
+You should have received their respective license descriptions along this program.
+SFML: https://www.sfml-dev.org/
+simavr: https://github.com/buserror/simavr
+mingw-w64: https://mingw-w64.org/doku.php
