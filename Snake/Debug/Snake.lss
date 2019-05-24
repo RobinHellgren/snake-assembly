@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Fri May 24 22:17:02 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Fri May 24 22:34:12 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1036,7 +1036,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  	 //sätt interupt biten till 0
 00003c e060                      	 ldi rInter, 0b00000000
                                  	 //configuration till timer enheten
-00003d e001                      	 ldi rTemp, 0b001
+00003d e003                      	 ldi rTemp, 0b011
 00003e bd05                      	 out TCCR0B, rTemp
 00003f e001                      	 ldi rTemp, 0b001
 000040 9300 006e                 	 sts TIMSK0, rTemp
@@ -1583,7 +1583,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000232 5f0f                      	 subi rTemp, -1
 000233 9300 0123                 	 sts updateCounter, rTemp
 000235 9100 0123                 	 lds rTemp, updateCounter
-000237 3b0e                      	 cpi rTemp, 190
+000237 3604                      	 cpi rTemp, 100
 000238 f3b0                      	 brlo return 	
 000239 e000                      	 ldi rTemp, 0
 00023a 9300 0123                 	 sts updateCounter, rTemp

@@ -50,7 +50,7 @@ init:
 	 //sätt interupt biten till 0
 	 ldi rInter, 0b00000000
 	 //configuration till timer enheten
-	 ldi rTemp, 0b001
+	 ldi rTemp, 0b011
 	 out TCCR0B, rTemp
 	 ldi rTemp, 0b001
 	 sts TIMSK0, rTemp
@@ -597,7 +597,7 @@ init:
 	 subi rTemp, -1
 	 sts updateCounter, rTemp
 	 lds rTemp, updateCounter
-	 cpi rTemp, 190
+	 cpi rTemp, 100
 	 brlo return 	
 	 ldi rTemp, 0
 	 sts updateCounter, rTemp
