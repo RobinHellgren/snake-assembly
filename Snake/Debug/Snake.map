@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Fri May 24 22:34:12 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Mon May 27 15:34:40 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -696,7 +696,7 @@ EQU  TWIaddr      00000030
 EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 DEF  rTemp        r16
-DEF  rDirection   r23
+DEF  rStickDirection r23
 DEF  rZero        r17
 DEF  rTemp2       r19
 DEF  rTemp4       r20
@@ -716,31 +716,41 @@ DSEG updateCounter 00000123
 DSEG Bout         00000124
 DSEG Cout         00000125
 DSEG Dout         00000126
+DSEG currentMovment 00000127
 CSEG init         00000034
-CSEG interup      000001eb
-CSEG clearMatrix  00000060
-CSEG snakeSet     00000223
-CSEG loop         0000004e
-CSEG snakePaintInit 00000253
-CSEG snakeUpdate  00000230
-CSEG outputMatrix 00000072
-CSEG wait         00000053
-CSEG dim          00000056
-CSEG resetMatPoint 0000005a
-CSEG resetSnakePoint 0000005d
-CSEG stickXInput  000001ed
-CSEG stickXLoop   000001f2
-CSEG XPos         00000202
-CSEG XNeg         00000205
-CSEG stickYInput  00000208
-CSEG stickYLoop   0000020d
-CSEG YPos         0000021d
+CSEG interup      000001ee
+CSEG clearMatrix  00000063
+CSEG snakeSet     00000222
+CSEG loop         0000004f
+CSEG stickXInput  00000205
+CSEG stickYInput  000001f0
+CSEG snakePaintInit 0000028e
+CSEG snakeUpdate  00000232
+CSEG outputMatrix 00000075
+CSEG wait         00000056
+CSEG dim          00000059
+CSEG resetMatPoint 0000005d
+CSEG resetSnakePoint 00000060
+CSEG stickYLoop   000001f5
+CSEG stickXLoop   0000020a
+CSEG YPos         0000021e
 CSEG YNeg         00000220
-CSEG return       0000022f
-CSEG snakeUpdateSwitchBP 0000023d
-CSEG wallWrapX    0000024d
-CSEG snakePaint   00000256
-CSEG toggleMatrixrow 00000263
-CSEG setBitMatrix 00000269
-CSEG orOperationMatrix 00000272
-CSEG logicalShiftMatrixBit 0000026e
+CSEG XNeg         0000021c
+CSEG XPos         0000021a
+CSEG return       00000231
+CSEG snakeUpdateSwitchBP 0000023f
+CSEG newDirectionUP 00000264
+CSEG newDirectionRight 00000269
+CSEG newDirectionDown 0000026e
+CSEG newDirectionLeft 00000273
+CSEG noNewDirection 00000253
+CSEG moveSnake    00000255
+CSEG wallWrapX9   00000278
+CSEG wallWrapX0   0000027e
+CSEG wallWrapY9   00000284
+CSEG wallWrapY0   00000289
+CSEG snakePaint   00000291
+CSEG toggleMatrixrow 0000029e
+CSEG setBitMatrix 000002a4
+CSEG orOperationMatrix 000002ad
+CSEG logicalShiftMatrixBit 000002a9

@@ -1,6 +1,6 @@
 //[En lista med registerdefinitioner]
 .DEF rTemp         = r16
-.DEF rDirection    = r23
+.DEF rStickDirection    = r23
 .DEF rZero         = r17
 .DEF rTemp2        = r19
 .DEF rTemp4        = r20
@@ -24,6 +24,7 @@ updateCounter: .BYTE 1
 Bout:	  .BYTE 1
 Cout:      .BYTE 1
 Dout:	  .BYTE 1
+currentMovment: .BYTE 1
 
 //[Kodsegmentet]
 .CSEG
@@ -62,21 +63,25 @@ init:
 	 out DDRD, rTemp
 	 out DDRB, rTemp
 	 ldi rZero, 0
-	 ldi rDirection, 0
+	 ldi rStickDirection, 0
 	 //tilldela minne till matrixen
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
 	 rcall clearMatrix
 	 //creates the snake
 	 rcall snakeSet
+	 //sets the joystick direction 2
+	 ldi rStickDirection,2
+
 	 //main progam loop
+
 	 loop:
-	 //rcall stickXInput
-	 //rcall stickYInput
+	 rcall stickXInput
+	 rcall stickYInput
 	 rcall snakePaintInit
 	 rcall snakeUpdate
 	 
-	 //sts matrix, rDirection
+	 //sts matrix, rStickDirection
 	 rcall outputMatrix
 	
 	 jmp loop
@@ -516,12 +521,12 @@ init:
 	 ldi rInter, 0b00000001
 	 reti
 
-	 stickXInput:
+	 stickYInput:
 	 sts ADMUX, rADMUXx
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
 
-	 stickXLoop:
+	 stickYLoop:
 	 lds rTemp, ADCSRA
 	 sbrc rTemp, ADSC
 	 jmp stickXLoop
@@ -529,27 +534,20 @@ init:
 	 lds rStickInp, ADCH
 	 ldi rTemp, 200
 	 cp rStickInp, rTemp
-	 brsh XPos
+	 brsh YPos
 	 ldi rTemp, 50
 	 cp rStickInp, rTemp
-	 brlo XNeg 
-	 ret
-	 XPos:
-	 ldi rTempBit, 0b00000010
-	 or rDirection, rTempBit
-	 ret
-	 XNeg:
-	 ldi rTempBit, 0b11111101
-	 and rDirection, rTempBit
+	 brlo YNeg 
 	 ret
 
+
 	 
-	 stickYInput:
+	 stickXInput:
 	 sts ADMUX, rADMUXy
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
 
-	 stickYLoop:
+	 stickXLoop:
 	 lds rTemp, ADCSRA
 	 sbrc rTemp, ADSC
 	 jmp stickYLoop
@@ -558,23 +556,34 @@ init:
 	 
 	 ldi rTemp, 200
 	 cp rStickInp, rTemp
-	 brsh YPos
+	 brsh XNeg
 	 ldi rTemp, 50
 	 cp rStickInp, rTemp
-	 brlo YNeg
+	 brlo XPos
 	  
 	 ret
-	 YPos:
-	 ldi rTempBit, 0b00000001
-	 or rDirection, rTempBit
+
+	 
+	 XPos:
+	 ldi rStickDirection , 2
 	 ret
+
+	 XNeg:
+	 ldi rStickDirection , 4
+	 ret
+
+	 YPos:
+	 ldi rStickDirection , 1
+	 ret
+
 	 YNeg:
-	 ldi rTempBit, 0b11111110
-	 and rDirection, rTempBit
+	 ldi rStickDirection , 3
 	 ret
 
 	 //Sätter startvärden för ormen
 	 snakeSet:
+	 ldi rTemp, 2
+	 sts currentMovment, rTemp
 	 ldi rTemp, 2
 	 sts snakeLengthIndex, rTemp
 	 rcall resetSnakePoint
@@ -612,19 +621,96 @@ init:
 	 lds rTemp, snakeLengthIndex
 	 cp rCount, rTemp
 	 brne snakeUpdateSwitchBP
+
+	 lds rTemp, currentMovment
+	 sub rTemp,rStickDirection
+
+	 //cpi	rTemp,-2
+	 //breq noNewDirection
+	 //cpi	rTemp,2
+	 //breq noNewDirection
+	 //cpi	rTemp,0
+	 //breq noNewDirection
+	 
+	 cpi rStickDirection,1
+	 breq newDirectionUP
+
+	 cpi rStickDirection,2
+	 breq newDirectionRight
+
+	 cpi rStickDirection,3
+	 breq newDirectionDown
+
+	 cpi rStickDirection,4
+	 breq newDirectionLeft
+
+
+	 noNewDirection:
+	 lds rTemp,currentMovment
+
+	 moveSnake:
 	 ld rTemp2,Y
-	 subi rTemp2, -16
+	 sub rTemp2, rTemp
 	 cpi rTemp2, 144
-	 BRSH wallWrapX
+	 BRSH wallWrapX9
+	 cpi rTemp2,16
+	 BRLO wallWrapX0
+	 mov rTemp3,rTemp2
+	 andi rTemp3, 0b00001111
+	 cpi rTemp3, 9
+	 BRSH wallWrapY9
+	 cpi rTemp3, 1
+	 BRLO wallWrapY0
 	 st Y,rTemp2
 	 rcall resetSnakePoint
 	 ret
 
-	 wallWrapX:
+	 newDirectionUp:
+	 sts currentMovment, rStickDirection
+	 ldi rTemp,1
+	 jmp moveSnake
+	 
+	 newDirectionRight:
+	 sts currentMovment, rStickDirection
+	 ldi rTemp,-16
+	 jmp moveSnake
+
+	 newDirectionDown:
+	 sts currentMovment, rStickDirection
+	 ldi rTemp,-1
+	 jmp moveSnake
+
+	 newDirectionLeft:
+	 sts currentMovment, rStickDirection
+	 ldi rTemp,16
+	 jmp moveSnake
+
+	 wallWrapX9:
 	 ldi rTemp3, 0b00001111
 	 and rTemp2,rTemp3
 	 subi rTemp2, -16
-	 //subi rTemp2, 38
+	 st Y,rTemp2
+	 rcall resetSnakePoint
+	 ret
+
+	 wallWrapX0:
+	 ldi rTemp3, 0b00001111
+	 and rTemp2,rTemp3
+	 subi rTemp2, -128
+	 st Y,rTemp2
+	 rcall resetSnakePoint
+	 ret
+
+	 wallWrapY9:
+	 andi rTemp2,0b11110000
+	 subi rTemp2, -1
+	 st Y,rTemp2
+	 rcall resetSnakePoint
+	 ret
+
+	 wallWrapY0:
+	 andi rTemp2,0b11110000
+	 subi rTemp2, -8
 	 st Y,rTemp2
 	 rcall resetSnakePoint
 	 ret
@@ -636,7 +722,6 @@ init:
 	 push rCount
 
 	 snakePaint:
-	 
 	 ld rTemp2, Y
 	 mov rTemp3,rTemp2
 	 ldi rTemp4,0b11110000
