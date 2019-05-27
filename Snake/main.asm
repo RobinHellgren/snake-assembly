@@ -14,7 +14,7 @@
 
 //[En lista med konstanter]
 .EQU NUM_COLUMNS   = 8
-.EQU MAX_LENGTH    = 25
+.EQU MAX_LENGTH    = 63 //ursprungligen 25
 //[Datasegmentet]
 .DSEG
 matrix:   .BYTE 8
@@ -26,6 +26,7 @@ Bout:	  .BYTE 1
 Cout:      .BYTE 1
 Dout:	  .BYTE 1
 currentMovment: .BYTE 1
+isGrowing:      .BYTE 1
 
 //[Kodsegmentet]
 .CSEG
@@ -83,6 +84,7 @@ init:
 	 //rcall paintApple
 	 rcall paintInit
 	 rcall snakeUpdate
+	 rcall appleCollision
 	 
 	 
 	 
@@ -659,7 +661,32 @@ init:
 	 return:
 	 ret
 
+	 growSnake:
+	 ldi rTemp,0
+	 sts isGrowing,rTemp
+	 ldi rCount,0
+	 lds rTemp, snakeLengthIndex 
+
+	 walkthroughSnake:
+	 subi rCount,-1
+	 subi YL,-1
+	 cp rCount,rTemp
+	 brne walkthroughSnake
+	 mov rCount,rTemp
+
+	 reverseWalkthroughSnake:
+	 subi rCount,1
+	 subi YL,1
+	 ld rTemp,Y
+	 subi YL,-1
+	 cpi rCount,0
+	 brne reverseWalkthroughSnake
+	 rcall resetSnakePoint
+
 	 snakeUpdate:
+	 lds rTemp,isGrowing
+	 cpi rTemp,1
+	 brsh growSnake
 	 //cpi rInter, 0
 	 //BREQ return
 	 lds rTemp, updateCounter
@@ -921,7 +948,7 @@ init:
 	 appleLogicalShiftMatrixBit:
 	 lsr rTemp3
 	 subi rCount,-1
-	 cp rCount,rTemp2
+	 cp rCount,rTemp
 	 brne appleLogicalShiftMatrixBit
 	 
 	 appleOrOperationMatrix:
@@ -931,7 +958,7 @@ init:
 	 ret
 
 	 spawnApple:
-	 ldi rTemp, 0b01100011
+	 ldi rTemp, 0b10000010
 	 sts apple,rTemp
 	 ret
 	 //X coordinate random
@@ -944,18 +971,18 @@ init:
 	 sbrc rTemp, ADSC
 	 jmp appleXLoop
 	 lds rTemp, ADCL
-	 /*mov rTemp2,rTemp
+	 mov rTemp2,rTemp
 	 mul rTemp,rTemp2
 	 mul rTemp,rTemp2
 	 mul rTemp,rTemp2
 	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2*/
-	 //andi rTemp,0b0111
-	 /*subi rTemp,-1
+	 mul rTemp,rTemp2
+	 andi rTemp,0b0111
+	 subi rTemp,-1
 	 lsl rTemp
      lsl rTemp
      lsl rTemp
-	 lsl rTemp*/
+	 lsl rTemp
 	 sts apple, rTemp
 	 sts matrix,rTemp
 
@@ -982,4 +1009,29 @@ init:
 	 add rTemp,rTemp2
 	 sts apple, rTemp
 	   
+	 ret
+
+
+	 appleCollision:
+	 rcall resetSnakePoint
+	 lds rTemp, apple
+	 ldi rCount, 0
+	 lds rTemp2,snakeLengthIndex
+	 findSnakeHead:
+	 subi rCount,-1
+	 subi YL,-1
+	 cp rCount,rTemp2
+	 brne findSnakeHead
+	 ld rTemp2,Y
+	 cp rTemp2,rTemp
+	 brne return2
+	 ldi rTemp,0b01101000
+	 lds rTemp3,snakeLengthIndex
+	 subi rTemp3,-1
+	 sts snakeLengthIndex,rTemp3
+	 ldi rTemp4,1
+	 sts isGrowing,rTemp4
+	 sts apple,rTemp
+	 return2:
+	 rcall resetSnakePoint
 	 ret
