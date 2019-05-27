@@ -18,6 +18,7 @@
 //[Datasegmentet]
 .DSEG
 matrix:   .BYTE 8
+apple:    .BYTE 1
 snake:    .BYTE MAX_LENGTH+1
 snakeLengthIndex: .BYTE 1
 updateCounter: .BYTE 1
@@ -72,12 +73,15 @@ init:
 	 rcall snakeSet
 	 //sets the joystick direction 2
 	 ldi rStickDirection,2
+	 //Spawn Apple
+	 rcall spawnApple
 
 	 //main progam loop
 	 loop:
 	 rcall stickXInput
 	 rcall stickYInput
-	 rcall snakePaintInit
+	 //rcall paintApple
+	 rcall paintInit
 	 rcall snakeUpdate
 	 
 	 
@@ -826,7 +830,7 @@ init:
 	 ret
 
 
-	 snakePaintInit:
+	 paintInit:
 	 rcall clearMatrix
 	 ldi rCount,0
 	 push rCount
@@ -857,7 +861,7 @@ init:
 	
 	
 	 setBitMatrix:
-	 ldi rCount,1 //ev. 1
+	 ldi rCount,1
 	 ld rTemp4,X
 	 ldi rTemp3, 0b10000000
 	 cp rCount,rTemp2
@@ -886,5 +890,96 @@ init:
 	 brne snakePaint
 	 pop rCount
 	 rcall resetSnakePoint
+
+	 //paint apple
+	 paintApple:
+	 lds rTemp, apple
+	 mov rTemp2, rTemp
+	 andi rTemp2, 0b00001111
+     andi rTemp, 0b11110000
+	 lsr rTemp
+	 lsr rTemp
+	 lsr rTemp
+	 lsr rTemp
+	 ldi rCount,0
+
+	 appleMatrixRowToggle:
+	 subi rCount,-1
+	 cp rCount,rTemp2 
+	 breq setAppleBitMatrix
+	 adiw X,1
+	 jmp appleMatrixRowToggle
+	 
+	 
+	 setAppleBitMatrix:
+	 ldi rCount,1
+	 ld rTemp4,X
+	 ldi rTemp3, 0b10000000
+	 cp rCount,rTemp
+	 breq appleOrOperationMatrix
+
+	 appleLogicalShiftMatrixBit:
+	 lsr rTemp3
+	 subi rCount,-1
+	 cp rCount,rTemp2
+	 brne appleLogicalShiftMatrixBit
+	 
+	 appleOrOperationMatrix:
+	 or rTemp4,rTemp3
+	 ST X,rTemp4
+	 rcall resetMatPoint
 	 ret
 
+	 spawnApple:
+	 ldi rTemp, 0b01100011
+	 sts apple,rTemp
+	 ret
+	 //X coordinate random
+	 sts ADMUX, rADMUXx
+	 ldi rTemp, 0b11000111
+	 sts ADCSRA, rTemp
+
+	 appleXLoop:
+	 lds rTemp, ADCSRA
+	 sbrc rTemp, ADSC
+	 jmp appleXLoop
+	 lds rTemp, ADCL
+	 /*mov rTemp2,rTemp
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2*/
+	 //andi rTemp,0b0111
+	 /*subi rTemp,-1
+	 lsl rTemp
+     lsl rTemp
+     lsl rTemp
+	 lsl rTemp*/
+	 sts apple, rTemp
+	 sts matrix,rTemp
+
+	 //Y coordinate random
+	 sts ADMUX, rADMUXy
+	 ldi rTemp, 0b11000111
+	 sts ADCSRA, rTemp
+
+	 appleYLoop:
+	 lds rTemp, ADCSRA
+	 sbrc rTemp, ADSC
+	 jmp appleYLoop
+	 lds rTemp, ADCL
+	 lds rTemp, ADCL
+	 mov rTemp2,rTemp
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 mul rTemp,rTemp2
+	 lds rTemp2, apple
+	 andi rTemp,0b00000111
+	 subi rTemp,-1
+	 add rTemp,rTemp2
+	 sts apple, rTemp
+	   
+	 ret
