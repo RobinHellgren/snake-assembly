@@ -74,12 +74,13 @@ init:
 	 ldi rStickDirection,2
 
 	 //main progam loop
-
 	 loop:
 	 rcall stickXInput
 	 rcall stickYInput
 	 rcall snakePaintInit
 	 rcall snakeUpdate
+	 
+	 
 	 
 	 //sts matrix, rStickDirection
 	 rcall outputMatrix
@@ -123,7 +124,7 @@ init:
 	 outputMatrix:
 	 //1
 	 ld rTemp, X+
-	 ldi rTemp2, 1
+	 ldi rTemp2, 0b1
 	 sts Cout, rTemp2
 	 
 	 ldi rTemp2, 0
@@ -179,7 +180,7 @@ init:
 
 	 //2
 	 ld rTemp, X+
-	 ldi rTemp2, 2
+	 ldi rTemp2, 0b10
 	 sts Cout, rTemp2
 	 
 	 ldi rTemp2, 0
@@ -235,7 +236,62 @@ init:
 	 
 	 //3
 	 ld rTemp, X+
-	 ldi rTemp2, 4
+	 ldi rTemp2, 0b100
+	 sts Cout, rTemp2
+	 
+	 ldi rTemp2, 0
+	 sts Bout, rTemp2
+	 sts Dout, rTemp2
+	 
+
+	 bst rTemp, 7
+	 bld rTemp2, 6
+	 sts Dout, rTemp2
+	 
+	 bst rTemp, 6
+	 bld rTemp2, 7
+	 sts Dout, rTemp2
+	 
+	 bst rTemp, 5
+	 bld rTemp2, 0
+	 sts Bout, rTemp2
+	 
+	 bst rTemp, 4
+	 bld rTemp2, 1
+	 sts Bout, rTemp2
+
+	 bst rTemp, 3
+	 bld rTemp2, 2
+	 sts Bout, rTemp2
+
+	 bst rTemp, 2
+	 bld rTemp2, 3
+	 sts Bout, rTemp2
+
+	 bst rTemp, 1
+	 bld rTemp2, 4
+	 sts Bout, rTemp2
+
+	 bst rTemp, 0
+	 bld rTemp2, 5
+	 sts Bout, rTemp2
+
+	 lds rTemp2, Dout
+	 out PortD, rTemp2
+
+	 lds rTemp2, Bout
+	 out PortB, rTemp2
+
+	 lds rTemp2, Cout
+	 out PortC, rTemp2
+	 
+	 rcall wait 
+	 rcall dim
+	 
+	 ldi rInter, 0
+	 //4
+	 ld rTemp, X+
+	 ldi rTemp2, 0b0001000
 	 sts Cout, rTemp2
 	 
 	 ldi rTemp2, 0
@@ -623,14 +679,40 @@ init:
 	 brne snakeUpdateSwitchBP
 
 	 lds rTemp, currentMovment
-	 sub rTemp,rStickDirection
+	 //sub rTemp,rStickDirection
+	 cpi	rTemp,1
+	 breq currentDirectionUp
 
-	 //cpi	rTemp,-2
-	 //breq noNewDirection
-	 //cpi	rTemp,2
-	 //breq noNewDirection
-	 //cpi	rTemp,0
-	 //breq noNewDirection
+	 cpi	rTemp,2
+	 breq currentDirectionRight
+
+	 cpi	rTemp,3
+	 breq currentDirectionDown
+
+	 cpi	rTemp,4
+	 breq currentDirectionLeft
+	 
+	 currentDirectionUp:
+	 cpi rStickDirection,3
+	 breq noNewDirection
+	 jmp newDirection
+
+	 currentDirectionRight:
+	 cpi rStickDirection,4
+	 breq noNewDirection
+	 jmp newDirection
+
+	 currentDirectionDown:
+	 cpi rStickDirection,1
+	 breq noNewDirection
+	 jmp newDirection
+
+	 currentDirectionLeft:
+	 cpi rStickDirection,2
+	 breq noNewDirection
+	 jmp newDirection
+
+	 newDirection:
 	 
 	 cpi rStickDirection,1
 	 breq newDirectionUP
@@ -646,7 +728,35 @@ init:
 
 
 	 noNewDirection:
-	 lds rTemp,currentMovment
+	 cpi rTemp,1
+	 breq noNewDirectionUp
+
+	 cpi rTemp,2
+	 breq noNewDirectionRight
+
+	 cpi rTemp,3
+	 breq noNewDirectionDown
+
+	 cpi rTemp,4
+	 breq noNewDirectionLeft
+
+	 noNewDirectionUp:
+
+	 ldi rTemp,1
+	 jmp moveSnake
+
+	 noNewDirectionRight:
+	 ldi rTemp,-16
+	 jmp moveSnake
+
+	 noNewDirectionDown:
+	 ldi rTemp,-1
+	 jmp moveSnake
+
+	 noNewDirectionLeft:
+	 ldi rTemp,16
+	 jmp moveSnake
+
 
 	 moveSnake:
 	 ld rTemp2,Y
