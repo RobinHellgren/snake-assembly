@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Mon May 27 22:36:44 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Tue May 28 21:27:39 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1061,16 +1061,15 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  	 //sets the joystick direction 2
 00004e e072                      	 ldi rStickDirection,2
                                  	 //Spawn Apple
-00004f d2ff                      	 rcall spawnApple
+00004f d309                      	 rcall spawnApple
                                  
                                  	 //main progam loop
                                  	 loop:
 000050 d1eb                      	 rcall stickXInput
 000051 d1d5                      	 rcall stickYInput
-                                 	 //rcall paintApple
-000052 d2b1                      	 rcall paintInit
-000053 d227                      	 rcall snakeUpdate
-000054 d336                      	 rcall appleCollision
+000052 d2bb                      	 rcall paintInit
+000053 d231                      	 rcall snakeUpdateCheck
+000054 d340                      	 rcall appleCollision
                                  	 
                                  	 
                                  	 
@@ -1630,396 +1629,399 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  
                                  	 //Sätter startvärden för ormen
                                  	 snakeSet:
-000259 e002                      	 ldi rTemp, 2
-00025a 9300 014e                 	 sts currentMovment, rTemp
+000259 e000                      	 ldi rTemp,0
+00025a 9300 014f                 	 sts isGrowing,rTemp
 00025c e002                      	 ldi rTemp, 2
-00025d 9300 0149                 	 sts snakeLengthIndex, rTemp
-00025f de02                      	 rcall resetSnakePoint
-000260 e102                      	 ldi rTemp, 0b00010010
-000261 9309                      	 ST Y+, rTemp
-000262 e202                      	 ldi rTemp,0b00100010
-000263 9309                      	 st Y+, rTemp
-000264 e302                      	 ldi rTemp,0b00110010
-000265 9309                      	 st Y+, rTemp
-000266 ddfb                      	 rcall resetSnakePoint
-000267 9508                      	 ret
+00025d 9300 014e                 	 sts currentMovment, rTemp
+00025f e002                      	 ldi rTemp, 2
+000260 9300 0149                 	 sts snakeLengthIndex, rTemp
+000262 ddff                      	 rcall resetSnakePoint
+000263 e102                      	 ldi rTemp, 0b00010010
+000264 9309                      	 ST Y+, rTemp
+000265 e202                      	 ldi rTemp,0b00100010
+000266 9309                      	 st Y+, rTemp
+000267 e302                      	 ldi rTemp,0b00110010
+000268 9309                      	 st Y+, rTemp
+000269 ddf8                      	 rcall resetSnakePoint
+00026a 9508                      	 ret
                                  
                                  	 return:
-000268 9508                      	 ret
+00026b 9508                      	 ret
                                  
                                  	 growSnake:
-000269 e000                      	 ldi rTemp,0
-00026a 9300 014f                 	 sts isGrowing,rTemp
 00026c e090                      	 ldi rCount,0
-00026d 9100 0149                 	 lds rTemp, snakeLengthIndex 
+00026d 9390 014f                 	 sts isGrowing,rCount
+00026f 9100 0149                 	 lds rTemp, snakeLengthIndex
+000271 5f0f                      	 subi rTemp,-1
+000272 9300 0149                 	 sts snakeLengthIndex,rTemp
                                  
                                  	 walkthroughSnake:
-00026f 5f9f                      	 subi rCount,-1
-000270 5fcf                      	 subi YL,-1
-000271 1790                      	 cp rCount,rTemp
-000272 f7e1                      	 brne walkthroughSnake
-000273 2f90                      	 mov rCount,rTemp
+000274 5f9f                      	 subi rCount,-1
+000275 5fcf                      	 subi YL,-1
+000276 1790                      	 cp rCount,rTemp
+000277 f7e1                      	 brne walkthroughSnake
                                  
                                  	 reverseWalkthroughSnake:
-000274 5091                      	 subi rCount,1
-000275 50c1                      	 subi YL,1
-000276 8108                      	 ld rTemp,Y
-000277 5fcf                      	 subi YL,-1
-000278 3090                      	 cpi rCount,0
-000279 f7d1                      	 brne reverseWalkthroughSnake
-00027a dde7                      	 rcall resetSnakePoint
+000278 5091                      	 subi rCount,1
+000279 50c1                      	 subi YL,1
+00027a 8108                      	 ld rTemp,Y
+00027b 5fcf                      	 subi YL,-1
+00027c 5f9f                      	 subi rCount,-1
+00027d 8308                      	 st Y, rTemp
+00027e 5091                      	 subi rCount,1
+00027f 50c1                      	 subi YL,1
+000280 3090                      	 cpi rCount,0
+000281 f7b1                      	 brne reverseWalkthroughSnake
+000282 dddf                      	 rcall resetSnakePoint
+000283 940c 028e                 	 jmp snakeUpdate
                                  
+                                 	 snakeUpdateCheck:
+000285 9100 014a                 	 lds rTemp, updateCounter
+000287 5f0f                      	 subi rTemp, -1
+000288 9300 014a                 	 sts updateCounter, rTemp
+00028a 9100 014a                 	 lds rTemp, updateCounter
+00028c 3604                      	 cpi rTemp, 100
+00028d f2e8                      	 brlo return
                                  	 snakeUpdate:
-00027b 9100 014f                 	 lds rTemp,isGrowing
-00027d 3001                      	 cpi rTemp,1
-00027e f750                      	 brsh growSnake
-                                 	 //cpi rInter, 0
-                                 	 //BREQ return
-00027f 9100 014a                 	 lds rTemp, updateCounter
-000281 5f0f                      	 subi rTemp, -1
-000282 9300 014a                 	 sts updateCounter, rTemp
-000284 9100 014a                 	 lds rTemp, updateCounter
-000286 3604                      	 cpi rTemp, 100
-000287 f300                      	 brlo return 	
-000288 e000                      	 ldi rTemp, 0
-000289 9300 014a                 	 sts updateCounter, rTemp
-00028b e090                      	 ldi rCount,0
+00028e 9100 014f                 	 lds rTemp,isGrowing
+000290 3000                      	 cpi rTemp,0
+000291 f6d1                      	 brne growSnake 	
+000292 e000                      	 ldi rTemp, 0
+000293 9300 014a                 	 sts updateCounter, rTemp
+000295 e090                      	 ldi rCount,0
                                  
                                  	 snakeUpdateSwitchBP:
-00028c 5f9f                      	 subi rCount,-1
-00028d 5fcf                      	 subi YL,-1
-00028e 8138                      	 ld rTemp2,Y
-00028f 50c1                      	 subi YL,1
-000290 9339                      	 st Y+,rTemp2
-000291 9100 0149                 	 lds rTemp, snakeLengthIndex
-000293 1790                      	 cp rCount, rTemp
-000294 f7b9                      	 brne snakeUpdateSwitchBP
+000296 5f9f                      	 subi rCount,-1
+000297 5fcf                      	 subi YL,-1
+000298 8138                      	 ld rTemp2,Y
+000299 50c1                      	 subi YL,1
+00029a 9339                      	 st Y+,rTemp2
+00029b 9100 0149                 	 lds rTemp, snakeLengthIndex
+00029d 1790                      	 cp rCount, rTemp
+00029e f7b9                      	 brne snakeUpdateSwitchBP
                                  
-000295 9100 014e                 	 lds rTemp, currentMovment
+00029f 9100 014e                 	 lds rTemp, currentMovment
                                  	 //sub rTemp,rStickDirection
-000297 3001                      	 cpi	rTemp,1
-000298 f031                      	 breq currentDirectionUp
+0002a1 3001                      	 cpi	rTemp,1
+0002a2 f031                      	 breq currentDirectionUp
                                  
-000299 3002                      	 cpi	rTemp,2
-00029a f041                      	 breq currentDirectionRight
+0002a3 3002                      	 cpi	rTemp,2
+0002a4 f041                      	 breq currentDirectionRight
                                  
-00029b 3003                      	 cpi	rTemp,3
-00029c f051                      	 breq currentDirectionDown
+0002a5 3003                      	 cpi	rTemp,3
+0002a6 f051                      	 breq currentDirectionDown
                                  
-00029d 3004                      	 cpi	rTemp,4
-00029e f061                      	 breq currentDirectionLeft
+0002a7 3004                      	 cpi	rTemp,4
+0002a8 f061                      	 breq currentDirectionLeft
                                  	 
                                  	 currentDirectionUp:
-00029f 3073                      	 cpi rStickDirection,3
-0002a0 f0b1                      	 breq noNewDirection
-0002a1 940c 02af                 	 jmp newDirection
+0002a9 3073                      	 cpi rStickDirection,3
+0002aa f0b1                      	 breq noNewDirection
+0002ab 940c 02b9                 	 jmp newDirection
                                  
                                  	 currentDirectionRight:
-0002a3 3074                      	 cpi rStickDirection,4
-0002a4 f091                      	 breq noNewDirection
-0002a5 940c 02af                 	 jmp newDirection
+0002ad 3074                      	 cpi rStickDirection,4
+0002ae f091                      	 breq noNewDirection
+0002af 940c 02b9                 	 jmp newDirection
                                  
                                  	 currentDirectionDown:
-0002a7 3071                      	 cpi rStickDirection,1
-0002a8 f071                      	 breq noNewDirection
-0002a9 940c 02af                 	 jmp newDirection
+0002b1 3071                      	 cpi rStickDirection,1
+0002b2 f071                      	 breq noNewDirection
+0002b3 940c 02b9                 	 jmp newDirection
                                  
                                  	 currentDirectionLeft:
-0002ab 3072                      	 cpi rStickDirection,2
-0002ac f051                      	 breq noNewDirection
-0002ad 940c 02af                 	 jmp newDirection
+0002b5 3072                      	 cpi rStickDirection,2
+0002b6 f051                      	 breq noNewDirection
+0002b7 940c 02b9                 	 jmp newDirection
                                  
                                  	 newDirection:
                                  	 
-0002af 3071                      	 cpi rStickDirection,1
-0002b0 f149                      	 breq newDirectionUP
+0002b9 3071                      	 cpi rStickDirection,1
+0002ba f149                      	 breq newDirectionUP
                                  
-0002b1 3072                      	 cpi rStickDirection,2
-0002b2 f161                      	 breq newDirectionRight
+0002bb 3072                      	 cpi rStickDirection,2
+0002bc f161                      	 breq newDirectionRight
                                  
-0002b3 3073                      	 cpi rStickDirection,3
-0002b4 f179                      	 breq newDirectionDown
+0002bd 3073                      	 cpi rStickDirection,3
+0002be f179                      	 breq newDirectionDown
                                  
-0002b5 3074                      	 cpi rStickDirection,4
-0002b6 f191                      	 breq newDirectionLeft
+0002bf 3074                      	 cpi rStickDirection,4
+0002c0 f191                      	 breq newDirectionLeft
                                  
                                  
                                  	 noNewDirection:
-0002b7 3001                      	 cpi rTemp,1
-0002b8 f031                      	 breq noNewDirectionUp
+0002c1 3001                      	 cpi rTemp,1
+0002c2 f031                      	 breq noNewDirectionUp
                                  
-0002b9 3002                      	 cpi rTemp,2
-0002ba f039                      	 breq noNewDirectionRight
+0002c3 3002                      	 cpi rTemp,2
+0002c4 f039                      	 breq noNewDirectionRight
                                  
-0002bb 3003                      	 cpi rTemp,3
-0002bc f041                      	 breq noNewDirectionDown
+0002c5 3003                      	 cpi rTemp,3
+0002c6 f041                      	 breq noNewDirectionDown
                                  
-0002bd 3004                      	 cpi rTemp,4
-0002be f049                      	 breq noNewDirectionLeft
+0002c7 3004                      	 cpi rTemp,4
+0002c8 f049                      	 breq noNewDirectionLeft
                                  
                                  	 noNewDirectionUp:
                                  
-0002bf e001                      	 ldi rTemp,1
-0002c0 940c 02cb                 	 jmp moveSnake
+0002c9 e001                      	 ldi rTemp,1
+0002ca 940c 02d5                 	 jmp moveSnake
                                  
                                  	 noNewDirectionRight:
-0002c2 ef00                      	 ldi rTemp,-16
-0002c3 940c 02cb                 	 jmp moveSnake
+0002cc ef00                      	 ldi rTemp,-16
+0002cd 940c 02d5                 	 jmp moveSnake
                                  
                                  	 noNewDirectionDown:
-0002c5 ef0f                      	 ldi rTemp,-1
-0002c6 940c 02cb                 	 jmp moveSnake
+0002cf ef0f                      	 ldi rTemp,-1
+0002d0 940c 02d5                 	 jmp moveSnake
                                  
                                  	 noNewDirectionLeft:
-0002c8 e100                      	 ldi rTemp,16
-0002c9 940c 02cb                 	 jmp moveSnake
+0002d2 e100                      	 ldi rTemp,16
+0002d3 940c 02d5                 	 jmp moveSnake
                                  
                                  
                                  	 moveSnake:
-0002cb 8138                      	 ld rTemp2,Y
-0002cc 1b30                      	 sub rTemp2, rTemp
-0002cd 3930                      	 cpi rTemp2, 144
-0002ce f4f8                      	 BRSH wallWrapX9
-0002cf 3130                      	 cpi rTemp2,16
-0002d0 f118                      	 BRLO wallWrapX0
-0002d1 2f53                      	 mov rTemp3,rTemp2
-0002d2 705f                      	 andi rTemp3, 0b00001111
-0002d3 3059                      	 cpi rTemp3, 9
-0002d4 f528                      	 BRSH wallWrapY9
-0002d5 3051                      	 cpi rTemp3, 1
-0002d6 f140                      	 BRLO wallWrapY0
-0002d7 8338                      	 st Y,rTemp2
-0002d8 dd89                      	 rcall resetSnakePoint
-0002d9 9508                      	 ret
+0002d5 8138                      	 ld rTemp2,Y
+0002d6 1b30                      	 sub rTemp2, rTemp
+0002d7 3930                      	 cpi rTemp2, 144
+0002d8 f4f8                      	 BRSH wallWrapX9
+0002d9 3130                      	 cpi rTemp2,16
+0002da f118                      	 BRLO wallWrapX0
+0002db 2f53                      	 mov rTemp3,rTemp2
+0002dc 705f                      	 andi rTemp3, 0b00001111
+0002dd 3059                      	 cpi rTemp3, 9
+0002de f528                      	 BRSH wallWrapY9
+0002df 3051                      	 cpi rTemp3, 1
+0002e0 f140                      	 BRLO wallWrapY0
+0002e1 8338                      	 st Y,rTemp2
+0002e2 dd7f                      	 rcall resetSnakePoint
+0002e3 9508                      	 ret
                                  
                                  	 newDirectionUp:
-0002da 9370 014e                 	 sts currentMovment, rStickDirection
-0002dc e001                      	 ldi rTemp,1
-0002dd 940c 02cb                 	 jmp moveSnake
+0002e4 9370 014e                 	 sts currentMovment, rStickDirection
+0002e6 e001                      	 ldi rTemp,1
+0002e7 940c 02d5                 	 jmp moveSnake
                                  	 
                                  	 newDirectionRight:
-0002df 9370 014e                 	 sts currentMovment, rStickDirection
-0002e1 ef00                      	 ldi rTemp,-16
-0002e2 940c 02cb                 	 jmp moveSnake
+0002e9 9370 014e                 	 sts currentMovment, rStickDirection
+0002eb ef00                      	 ldi rTemp,-16
+0002ec 940c 02d5                 	 jmp moveSnake
                                  
                                  	 newDirectionDown:
-0002e4 9370 014e                 	 sts currentMovment, rStickDirection
-0002e6 ef0f                      	 ldi rTemp,-1
-0002e7 940c 02cb                 	 jmp moveSnake
+0002ee 9370 014e                 	 sts currentMovment, rStickDirection
+0002f0 ef0f                      	 ldi rTemp,-1
+0002f1 940c 02d5                 	 jmp moveSnake
                                  
                                  	 newDirectionLeft:
-0002e9 9370 014e                 	 sts currentMovment, rStickDirection
-0002eb e100                      	 ldi rTemp,16
-0002ec 940c 02cb                 	 jmp moveSnake
+0002f3 9370 014e                 	 sts currentMovment, rStickDirection
+0002f5 e100                      	 ldi rTemp,16
+0002f6 940c 02d5                 	 jmp moveSnake
                                  
                                  	 wallWrapX9:
-0002ee e05f                      	 ldi rTemp3, 0b00001111
-0002ef 2335                      	 and rTemp2,rTemp3
-0002f0 5f30                      	 subi rTemp2, -16
-0002f1 8338                      	 st Y,rTemp2
-0002f2 dd6f                      	 rcall resetSnakePoint
-0002f3 9508                      	 ret
+0002f8 e05f                      	 ldi rTemp3, 0b00001111
+0002f9 2335                      	 and rTemp2,rTemp3
+0002fa 5f30                      	 subi rTemp2, -16
+0002fb 8338                      	 st Y,rTemp2
+0002fc dd65                      	 rcall resetSnakePoint
+0002fd 9508                      	 ret
                                  
                                  	 wallWrapX0:
-0002f4 e05f                      	 ldi rTemp3, 0b00001111
-0002f5 2335                      	 and rTemp2,rTemp3
-0002f6 5830                      	 subi rTemp2, -128
-0002f7 8338                      	 st Y,rTemp2
-0002f8 dd69                      	 rcall resetSnakePoint
-0002f9 9508                      	 ret
-                                 
-                                 	 wallWrapY9:
-0002fa 7f30                      	 andi rTemp2,0b11110000
-0002fb 5f3f                      	 subi rTemp2, -1
-0002fc 8338                      	 st Y,rTemp2
-0002fd dd64                      	 rcall resetSnakePoint
-0002fe 9508                      	 ret
-                                 
-                                 	 wallWrapY0:
-0002ff 7f30                      	 andi rTemp2,0b11110000
-000300 5f38                      	 subi rTemp2, -8
+0002fe e05f                      	 ldi rTemp3, 0b00001111
+0002ff 2335                      	 and rTemp2,rTemp3
+000300 5830                      	 subi rTemp2, -128
 000301 8338                      	 st Y,rTemp2
 000302 dd5f                      	 rcall resetSnakePoint
 000303 9508                      	 ret
                                  
+                                 	 wallWrapY9:
+000304 7f30                      	 andi rTemp2,0b11110000
+000305 5f3f                      	 subi rTemp2, -1
+000306 8338                      	 st Y,rTemp2
+000307 dd5a                      	 rcall resetSnakePoint
+000308 9508                      	 ret
+                                 
+                                 	 wallWrapY0:
+000309 7f30                      	 andi rTemp2,0b11110000
+00030a 5f38                      	 subi rTemp2, -8
+00030b 8338                      	 st Y,rTemp2
+00030c dd55                      	 rcall resetSnakePoint
+00030d 9508                      	 ret
+                                 
                                  
                                  	 paintInit:
-000304 dd60                      	 rcall clearMatrix
-000305 e090                      	 ldi rCount,0
-000306 939f                      	 push rCount
+00030e dd56                      	 rcall clearMatrix
+00030f e090                      	 ldi rCount,0
+000310 939f                      	 push rCount
                                  
                                  	 snakePaint:
-000307 8138                      	 ld rTemp2, Y
-000308 2f53                      	 mov rTemp3,rTemp2
-000309 ef40                      	 ldi rTemp4,0b11110000
-00030a 2334                      	 and rTemp2,rTemp4
-00030b 9536                      	 LSR rTemp2
-00030c 9536                      	 LSR rTemp2
-00030d 9536                      	 LSR rTemp2
-00030e 9536                      	 LSR rTemp2
-00030f e04f                      	 ldi rTemp4,0b00001111
-000310 2354                      	 and rTemp3,rTemp4
+000311 8138                      	 ld rTemp2, Y
+000312 2f53                      	 mov rTemp3,rTemp2
+000313 ef40                      	 ldi rTemp4,0b11110000
+000314 2334                      	 and rTemp2,rTemp4
+000315 9536                      	 LSR rTemp2
+000316 9536                      	 LSR rTemp2
+000317 9536                      	 LSR rTemp2
+000318 9536                      	 LSR rTemp2
+000319 e04f                      	 ldi rTemp4,0b00001111
+00031a 2354                      	 and rTemp3,rTemp4
                                  	 
-000311 e009                      	 ldi rTemp,9
-000312 e091                      	 ldi rCount,1
-000313 1b05                      	 sub rTemp, rTemp3
+00031b e009                      	 ldi rTemp,9
+00031c e091                      	 ldi rCount,1
+00031d 1b05                      	 sub rTemp, rTemp3
                                  	 
                                  	 toggleMatrixrow:
-000314 1795                      	 cp rCount,rTemp3 
-000315 f021                      	 breq setBitMatrix
-000316 9611                      	 adiw X,1
-000317 5f9f                      	 subi rCount,-1
-000318 1795                      	 cp rCount,rTemp3
-000319 f7d1                      	 brne toggleMatrixrow
+00031e 1795                      	 cp rCount,rTemp3 
+00031f f021                      	 breq setBitMatrix
+000320 9611                      	 adiw X,1
+000321 5f9f                      	 subi rCount,-1
+000322 1795                      	 cp rCount,rTemp3
+000323 f7d1                      	 brne toggleMatrixrow
                                  	
                                  	
                                  	 setBitMatrix:
-00031a e091                      	 ldi rCount,1
-00031b 914c                      	 ld rTemp4,X
-00031c e850                      	 ldi rTemp3, 0b10000000
-00031d 1793                      	 cp rCount,rTemp2
-00031e f021                      	 breq orOperationMatrix
+000324 e091                      	 ldi rCount,1
+000325 914c                      	 ld rTemp4,X
+000326 e850                      	 ldi rTemp3, 0b10000000
+000327 1793                      	 cp rCount,rTemp2
+000328 f021                      	 breq orOperationMatrix
                                  
                                  	 logicalShiftMatrixBit:
-00031f 9556                      	 lsr rTemp3
-000320 5f9f                      	 subi rCount,-1
-000321 1793                      	 cp rCount,rTemp2
-000322 f7e1                      	 brne logicalShiftMatrixBit
+000329 9556                      	 lsr rTemp3
+00032a 5f9f                      	 subi rCount,-1
+00032b 1793                      	 cp rCount,rTemp2
+00032c f7e1                      	 brne logicalShiftMatrixBit
                                  	 
                                  	 orOperationMatrix:
-000323 2b45                      	 or rTemp4,rTemp3
-000324 934c                      	 ST X,rTemp4
-000325 dd39                      	 rcall resetMatPoint
+00032d 2b45                      	 or rTemp4,rTemp3
+00032e 934c                      	 ST X,rTemp4
+00032f dd2f                      	 rcall resetMatPoint
                                  	 
                                  
-000326 9621                      	 adiw Y,1
-000327 5f9f                      	 subi rCount,-1
-000328 9100 0149                 	 lds rTemp,snakeLengthIndex
-00032a 5f0f                      	 subi rTemp,-1
-00032b 919f                      	 pop rCount
-00032c 5f9f                      	 subi rCount,-1
-00032d 1790                      	 cp rCount,rTemp
-00032e 939f                      	 push rCount
-00032f f6b9                      	 brne snakePaint
-000330 919f                      	 pop rCount
-000331 dd30                      	 rcall resetSnakePoint
+000330 9621                      	 adiw Y,1
+000331 5f9f                      	 subi rCount,-1
+000332 9100 0149                 	 lds rTemp,snakeLengthIndex
+000334 5f0f                      	 subi rTemp,-1
+000335 919f                      	 pop rCount
+000336 5f9f                      	 subi rCount,-1
+000337 1790                      	 cp rCount,rTemp
+000338 939f                      	 push rCount
+000339 f6b9                      	 brne snakePaint
+00033a 919f                      	 pop rCount
+00033b dd26                      	 rcall resetSnakePoint
                                  
                                  	 //paint apple
                                  	 paintApple:
-000332 9100 0108                 	 lds rTemp, apple
-000334 2f30                      	 mov rTemp2, rTemp
-000335 703f                      	 andi rTemp2, 0b00001111
-000336 7f00                           andi rTemp, 0b11110000
-000337 9506                      	 lsr rTemp
-000338 9506                      	 lsr rTemp
-000339 9506                      	 lsr rTemp
-00033a 9506                      	 lsr rTemp
-00033b e090                      	 ldi rCount,0
+00033c 9100 0108                 	 lds rTemp, apple
+00033e 2f30                      	 mov rTemp2, rTemp
+00033f 703f                      	 andi rTemp2, 0b00001111
+000340 7f00                           andi rTemp, 0b11110000
+000341 9506                      	 lsr rTemp
+000342 9506                      	 lsr rTemp
+000343 9506                      	 lsr rTemp
+000344 9506                      	 lsr rTemp
+000345 e090                      	 ldi rCount,0
                                  
                                  	 appleMatrixRowToggle:
-00033c 5f9f                      	 subi rCount,-1
-00033d 1793                      	 cp rCount,rTemp2 
-00033e f019                      	 breq setAppleBitMatrix
-00033f 9611                      	 adiw X,1
-000340 940c 033c                 	 jmp appleMatrixRowToggle
+000346 5f9f                      	 subi rCount,-1
+000347 1793                      	 cp rCount,rTemp2 
+000348 f019                      	 breq setAppleBitMatrix
+000349 9611                      	 adiw X,1
+00034a 940c 0346                 	 jmp appleMatrixRowToggle
                                  	 
                                  	 
                                  	 setAppleBitMatrix:
-000342 e091                      	 ldi rCount,1
-000343 914c                      	 ld rTemp4,X
-000344 e850                      	 ldi rTemp3, 0b10000000
-000345 1790                      	 cp rCount,rTemp
-000346 f021                      	 breq appleOrOperationMatrix
+00034c e091                      	 ldi rCount,1
+00034d 914c                      	 ld rTemp4,X
+00034e e850                      	 ldi rTemp3, 0b10000000
+00034f 1790                      	 cp rCount,rTemp
+000350 f021                      	 breq appleOrOperationMatrix
                                  
                                  	 appleLogicalShiftMatrixBit:
-000347 9556                      	 lsr rTemp3
-000348 5f9f                      	 subi rCount,-1
-000349 1790                      	 cp rCount,rTemp
-00034a f7e1                      	 brne appleLogicalShiftMatrixBit
+000351 9556                      	 lsr rTemp3
+000352 5f9f                      	 subi rCount,-1
+000353 1790                      	 cp rCount,rTemp
+000354 f7e1                      	 brne appleLogicalShiftMatrixBit
                                  	 
                                  	 appleOrOperationMatrix:
-00034b 2b45                      	 or rTemp4,rTemp3
-00034c 934c                      	 ST X,rTemp4
-00034d dd11                      	 rcall resetMatPoint
-00034e 9508                      	 ret
+000355 2b45                      	 or rTemp4,rTemp3
+000356 934c                      	 ST X,rTemp4
+000357 dd07                      	 rcall resetMatPoint
+000358 9508                      	 ret
                                  
                                  	 spawnApple:
-00034f e802                      	 ldi rTemp, 0b10000010
-000350 9300 0108                 	 sts apple,rTemp
-000352 9508                      	 ret
+000359 e802                      	 ldi rTemp, 0b10000010
+00035a 9300 0108                 	 sts apple,rTemp
+00035c 9508                      	 ret
                                  	 //X coordinate random
-000353 9380 007c                 	 sts ADMUX, rADMUXx
-000355 ec07                      	 ldi rTemp, 0b11000111
-000356 9300 007a                 	 sts ADCSRA, rTemp
+00035d 9380 007c                 	 sts ADMUX, rADMUXx
+00035f ec07                      	 ldi rTemp, 0b11000111
+000360 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 appleXLoop:
-000358 9100 007a                 	 lds rTemp, ADCSRA
-00035a fd06                      	 sbrc rTemp, ADSC
-00035b 940c 0358                 	 jmp appleXLoop
-00035d 9100 0078                 	 lds rTemp, ADCL
-00035f 2f30                      	 mov rTemp2,rTemp
-000360 9f03                      	 mul rTemp,rTemp2
-000361 9f03                      	 mul rTemp,rTemp2
-000362 9f03                      	 mul rTemp,rTemp2
-000363 9f03                      	 mul rTemp,rTemp2
-000364 9f03                      	 mul rTemp,rTemp2
-000365 7007                      	 andi rTemp,0b0111
-000366 5f0f                      	 subi rTemp,-1
-000367 0f00                      	 lsl rTemp
-000368 0f00                           lsl rTemp
-000369 0f00                           lsl rTemp
-00036a 0f00                      	 lsl rTemp
-00036b 9300 0108                 	 sts apple, rTemp
-00036d 9300 0100                 	 sts matrix,rTemp
+000362 9100 007a                 	 lds rTemp, ADCSRA
+000364 fd06                      	 sbrc rTemp, ADSC
+000365 940c 0362                 	 jmp appleXLoop
+000367 9100 0078                 	 lds rTemp, ADCL
+000369 2f30                      	 mov rTemp2,rTemp
+00036a 9f03                      	 mul rTemp,rTemp2
+00036b 9f03                      	 mul rTemp,rTemp2
+00036c 9f03                      	 mul rTemp,rTemp2
+00036d 9f03                      	 mul rTemp,rTemp2
+00036e 9f03                      	 mul rTemp,rTemp2
+00036f 7007                      	 andi rTemp,0b0111
+000370 5f0f                      	 subi rTemp,-1
+000371 0f00                      	 lsl rTemp
+000372 0f00                           lsl rTemp
+000373 0f00                           lsl rTemp
+000374 0f00                      	 lsl rTemp
+000375 9300 0108                 	 sts apple, rTemp
+000377 9300 0100                 	 sts matrix,rTemp
                                  
                                  	 //Y coordinate random
-00036f 92e0 007c                 	 sts ADMUX, rADMUXy
-000371 ec07                      	 ldi rTemp, 0b11000111
-000372 9300 007a                 	 sts ADCSRA, rTemp
+000379 92e0 007c                 	 sts ADMUX, rADMUXy
+00037b ec07                      	 ldi rTemp, 0b11000111
+00037c 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 appleYLoop:
-000374 9100 007a                 	 lds rTemp, ADCSRA
-000376 fd06                      	 sbrc rTemp, ADSC
-000377 940c 0374                 	 jmp appleYLoop
-000379 9100 0078                 	 lds rTemp, ADCL
-00037b 9100 0078                 	 lds rTemp, ADCL
-00037d 2f30                      	 mov rTemp2,rTemp
-00037e 9f03                      	 mul rTemp,rTemp2
-00037f 9f03                      	 mul rTemp,rTemp2
-000380 9f03                      	 mul rTemp,rTemp2
-000381 9f03                      	 mul rTemp,rTemp2
-000382 9f03                      	 mul rTemp,rTemp2
-000383 9130 0108                 	 lds rTemp2, apple
-000385 7007                      	 andi rTemp,0b00000111
-000386 5f0f                      	 subi rTemp,-1
-000387 0f03                      	 add rTemp,rTemp2
-000388 9300 0108                 	 sts apple, rTemp
+00037e 9100 007a                 	 lds rTemp, ADCSRA
+000380 fd06                      	 sbrc rTemp, ADSC
+000381 940c 037e                 	 jmp appleYLoop
+000383 9100 0078                 	 lds rTemp, ADCL
+000385 9100 0078                 	 lds rTemp, ADCL
+000387 2f30                      	 mov rTemp2,rTemp
+000388 9f03                      	 mul rTemp,rTemp2
+000389 9f03                      	 mul rTemp,rTemp2
+00038a 9f03                      	 mul rTemp,rTemp2
+00038b 9f03                      	 mul rTemp,rTemp2
+00038c 9f03                      	 mul rTemp,rTemp2
+00038d 9130 0108                 	 lds rTemp2, apple
+00038f 7007                      	 andi rTemp,0b00000111
+000390 5f0f                      	 subi rTemp,-1
+000391 0f03                      	 add rTemp,rTemp2
+000392 9300 0108                 	 sts apple, rTemp
                                  	   
-00038a 9508                      	 ret
+000394 9508                      	 ret
                                  
                                  
                                  	 appleCollision:
-00038b dcd6                      	 rcall resetSnakePoint
-00038c 9100 0108                 	 lds rTemp, apple
-00038e e090                      	 ldi rCount, 0
-00038f 9130 0149                 	 lds rTemp2,snakeLengthIndex
+000395 dccc                      	 rcall resetSnakePoint
+000396 9100 0108                 	 lds rTemp, apple
+000398 e090                      	 ldi rCount, 0
+000399 9130 0149                 	 lds rTemp2,snakeLengthIndex
                                  	 findSnakeHead:
-000391 5f9f                      	 subi rCount,-1
-000392 5fcf                      	 subi YL,-1
-000393 1793                      	 cp rCount,rTemp2
-000394 f7e1                      	 brne findSnakeHead
-000395 8138                      	 ld rTemp2,Y
-000396 1730                      	 cp rTemp2,rTemp
-000397 f459                      	 brne return2
-000398 e608                      	 ldi rTemp,0b01101000
-000399 9150 0149                 	 lds rTemp3,snakeLengthIndex
-00039b 5f5f                      	 subi rTemp3,-1
-00039c 9350 0149                 	 sts snakeLengthIndex,rTemp3
-00039e e041                      	 ldi rTemp4,1
-00039f 9340 014f                 	 sts isGrowing,rTemp4
-0003a1 9300 0108                 	 sts apple,rTemp
+00039b 5f9f                      	 subi rCount,-1
+00039c 5fcf                      	 subi YL,-1
+00039d 1793                      	 cp rCount,rTemp2
+00039e f7e1                      	 brne findSnakeHead
+00039f 8138                      	 ld rTemp2,Y
+0003a0 1730                      	 cp rTemp2,rTemp
+0003a1 f431                      	 brne return2
+0003a2 e041                      	 ldi rTemp4,0b00000001
+0003a3 9340 014f                 	 sts isGrowing,rTemp4
+0003a5 e608                      	 ldi rTemp,0b01101000
+0003a6 9300 0108                 	 sts apple,rTemp
                                  	 return2:
-0003a3 dcbe                      	 rcall resetSnakePoint
+0003a8 dcb9                      	 rcall resetSnakePoint
 
 
 RESOURCE USE INFORMATION
@@ -2037,10 +2039,10 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :  14 y  :  15 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :  14 y  :  16 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   3 r15:   6 r16: 216 r17:   4 r18:   0 r19: 270 r20:  12 
-r21:  22 r22:  11 r23:  18 r24:   3 r25:  35 r26:   2 r27:   2 r28:   7 
+r13:   0 r14:   3 r15:   6 r16: 218 r17:   4 r18:   0 r19: 270 r20:  12 
+r21:  19 r22:  11 r23:  18 r24:   3 r25:  37 r26:   2 r27:   2 r28:   8 
 r29:   1 r30:   0 r31:   0 
 Registers used: 17 out of 35 (48.6%)
 
@@ -2049,27 +2051,27 @@ Registers used: 17 out of 35 (48.6%)
 andi  :   7 asr   :   0 bclr  :   0 bld   :  64 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :  21 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   5 brlt  :   0 brmi  :   0 
-brne  :   9 brpl  :   0 brsh  :   5 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :  10 brpl  :   0 brsh  :   4 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :  64 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :  16 cpc   :   0 
 cpi   :  24 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  20 
-ld    :  15 ldd   :   0 ldi   :  93 lds   :  47 lpm   :   0 lsl   :   4 
-lsr   :  10 mov   :   8 movw  :   0 mul   :  10 muls  :   0 mulsu :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  21 
+ld    :  15 ldd   :   0 ldi   :  93 lds   :  46 lpm   :   0 lsl   :   4 
+lsr   :  10 mov   :   7 movw  :   0 mul   :  10 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   1 or    :   2 ori   :   0 out   :  33 pop   :   2 
 push  :   2 rcall :  40 ret   :  23 reti  :   1 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   4 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :  11 std   :   0 sts   : 121 
-sub   :   2 subi  :  25 swap  :   0 tst   :   0 wdr   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :  12 std   :   0 sts   : 122 
+sub   :   2 subi  :  28 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 34 out of 113 (30.1%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00074a   1772      0   1772   32768   5.4%
+[.cseg] 0x000000 0x000754   1782      0   1782   32768   5.4%
 [.dseg] 0x000100 0x000150      0     80     80    2048   3.9%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

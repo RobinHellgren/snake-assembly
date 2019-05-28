@@ -81,9 +81,8 @@ init:
 	 loop:
 	 rcall stickXInput
 	 rcall stickYInput
-	 //rcall paintApple
 	 rcall paintInit
-	 rcall snakeUpdate
+	 rcall snakeUpdateCheck
 	 rcall appleCollision
 	 
 	 
@@ -644,6 +643,8 @@ init:
 
 	 //Sätter startvärden för ormen
 	 snakeSet:
+	 ldi rTemp,0
+	 sts isGrowing,rTemp
 	 ldi rTemp, 2
 	 sts currentMovment, rTemp
 	 ldi rTemp, 2
@@ -662,39 +663,43 @@ init:
 	 ret
 
 	 growSnake:
-	 ldi rTemp,0
-	 sts isGrowing,rTemp
 	 ldi rCount,0
-	 lds rTemp, snakeLengthIndex 
+	 sts isGrowing,rCount
+	 lds rTemp, snakeLengthIndex
+	 subi rTemp,-1
+	 sts snakeLengthIndex,rTemp
 
 	 walkthroughSnake:
 	 subi rCount,-1
 	 subi YL,-1
 	 cp rCount,rTemp
 	 brne walkthroughSnake
-	 mov rCount,rTemp
 
 	 reverseWalkthroughSnake:
 	 subi rCount,1
 	 subi YL,1
 	 ld rTemp,Y
 	 subi YL,-1
+	 subi rCount,-1
+	 st Y, rTemp
+	 subi rCount,1
+	 subi YL,1
 	 cpi rCount,0
 	 brne reverseWalkthroughSnake
 	 rcall resetSnakePoint
+	 jmp snakeUpdate
 
-	 snakeUpdate:
-	 lds rTemp,isGrowing
-	 cpi rTemp,1
-	 brsh growSnake
-	 //cpi rInter, 0
-	 //BREQ return
+	 snakeUpdateCheck:
 	 lds rTemp, updateCounter
 	 subi rTemp, -1
 	 sts updateCounter, rTemp
 	 lds rTemp, updateCounter
 	 cpi rTemp, 100
-	 brlo return 	
+	 brlo return
+	 snakeUpdate:
+	 lds rTemp,isGrowing
+	 cpi rTemp,0
+	 brne growSnake 	
 	 ldi rTemp, 0
 	 sts updateCounter, rTemp
 	 ldi rCount,0
@@ -1025,12 +1030,9 @@ init:
 	 ld rTemp2,Y
 	 cp rTemp2,rTemp
 	 brne return2
-	 ldi rTemp,0b01101000
-	 lds rTemp3,snakeLengthIndex
-	 subi rTemp3,-1
-	 sts snakeLengthIndex,rTemp3
-	 ldi rTemp4,1
+	 ldi rTemp4,0b00000001
 	 sts isGrowing,rTemp4
+	 ldi rTemp,0b01101000
 	 sts apple,rTemp
 	 return2:
 	 rcall resetSnakePoint
