@@ -79,11 +79,11 @@ init:
 
 	 //main progam loop
 	 loop:
+	 //rcall snakeCollision
 	 rcall stickXInput
 	 rcall stickYInput
 	 rcall paintInit
 	 rcall snakeUpdateCheck
-	 rcall appleCollision
 	 
 	 
 	 
@@ -116,6 +116,18 @@ init:
 	  clearMatrix:
 	 //lägg in värden i matrixen
 	 ldi rTemp, 0b00000000
+	 sts matrix, rTemp
+	 sts matrix+1, rTemp
+	 sts matrix+2, rTemp
+	 sts matrix+3, rTemp
+	 sts matrix+4, rTemp
+	 sts matrix+5, rTemp
+	 sts matrix+6, rTemp
+	 sts matrix+7, rTemp
+	 ret
+	 fillMatrix:
+	 //lägg in värden i matrixen
+	 ldi rTemp, 0b11111111
 	 sts matrix, rTemp
 	 sts matrix+1, rTemp
 	 sts matrix+2, rTemp
@@ -809,6 +821,10 @@ init:
 	 BRLO wallWrapY0
 	 st Y,rTemp2
 	 rcall resetSnakePoint
+
+	 checkCollisions:
+	 rcall appleCollision
+	 rcall snakeCollision
 	 ret
 
 	 newDirectionUp:
@@ -1037,3 +1053,36 @@ init:
 	 return2:
 	 rcall resetSnakePoint
 	 ret
+
+	 snakeCollision:
+	 lds rTemp, snakeLengthIndex
+	 ldi rCount,0
+
+	 findSnakeHeadCollision:
+	 subi rCount,-1
+	 subi YL,-1
+	 cp rCount,rTemp
+	 brne findSnakeHeadCollision
+	 ld rTemp,Y
+	 rcall resetSnakePoint
+
+	 ldi rCount,0
+	 lds rTemp2,snakeLengthIndex
+
+	 compareSnakeheadToBody:
+	 ld rTemp3,Y+
+	 subi rCount,-1
+	 cp rTemp,rTemp3
+	 breq GAMEOVER
+	 cp rCount,rTemp2
+	 brne compareSnakeheadToBody
+	 rcall resetSnakePoint
+	 ret
+
+	 GAMEOVER:
+	 rcall fillMatrix
+	 rcall outputMatrix
+	 jmp GAMEOVER
+
+
+

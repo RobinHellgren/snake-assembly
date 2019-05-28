@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Tue May 28 21:27:39 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Tue May 28 22:27:42 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1021,7 +1021,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000000 940c 0034                      jmp init // Reset vector
                                  //... fler interrupts
                                  .ORG 0x0020
-000020 940c 0225                 	 jmp interup
+000020 940c 0236                 	 jmp interup
 000022 0000                      	 nop
                                  .ORG INT_VECTORS_SIZE
                                  init:
@@ -1055,973 +1055,1023 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  	 //tilldela minne till matrixen
 00004a e0b1                      	 ldi XH, HIGH(matrix)
 00004b e0a0                      	 ldi XL, LOW(matrix)
-00004c d018                      	 rcall clearMatrix
+00004c d017                      	 rcall clearMatrix
                                  	 //creates the snake
-00004d d20b                      	 rcall snakeSet
+00004d d21c                      	 rcall snakeSet
                                  	 //sets the joystick direction 2
 00004e e072                      	 ldi rStickDirection,2
                                  	 //Spawn Apple
-00004f d309                      	 rcall spawnApple
+00004f d31c                      	 rcall spawnApple
                                  
                                  	 //main progam loop
                                  	 loop:
-000050 d1eb                      	 rcall stickXInput
-000051 d1d5                      	 rcall stickYInput
-000052 d2bb                      	 rcall paintInit
-000053 d231                      	 rcall snakeUpdateCheck
-000054 d340                      	 rcall appleCollision
+                                 	 //rcall snakeCollision
+000050 d1fc                      	 rcall stickXInput
+000051 d1e6                      	 rcall stickYInput
+000052 d2ce                      	 rcall paintInit
+000053 d242                      	 rcall snakeUpdateCheck
                                  	 
                                  	 
                                  	 
                                  	 //sts matrix, rStickDirection
-000055 d021                      	 rcall outputMatrix
+000054 d033                      	 rcall outputMatrix
                                  	
-000056 940c 0050                 	 jmp loop
+000055 940c 0050                 	 jmp loop
                                  	 //wait for interupt
                                  	 wait:
-000058 3060                      	 cpi rInter, 0
-000059 f3f1                      	 breq wait
-00005a 9508                      	 ret
+000057 3060                      	 cpi rInter, 0
+000058 f3f1                      	 breq wait
+000059 9508                      	 ret
                                  	 //turn off all the leds
                                  	 dim:
-00005b b918                      	 out PortC, rZero
-00005c b91b                      	 out PortD, rZero
-00005d b915                      	 out PortB, rZero
-00005e 9508                      	 ret
+00005a b918                      	 out PortC, rZero
+00005b b91b                      	 out PortD, rZero
+00005c b915                      	 out PortB, rZero
+00005d 9508                      	 ret
                                  	 //reset the matrix pointer
                                  	 resetMatPoint:
-00005f e0b1                      	 ldi XH, HIGH(matrix)
-000060 e0a0                      	 ldi XL, LOW(matrix)
-000061 9508                      	 ret
+00005e e0b1                      	 ldi XH, HIGH(matrix)
+00005f e0a0                      	 ldi XL, LOW(matrix)
+000060 9508                      	 ret
                                  
                                  	 //reset the snake pointer
                                  	 resetSnakePoint:
-000062 e0d1                      	 ldi YH, HIGH(snake)
-000063 e0c9                      	 ldi YL, LOW(snake)
-000064 9508                      	 ret
+000061 e0d1                      	 ldi YH, HIGH(snake)
+000062 e0c9                      	 ldi YL, LOW(snake)
+000063 9508                      	 ret
                                  	  clearMatrix:
                                  	 //lägg in värden i matrixen
-000065 e000                      	 ldi rTemp, 0b00000000
-000066 9300 0100                 	 sts matrix, rTemp
-000068 9300 0101                 	 sts matrix+1, rTemp
-00006a 9300 0102                 	 sts matrix+2, rTemp
-00006c 9300 0103                 	 sts matrix+3, rTemp
-00006e 9300 0104                 	 sts matrix+4, rTemp
-000070 9300 0105                 	 sts matrix+5, rTemp
-000072 9300 0106                 	 sts matrix+6, rTemp
-000074 9300 0107                 	 sts matrix+7, rTemp
-000076 9508                      	 ret
+000064 e000                      	 ldi rTemp, 0b00000000
+000065 9300 0100                 	 sts matrix, rTemp
+000067 9300 0101                 	 sts matrix+1, rTemp
+000069 9300 0102                 	 sts matrix+2, rTemp
+00006b 9300 0103                 	 sts matrix+3, rTemp
+00006d 9300 0104                 	 sts matrix+4, rTemp
+00006f 9300 0105                 	 sts matrix+5, rTemp
+000071 9300 0106                 	 sts matrix+6, rTemp
+000073 9300 0107                 	 sts matrix+7, rTemp
+000075 9508                      	 ret
+                                 	 fillMatrix:
+                                 	 //lägg in värden i matrixen
+000076 ef0f                      	 ldi rTemp, 0b11111111
+000077 9300 0100                 	 sts matrix, rTemp
+000079 9300 0101                 	 sts matrix+1, rTemp
+00007b 9300 0102                 	 sts matrix+2, rTemp
+00007d 9300 0103                 	 sts matrix+3, rTemp
+00007f 9300 0104                 	 sts matrix+4, rTemp
+000081 9300 0105                 	 sts matrix+5, rTemp
+000083 9300 0106                 	 sts matrix+6, rTemp
+000085 9300 0107                 	 sts matrix+7, rTemp
+000087 9508                      	 ret
                                  	 //output the matrix to the led display
                                  	 outputMatrix:
                                  	 //1
-000077 910d                      	 ld rTemp, X+
-000078 e031                      	 ldi rTemp2, 0b1
-000079 9330 014c                 	 sts Cout, rTemp2
+000088 910d                      	 ld rTemp, X+
+000089 e031                      	 ldi rTemp2, 0b1
+00008a 9330 014c                 	 sts Cout, rTemp2
                                  	 
-00007b e030                      	 ldi rTemp2, 0
-00007c 9330 014b                 	 sts Bout, rTemp2
-00007e 9330 014d                 	 sts Dout, rTemp2
+00008c e030                      	 ldi rTemp2, 0
+00008d 9330 014b                 	 sts Bout, rTemp2
+00008f 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-000080 fb07                      	 bst rTemp, 7
-000081 f936                      	 bld rTemp2, 6
-000082 9330 014d                 	 sts Dout, rTemp2
+000091 fb07                      	 bst rTemp, 7
+000092 f936                      	 bld rTemp2, 6
+000093 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000084 fb06                      	 bst rTemp, 6
-000085 f937                      	 bld rTemp2, 7
-000086 9330 014d                 	 sts Dout, rTemp2
+000095 fb06                      	 bst rTemp, 6
+000096 f937                      	 bld rTemp2, 7
+000097 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000088 fb05                      	 bst rTemp, 5
-000089 f930                      	 bld rTemp2, 0
-00008a 9330 014b                 	 sts Bout, rTemp2
+000099 fb05                      	 bst rTemp, 5
+00009a f930                      	 bld rTemp2, 0
+00009b 9330 014b                 	 sts Bout, rTemp2
                                  	 
-00008c fb04                      	 bst rTemp, 4
-00008d f931                      	 bld rTemp2, 1
-00008e 9330 014b                 	 sts Bout, rTemp2
+00009d fb04                      	 bst rTemp, 4
+00009e f931                      	 bld rTemp2, 1
+00009f 9330 014b                 	 sts Bout, rTemp2
                                  
-000090 fb03                      	 bst rTemp, 3
-000091 f932                      	 bld rTemp2, 2
-000092 9330 014b                 	 sts Bout, rTemp2
+0000a1 fb03                      	 bst rTemp, 3
+0000a2 f932                      	 bld rTemp2, 2
+0000a3 9330 014b                 	 sts Bout, rTemp2
                                  
-000094 fb02                      	 bst rTemp, 2
-000095 f933                      	 bld rTemp2, 3
-000096 9330 014b                 	 sts Bout, rTemp2
+0000a5 fb02                      	 bst rTemp, 2
+0000a6 f933                      	 bld rTemp2, 3
+0000a7 9330 014b                 	 sts Bout, rTemp2
                                  
-000098 fb01                      	 bst rTemp, 1
-000099 f934                      	 bld rTemp2, 4
-00009a 9330 014b                 	 sts Bout, rTemp2
+0000a9 fb01                      	 bst rTemp, 1
+0000aa f934                      	 bld rTemp2, 4
+0000ab 9330 014b                 	 sts Bout, rTemp2
                                  
-00009c fb00                      	 bst rTemp, 0
-00009d f935                      	 bld rTemp2, 5
-00009e 9330 014b                 	 sts Bout, rTemp2
+0000ad fb00                      	 bst rTemp, 0
+0000ae f935                      	 bld rTemp2, 5
+0000af 9330 014b                 	 sts Bout, rTemp2
                                  
-0000a0 9130 014d                 	 lds rTemp2, Dout
-0000a2 b93b                      	 out PortD, rTemp2
+0000b1 9130 014d                 	 lds rTemp2, Dout
+0000b3 b93b                      	 out PortD, rTemp2
                                  
-0000a3 9130 014b                 	 lds rTemp2, Bout
-0000a5 b935                      	 out PortB, rTemp2
+0000b4 9130 014b                 	 lds rTemp2, Bout
+0000b6 b935                      	 out PortB, rTemp2
                                  
-0000a6 9130 014c                 	 lds rTemp2, Cout
-0000a8 b938                      	 out PortC, rTemp2
+0000b7 9130 014c                 	 lds rTemp2, Cout
+0000b9 b938                      	 out PortC, rTemp2
                                  	 
-0000a9 dfae                      	 rcall wait 
-0000aa dfb0                      	 rcall dim
+0000ba df9c                      	 rcall wait 
+0000bb df9e                      	 rcall dim
                                  	 
-0000ab e060                      	 ldi rInter, 0
+0000bc e060                      	 ldi rInter, 0
                                  
                                  	 //2
-0000ac 910d                      	 ld rTemp, X+
-0000ad e032                      	 ldi rTemp2, 0b10
-0000ae 9330 014c                 	 sts Cout, rTemp2
+0000bd 910d                      	 ld rTemp, X+
+0000be e032                      	 ldi rTemp2, 0b10
+0000bf 9330 014c                 	 sts Cout, rTemp2
                                  	 
-0000b0 e030                      	 ldi rTemp2, 0
-0000b1 9330 014b                 	 sts Bout, rTemp2
-0000b3 9330 014d                 	 sts Dout, rTemp2
+0000c1 e030                      	 ldi rTemp2, 0
+0000c2 9330 014b                 	 sts Bout, rTemp2
+0000c4 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-0000b5 fb07                      	 bst rTemp, 7
-0000b6 f936                      	 bld rTemp2, 6
-0000b7 9330 014d                 	 sts Dout, rTemp2
+0000c6 fb07                      	 bst rTemp, 7
+0000c7 f936                      	 bld rTemp2, 6
+0000c8 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0000b9 fb06                      	 bst rTemp, 6
-0000ba f937                      	 bld rTemp2, 7
-0000bb 9330 014d                 	 sts Dout, rTemp2
+0000ca fb06                      	 bst rTemp, 6
+0000cb f937                      	 bld rTemp2, 7
+0000cc 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0000bd fb05                      	 bst rTemp, 5
-0000be f930                      	 bld rTemp2, 0
-0000bf 9330 014b                 	 sts Bout, rTemp2
+0000ce fb05                      	 bst rTemp, 5
+0000cf f930                      	 bld rTemp2, 0
+0000d0 9330 014b                 	 sts Bout, rTemp2
                                  	 
-0000c1 fb04                      	 bst rTemp, 4
-0000c2 f931                      	 bld rTemp2, 1
-0000c3 9330 014b                 	 sts Bout, rTemp2
+0000d2 fb04                      	 bst rTemp, 4
+0000d3 f931                      	 bld rTemp2, 1
+0000d4 9330 014b                 	 sts Bout, rTemp2
                                  
-0000c5 fb03                      	 bst rTemp, 3
-0000c6 f932                      	 bld rTemp2, 2
-0000c7 9330 014b                 	 sts Bout, rTemp2
+0000d6 fb03                      	 bst rTemp, 3
+0000d7 f932                      	 bld rTemp2, 2
+0000d8 9330 014b                 	 sts Bout, rTemp2
                                  
-0000c9 fb02                      	 bst rTemp, 2
-0000ca f933                      	 bld rTemp2, 3
-0000cb 9330 014b                 	 sts Bout, rTemp2
+0000da fb02                      	 bst rTemp, 2
+0000db f933                      	 bld rTemp2, 3
+0000dc 9330 014b                 	 sts Bout, rTemp2
                                  
-0000cd fb01                      	 bst rTemp, 1
-0000ce f934                      	 bld rTemp2, 4
-0000cf 9330 014b                 	 sts Bout, rTemp2
+0000de fb01                      	 bst rTemp, 1
+0000df f934                      	 bld rTemp2, 4
+0000e0 9330 014b                 	 sts Bout, rTemp2
                                  
-0000d1 fb00                      	 bst rTemp, 0
-0000d2 f935                      	 bld rTemp2, 5
-0000d3 9330 014b                 	 sts Bout, rTemp2
+0000e2 fb00                      	 bst rTemp, 0
+0000e3 f935                      	 bld rTemp2, 5
+0000e4 9330 014b                 	 sts Bout, rTemp2
                                  
-0000d5 9130 014d                 	 lds rTemp2, Dout
-0000d7 b93b                      	 out PortD, rTemp2
+0000e6 9130 014d                 	 lds rTemp2, Dout
+0000e8 b93b                      	 out PortD, rTemp2
                                  
-0000d8 9130 014b                 	 lds rTemp2, Bout
-0000da b935                      	 out PortB, rTemp2
+0000e9 9130 014b                 	 lds rTemp2, Bout
+0000eb b935                      	 out PortB, rTemp2
                                  
-0000db 9130 014c                 	 lds rTemp2, Cout
-0000dd b938                      	 out PortC, rTemp2
+0000ec 9130 014c                 	 lds rTemp2, Cout
+0000ee b938                      	 out PortC, rTemp2
                                  	 
-0000de df79                      	 rcall wait 
-0000df df7b                      	 rcall dim
+0000ef df67                      	 rcall wait 
+0000f0 df69                      	 rcall dim
                                  	 
-0000e0 e060                      	 ldi rInter, 0
+0000f1 e060                      	 ldi rInter, 0
                                  	 
                                  	 //3
-0000e1 910d                      	 ld rTemp, X+
-0000e2 e034                      	 ldi rTemp2, 0b100
-0000e3 9330 014c                 	 sts Cout, rTemp2
+0000f2 910d                      	 ld rTemp, X+
+0000f3 e034                      	 ldi rTemp2, 0b100
+0000f4 9330 014c                 	 sts Cout, rTemp2
                                  	 
-0000e5 e030                      	 ldi rTemp2, 0
-0000e6 9330 014b                 	 sts Bout, rTemp2
-0000e8 9330 014d                 	 sts Dout, rTemp2
+0000f6 e030                      	 ldi rTemp2, 0
+0000f7 9330 014b                 	 sts Bout, rTemp2
+0000f9 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-0000ea fb07                      	 bst rTemp, 7
-0000eb f936                      	 bld rTemp2, 6
-0000ec 9330 014d                 	 sts Dout, rTemp2
+0000fb fb07                      	 bst rTemp, 7
+0000fc f936                      	 bld rTemp2, 6
+0000fd 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0000ee fb06                      	 bst rTemp, 6
-0000ef f937                      	 bld rTemp2, 7
-0000f0 9330 014d                 	 sts Dout, rTemp2
+0000ff fb06                      	 bst rTemp, 6
+000100 f937                      	 bld rTemp2, 7
+000101 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0000f2 fb05                      	 bst rTemp, 5
-0000f3 f930                      	 bld rTemp2, 0
-0000f4 9330 014b                 	 sts Bout, rTemp2
+000103 fb05                      	 bst rTemp, 5
+000104 f930                      	 bld rTemp2, 0
+000105 9330 014b                 	 sts Bout, rTemp2
                                  	 
-0000f6 fb04                      	 bst rTemp, 4
-0000f7 f931                      	 bld rTemp2, 1
-0000f8 9330 014b                 	 sts Bout, rTemp2
+000107 fb04                      	 bst rTemp, 4
+000108 f931                      	 bld rTemp2, 1
+000109 9330 014b                 	 sts Bout, rTemp2
                                  
-0000fa fb03                      	 bst rTemp, 3
-0000fb f932                      	 bld rTemp2, 2
-0000fc 9330 014b                 	 sts Bout, rTemp2
+00010b fb03                      	 bst rTemp, 3
+00010c f932                      	 bld rTemp2, 2
+00010d 9330 014b                 	 sts Bout, rTemp2
                                  
-0000fe fb02                      	 bst rTemp, 2
-0000ff f933                      	 bld rTemp2, 3
-000100 9330 014b                 	 sts Bout, rTemp2
+00010f fb02                      	 bst rTemp, 2
+000110 f933                      	 bld rTemp2, 3
+000111 9330 014b                 	 sts Bout, rTemp2
                                  
-000102 fb01                      	 bst rTemp, 1
-000103 f934                      	 bld rTemp2, 4
-000104 9330 014b                 	 sts Bout, rTemp2
+000113 fb01                      	 bst rTemp, 1
+000114 f934                      	 bld rTemp2, 4
+000115 9330 014b                 	 sts Bout, rTemp2
                                  
-000106 fb00                      	 bst rTemp, 0
-000107 f935                      	 bld rTemp2, 5
-000108 9330 014b                 	 sts Bout, rTemp2
+000117 fb00                      	 bst rTemp, 0
+000118 f935                      	 bld rTemp2, 5
+000119 9330 014b                 	 sts Bout, rTemp2
                                  
-00010a 9130 014d                 	 lds rTemp2, Dout
-00010c b93b                      	 out PortD, rTemp2
+00011b 9130 014d                 	 lds rTemp2, Dout
+00011d b93b                      	 out PortD, rTemp2
                                  
-00010d 9130 014b                 	 lds rTemp2, Bout
-00010f b935                      	 out PortB, rTemp2
+00011e 9130 014b                 	 lds rTemp2, Bout
+000120 b935                      	 out PortB, rTemp2
                                  
-000110 9130 014c                 	 lds rTemp2, Cout
-000112 b938                      	 out PortC, rTemp2
+000121 9130 014c                 	 lds rTemp2, Cout
+000123 b938                      	 out PortC, rTemp2
                                  	 
-000113 df44                      	 rcall wait 
-000114 df46                      	 rcall dim
+000124 df32                      	 rcall wait 
+000125 df34                      	 rcall dim
                                  	 
-000115 e060                      	 ldi rInter, 0
+000126 e060                      	 ldi rInter, 0
                                  	 //4
-000116 910d                      	 ld rTemp, X+
-000117 e038                      	 ldi rTemp2, 0b0001000
-000118 9330 014c                 	 sts Cout, rTemp2
+000127 910d                      	 ld rTemp, X+
+000128 e038                      	 ldi rTemp2, 0b0001000
+000129 9330 014c                 	 sts Cout, rTemp2
                                  	 
-00011a e030                      	 ldi rTemp2, 0
-00011b 9330 014b                 	 sts Bout, rTemp2
-00011d 9330 014d                 	 sts Dout, rTemp2
+00012b e030                      	 ldi rTemp2, 0
+00012c 9330 014b                 	 sts Bout, rTemp2
+00012e 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-00011f fb07                      	 bst rTemp, 7
-000120 f936                      	 bld rTemp2, 6
-000121 9330 014d                 	 sts Dout, rTemp2
+000130 fb07                      	 bst rTemp, 7
+000131 f936                      	 bld rTemp2, 6
+000132 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000123 fb06                      	 bst rTemp, 6
-000124 f937                      	 bld rTemp2, 7
-000125 9330 014d                 	 sts Dout, rTemp2
+000134 fb06                      	 bst rTemp, 6
+000135 f937                      	 bld rTemp2, 7
+000136 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000127 fb05                      	 bst rTemp, 5
-000128 f930                      	 bld rTemp2, 0
-000129 9330 014b                 	 sts Bout, rTemp2
+000138 fb05                      	 bst rTemp, 5
+000139 f930                      	 bld rTemp2, 0
+00013a 9330 014b                 	 sts Bout, rTemp2
                                  	 
-00012b fb04                      	 bst rTemp, 4
-00012c f931                      	 bld rTemp2, 1
-00012d 9330 014b                 	 sts Bout, rTemp2
+00013c fb04                      	 bst rTemp, 4
+00013d f931                      	 bld rTemp2, 1
+00013e 9330 014b                 	 sts Bout, rTemp2
                                  
-00012f fb03                      	 bst rTemp, 3
-000130 f932                      	 bld rTemp2, 2
-000131 9330 014b                 	 sts Bout, rTemp2
+000140 fb03                      	 bst rTemp, 3
+000141 f932                      	 bld rTemp2, 2
+000142 9330 014b                 	 sts Bout, rTemp2
                                  
-000133 fb02                      	 bst rTemp, 2
-000134 f933                      	 bld rTemp2, 3
-000135 9330 014b                 	 sts Bout, rTemp2
+000144 fb02                      	 bst rTemp, 2
+000145 f933                      	 bld rTemp2, 3
+000146 9330 014b                 	 sts Bout, rTemp2
                                  
-000137 fb01                      	 bst rTemp, 1
-000138 f934                      	 bld rTemp2, 4
-000139 9330 014b                 	 sts Bout, rTemp2
+000148 fb01                      	 bst rTemp, 1
+000149 f934                      	 bld rTemp2, 4
+00014a 9330 014b                 	 sts Bout, rTemp2
                                  
-00013b fb00                      	 bst rTemp, 0
-00013c f935                      	 bld rTemp2, 5
-00013d 9330 014b                 	 sts Bout, rTemp2
+00014c fb00                      	 bst rTemp, 0
+00014d f935                      	 bld rTemp2, 5
+00014e 9330 014b                 	 sts Bout, rTemp2
                                  
-00013f 9130 014d                 	 lds rTemp2, Dout
-000141 b93b                      	 out PortD, rTemp2
+000150 9130 014d                 	 lds rTemp2, Dout
+000152 b93b                      	 out PortD, rTemp2
                                  
-000142 9130 014b                 	 lds rTemp2, Bout
-000144 b935                      	 out PortB, rTemp2
+000153 9130 014b                 	 lds rTemp2, Bout
+000155 b935                      	 out PortB, rTemp2
                                  
-000145 9130 014c                 	 lds rTemp2, Cout
-000147 b938                      	 out PortC, rTemp2
+000156 9130 014c                 	 lds rTemp2, Cout
+000158 b938                      	 out PortC, rTemp2
                                  	 
-000148 df0f                      	 rcall wait 
-000149 df11                      	 rcall dim
+000159 defd                      	 rcall wait 
+00015a deff                      	 rcall dim
                                  	 
-00014a e060                      	 ldi rInter, 0
+00015b e060                      	 ldi rInter, 0
                                  	 //5
-00014b 910d                      	 ld rTemp, X+
-00014c e030                      	 ldi rTemp2, 0
-00014d 9330 014c                 	 sts Cout, rTemp2
+00015c 910d                      	 ld rTemp, X+
+00015d e030                      	 ldi rTemp2, 0
+00015e 9330 014c                 	 sts Cout, rTemp2
                                  	 
-00014f e030                      	 ldi rTemp2, 0
-000150 9330 014b                 	 sts Bout, rTemp2
-000152 e034                      	 ldi rTemp2, 4
-000153 9330 014d                 	 sts Dout, rTemp2
+000160 e030                      	 ldi rTemp2, 0
+000161 9330 014b                 	 sts Bout, rTemp2
+000163 e034                      	 ldi rTemp2, 4
+000164 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-000155 fb07                      	 bst rTemp, 7
-000156 f936                      	 bld rTemp2, 6
-000157 9330 014d                 	 sts Dout, rTemp2
+000166 fb07                      	 bst rTemp, 7
+000167 f936                      	 bld rTemp2, 6
+000168 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000159 fb06                      	 bst rTemp, 6
-00015a f937                      	 bld rTemp2, 7
-00015b 9330 014d                 	 sts Dout, rTemp2
+00016a fb06                      	 bst rTemp, 6
+00016b f937                      	 bld rTemp2, 7
+00016c 9330 014d                 	 sts Dout, rTemp2
                                  	 
-00015d fb05                      	 bst rTemp, 5
-00015e f930                      	 bld rTemp2, 0
-00015f 9330 014b                 	 sts Bout, rTemp2
+00016e fb05                      	 bst rTemp, 5
+00016f f930                      	 bld rTemp2, 0
+000170 9330 014b                 	 sts Bout, rTemp2
                                  	 
-000161 fb04                      	 bst rTemp, 4
-000162 f931                      	 bld rTemp2, 1
-000163 9330 014b                 	 sts Bout, rTemp2
+000172 fb04                      	 bst rTemp, 4
+000173 f931                      	 bld rTemp2, 1
+000174 9330 014b                 	 sts Bout, rTemp2
                                  
-000165 fb03                      	 bst rTemp, 3
-000166 f932                      	 bld rTemp2, 2
-000167 9330 014b                 	 sts Bout, rTemp2
+000176 fb03                      	 bst rTemp, 3
+000177 f932                      	 bld rTemp2, 2
+000178 9330 014b                 	 sts Bout, rTemp2
                                  
-000169 fb02                      	 bst rTemp, 2
-00016a f933                      	 bld rTemp2, 3
-00016b 9330 014b                 	 sts Bout, rTemp2
+00017a fb02                      	 bst rTemp, 2
+00017b f933                      	 bld rTemp2, 3
+00017c 9330 014b                 	 sts Bout, rTemp2
                                  
-00016d fb01                      	 bst rTemp, 1
-00016e f934                      	 bld rTemp2, 4
-00016f 9330 014b                 	 sts Bout, rTemp2
+00017e fb01                      	 bst rTemp, 1
+00017f f934                      	 bld rTemp2, 4
+000180 9330 014b                 	 sts Bout, rTemp2
                                  
-000171 fb00                      	 bst rTemp, 0
-000172 f935                      	 bld rTemp2, 5
-000173 9330 014b                 	 sts Bout, rTemp2
+000182 fb00                      	 bst rTemp, 0
+000183 f935                      	 bld rTemp2, 5
+000184 9330 014b                 	 sts Bout, rTemp2
                                  
-000175 9130 014d                 	 lds rTemp2, Dout
-000177 b93b                      	 out PortD, rTemp2
+000186 9130 014d                 	 lds rTemp2, Dout
+000188 b93b                      	 out PortD, rTemp2
                                  
-000178 9130 014b                 	 lds rTemp2, Bout
-00017a b935                      	 out PortB, rTemp2
+000189 9130 014b                 	 lds rTemp2, Bout
+00018b b935                      	 out PortB, rTemp2
                                  
-00017b 9130 014c                 	 lds rTemp2, Cout
-00017d b938                      	 out PortC, rTemp2
+00018c 9130 014c                 	 lds rTemp2, Cout
+00018e b938                      	 out PortC, rTemp2
                                  	 
-00017e ded9                      	 rcall wait 
-00017f dedb                      	 rcall dim
+00018f dec7                      	 rcall wait 
+000190 dec9                      	 rcall dim
                                  	 
-000180 e060                      	 ldi rInter, 0
+000191 e060                      	 ldi rInter, 0
                                  	 //6
-000181 910d                      	 ld rTemp, X+
-000182 e030                      	 ldi rTemp2, 0
-000183 9330 014c                 	 sts Cout, rTemp2
+000192 910d                      	 ld rTemp, X+
+000193 e030                      	 ldi rTemp2, 0
+000194 9330 014c                 	 sts Cout, rTemp2
                                  	 
-000185 e030                      	 ldi rTemp2, 0
-000186 9330 014b                 	 sts Bout, rTemp2
-000188 e038                      	 ldi rTemp2, 8
-000189 9330 014d                 	 sts Dout, rTemp2
+000196 e030                      	 ldi rTemp2, 0
+000197 9330 014b                 	 sts Bout, rTemp2
+000199 e038                      	 ldi rTemp2, 8
+00019a 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-00018b fb07                      	 bst rTemp, 7
-00018c f936                      	 bld rTemp2, 6
-00018d 9330 014d                 	 sts Dout, rTemp2
+00019c fb07                      	 bst rTemp, 7
+00019d f936                      	 bld rTemp2, 6
+00019e 9330 014d                 	 sts Dout, rTemp2
                                  	 
-00018f fb06                      	 bst rTemp, 6
-000190 f937                      	 bld rTemp2, 7
-000191 9330 014d                 	 sts Dout, rTemp2
+0001a0 fb06                      	 bst rTemp, 6
+0001a1 f937                      	 bld rTemp2, 7
+0001a2 9330 014d                 	 sts Dout, rTemp2
                                  	 
-000193 fb05                      	 bst rTemp, 5
-000194 f930                      	 bld rTemp2, 0
-000195 9330 014b                 	 sts Bout, rTemp2
+0001a4 fb05                      	 bst rTemp, 5
+0001a5 f930                      	 bld rTemp2, 0
+0001a6 9330 014b                 	 sts Bout, rTemp2
                                  	 
-000197 fb04                      	 bst rTemp, 4
-000198 f931                      	 bld rTemp2, 1
-000199 9330 014b                 	 sts Bout, rTemp2
+0001a8 fb04                      	 bst rTemp, 4
+0001a9 f931                      	 bld rTemp2, 1
+0001aa 9330 014b                 	 sts Bout, rTemp2
                                  
-00019b fb03                      	 bst rTemp, 3
-00019c f932                      	 bld rTemp2, 2
-00019d 9330 014b                 	 sts Bout, rTemp2
+0001ac fb03                      	 bst rTemp, 3
+0001ad f932                      	 bld rTemp2, 2
+0001ae 9330 014b                 	 sts Bout, rTemp2
                                  
-00019f fb02                      	 bst rTemp, 2
-0001a0 f933                      	 bld rTemp2, 3
-0001a1 9330 014b                 	 sts Bout, rTemp2
+0001b0 fb02                      	 bst rTemp, 2
+0001b1 f933                      	 bld rTemp2, 3
+0001b2 9330 014b                 	 sts Bout, rTemp2
                                  
-0001a3 fb01                      	 bst rTemp, 1
-0001a4 f934                      	 bld rTemp2, 4
-0001a5 9330 014b                 	 sts Bout, rTemp2
+0001b4 fb01                      	 bst rTemp, 1
+0001b5 f934                      	 bld rTemp2, 4
+0001b6 9330 014b                 	 sts Bout, rTemp2
                                  
-0001a7 fb00                      	 bst rTemp, 0
-0001a8 f935                      	 bld rTemp2, 5
-0001a9 9330 014b                 	 sts Bout, rTemp2
+0001b8 fb00                      	 bst rTemp, 0
+0001b9 f935                      	 bld rTemp2, 5
+0001ba 9330 014b                 	 sts Bout, rTemp2
                                  
-0001ab 9130 014d                 	 lds rTemp2, Dout
-0001ad b93b                      	 out PortD, rTemp2
+0001bc 9130 014d                 	 lds rTemp2, Dout
+0001be b93b                      	 out PortD, rTemp2
                                  
-0001ae 9130 014b                 	 lds rTemp2, Bout
-0001b0 b935                      	 out PortB, rTemp2
+0001bf 9130 014b                 	 lds rTemp2, Bout
+0001c1 b935                      	 out PortB, rTemp2
                                  
-0001b1 9130 014c                 	 lds rTemp2, Cout
-0001b3 b938                      	 out PortC, rTemp2
+0001c2 9130 014c                 	 lds rTemp2, Cout
+0001c4 b938                      	 out PortC, rTemp2
                                  	 
-0001b4 dea3                      	 rcall wait 
-0001b5 dea5                      	 rcall dim
+0001c5 de91                      	 rcall wait 
+0001c6 de93                      	 rcall dim
                                  	 
-0001b6 e060                      	 ldi rInter, 0
+0001c7 e060                      	 ldi rInter, 0
                                  	 //7
-0001b7 910d                      	 ld rTemp, X+
-0001b8 e030                      	 ldi rTemp2, 0
-0001b9 9330 014c                 	 sts Cout, rTemp2
+0001c8 910d                      	 ld rTemp, X+
+0001c9 e030                      	 ldi rTemp2, 0
+0001ca 9330 014c                 	 sts Cout, rTemp2
                                  	 
-0001bb e030                      	 ldi rTemp2, 0
-0001bc 9330 014b                 	 sts Bout, rTemp2
-0001be e130                      	 ldi rTemp2, 16
-0001bf 9330 014d                 	 sts Dout, rTemp2
+0001cc e030                      	 ldi rTemp2, 0
+0001cd 9330 014b                 	 sts Bout, rTemp2
+0001cf e130                      	 ldi rTemp2, 16
+0001d0 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-0001c1 fb07                      	 bst rTemp, 7
-0001c2 f936                      	 bld rTemp2, 6
-0001c3 9330 014d                 	 sts Dout, rTemp2
+0001d2 fb07                      	 bst rTemp, 7
+0001d3 f936                      	 bld rTemp2, 6
+0001d4 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0001c5 fb06                      	 bst rTemp, 6
-0001c6 f937                      	 bld rTemp2, 7
-0001c7 9330 014d                 	 sts Dout, rTemp2
+0001d6 fb06                      	 bst rTemp, 6
+0001d7 f937                      	 bld rTemp2, 7
+0001d8 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0001c9 fb05                      	 bst rTemp, 5
-0001ca f930                      	 bld rTemp2, 0
-0001cb 9330 014b                 	 sts Bout, rTemp2
+0001da fb05                      	 bst rTemp, 5
+0001db f930                      	 bld rTemp2, 0
+0001dc 9330 014b                 	 sts Bout, rTemp2
                                  	 
-0001cd fb04                      	 bst rTemp, 4
-0001ce f931                      	 bld rTemp2, 1
-0001cf 9330 014b                 	 sts Bout, rTemp2
+0001de fb04                      	 bst rTemp, 4
+0001df f931                      	 bld rTemp2, 1
+0001e0 9330 014b                 	 sts Bout, rTemp2
                                  
-0001d1 fb03                      	 bst rTemp, 3
-0001d2 f932                      	 bld rTemp2, 2
-0001d3 9330 014b                 	 sts Bout, rTemp2
+0001e2 fb03                      	 bst rTemp, 3
+0001e3 f932                      	 bld rTemp2, 2
+0001e4 9330 014b                 	 sts Bout, rTemp2
                                  
-0001d5 fb02                      	 bst rTemp, 2
-0001d6 f933                      	 bld rTemp2, 3
-0001d7 9330 014b                 	 sts Bout, rTemp2
+0001e6 fb02                      	 bst rTemp, 2
+0001e7 f933                      	 bld rTemp2, 3
+0001e8 9330 014b                 	 sts Bout, rTemp2
                                  
-0001d9 fb01                      	 bst rTemp, 1
-0001da f934                      	 bld rTemp2, 4
-0001db 9330 014b                 	 sts Bout, rTemp2
+0001ea fb01                      	 bst rTemp, 1
+0001eb f934                      	 bld rTemp2, 4
+0001ec 9330 014b                 	 sts Bout, rTemp2
                                  
-0001dd fb00                      	 bst rTemp, 0
-0001de f935                      	 bld rTemp2, 5
-0001df 9330 014b                 	 sts Bout, rTemp2
+0001ee fb00                      	 bst rTemp, 0
+0001ef f935                      	 bld rTemp2, 5
+0001f0 9330 014b                 	 sts Bout, rTemp2
                                  
-0001e1 9130 014d                 	 lds rTemp2, Dout
-0001e3 b93b                      	 out PortD, rTemp2
+0001f2 9130 014d                 	 lds rTemp2, Dout
+0001f4 b93b                      	 out PortD, rTemp2
                                  
-0001e4 9130 014b                 	 lds rTemp2, Bout
-0001e6 b935                      	 out PortB, rTemp2
+0001f5 9130 014b                 	 lds rTemp2, Bout
+0001f7 b935                      	 out PortB, rTemp2
                                  
-0001e7 9130 014c                 	 lds rTemp2, Cout
-0001e9 b938                      	 out PortC, rTemp2
+0001f8 9130 014c                 	 lds rTemp2, Cout
+0001fa b938                      	 out PortC, rTemp2
                                  	 
-0001ea de6d                      	 rcall wait 
-0001eb de6f                      	 rcall dim
+0001fb de5b                      	 rcall wait 
+0001fc de5d                      	 rcall dim
                                  	 
-0001ec e060                      	 ldi rInter, 0
+0001fd e060                      	 ldi rInter, 0
                                  	 //8
-0001ed 910d                      	 ld rTemp, X+
-0001ee e030                      	 ldi rTemp2, 0
-0001ef 9330 014c                 	 sts Cout, rTemp2
+0001fe 910d                      	 ld rTemp, X+
+0001ff e030                      	 ldi rTemp2, 0
+000200 9330 014c                 	 sts Cout, rTemp2
                                  	 
-0001f1 e030                      	 ldi rTemp2, 0
-0001f2 9330 014b                 	 sts Bout, rTemp2
-0001f4 e230                      	 ldi rTemp2, 32
-0001f5 9330 014d                 	 sts Dout, rTemp2
+000202 e030                      	 ldi rTemp2, 0
+000203 9330 014b                 	 sts Bout, rTemp2
+000205 e230                      	 ldi rTemp2, 32
+000206 9330 014d                 	 sts Dout, rTemp2
                                  	 
                                  
-0001f7 fb07                      	 bst rTemp, 7
-0001f8 f936                      	 bld rTemp2, 6
-0001f9 9330 014d                 	 sts Dout, rTemp2
+000208 fb07                      	 bst rTemp, 7
+000209 f936                      	 bld rTemp2, 6
+00020a 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0001fb fb06                      	 bst rTemp, 6
-0001fc f937                      	 bld rTemp2, 7
-0001fd 9330 014d                 	 sts Dout, rTemp2
+00020c fb06                      	 bst rTemp, 6
+00020d f937                      	 bld rTemp2, 7
+00020e 9330 014d                 	 sts Dout, rTemp2
                                  	 
-0001ff fb05                      	 bst rTemp, 5
-000200 f930                      	 bld rTemp2, 0
-000201 9330 014b                 	 sts Bout, rTemp2
+000210 fb05                      	 bst rTemp, 5
+000211 f930                      	 bld rTemp2, 0
+000212 9330 014b                 	 sts Bout, rTemp2
                                  	 
-000203 fb04                      	 bst rTemp, 4
-000204 f931                      	 bld rTemp2, 1
-000205 9330 014b                 	 sts Bout, rTemp2
+000214 fb04                      	 bst rTemp, 4
+000215 f931                      	 bld rTemp2, 1
+000216 9330 014b                 	 sts Bout, rTemp2
                                  
-000207 fb03                      	 bst rTemp, 3
-000208 f932                      	 bld rTemp2, 2
-000209 9330 014b                 	 sts Bout, rTemp2
+000218 fb03                      	 bst rTemp, 3
+000219 f932                      	 bld rTemp2, 2
+00021a 9330 014b                 	 sts Bout, rTemp2
                                  
-00020b fb02                      	 bst rTemp, 2
-00020c f933                      	 bld rTemp2, 3
-00020d 9330 014b                 	 sts Bout, rTemp2
+00021c fb02                      	 bst rTemp, 2
+00021d f933                      	 bld rTemp2, 3
+00021e 9330 014b                 	 sts Bout, rTemp2
                                  
-00020f fb01                      	 bst rTemp, 1
-000210 f934                      	 bld rTemp2, 4
-000211 9330 014b                 	 sts Bout, rTemp2
+000220 fb01                      	 bst rTemp, 1
+000221 f934                      	 bld rTemp2, 4
+000222 9330 014b                 	 sts Bout, rTemp2
                                  
-000213 fb00                      	 bst rTemp, 0
-000214 f935                      	 bld rTemp2, 5
-000215 9330 014b                 	 sts Bout, rTemp2
+000224 fb00                      	 bst rTemp, 0
+000225 f935                      	 bld rTemp2, 5
+000226 9330 014b                 	 sts Bout, rTemp2
                                  
-000217 9130 014d                 	 lds rTemp2, Dout
-000219 b93b                      	 out PortD, rTemp2
+000228 9130 014d                 	 lds rTemp2, Dout
+00022a b93b                      	 out PortD, rTemp2
                                  
-00021a 9130 014b                 	 lds rTemp2, Bout
-00021c b935                      	 out PortB, rTemp2
+00022b 9130 014b                 	 lds rTemp2, Bout
+00022d b935                      	 out PortB, rTemp2
                                  
-00021d 9130 014c                 	 lds rTemp2, Cout
-00021f b938                      	 out PortC, rTemp2
+00022e 9130 014c                 	 lds rTemp2, Cout
+000230 b938                      	 out PortC, rTemp2
                                  	 
-000220 de37                      	 rcall wait 
-000221 de39                      	 rcall dim
+000231 de25                      	 rcall wait 
+000232 de27                      	 rcall dim
                                  	 
-000222 e060                      	 ldi rInter, 0
-000223 de3b                      	 rcall resetMatPoint
-000224 9508                      	 ret
+000233 e060                      	 ldi rInter, 0
+000234 de29                      	 rcall resetMatPoint
+000235 9508                      	 ret
                                  	 
                                  	 
                                  	 //interup subrutinen
                                  	 interup:
-000225 e061                      	 ldi rInter, 0b00000001
-000226 9518                      	 reti
+000236 e061                      	 ldi rInter, 0b00000001
+000237 9518                      	 reti
                                  
                                  	 stickYInput:
-000227 9380 007c                 	 sts ADMUX, rADMUXx
-000229 ec07                      	 ldi rTemp, 0b11000111
-00022a 9300 007a                 	 sts ADCSRA, rTemp
+000238 9380 007c                 	 sts ADMUX, rADMUXx
+00023a ec07                      	 ldi rTemp, 0b11000111
+00023b 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 stickYLoop:
-00022c 9100 007a                 	 lds rTemp, ADCSRA
-00022e fd06                      	 sbrc rTemp, ADSC
-00022f 940c 0241                 	 jmp stickXLoop
-000231 9100 0078                 	 lds rTemp, ADCL
-000233 90f0 0079                 	 lds rStickInp, ADCH
-000235 ec08                      	 ldi rTemp, 200
-000236 16f0                      	 cp rStickInp, rTemp
-000237 f4e8                      	 brsh YPos
-000238 e302                      	 ldi rTemp, 50
-000239 16f0                      	 cp rStickInp, rTemp
-00023a f0e0                      	 brlo YNeg 
-00023b 9508                      	 ret
+00023d 9100 007a                 	 lds rTemp, ADCSRA
+00023f fd06                      	 sbrc rTemp, ADSC
+000240 940c 0252                 	 jmp stickXLoop
+000242 9100 0078                 	 lds rTemp, ADCL
+000244 90f0 0079                 	 lds rStickInp, ADCH
+000246 ec08                      	 ldi rTemp, 200
+000247 16f0                      	 cp rStickInp, rTemp
+000248 f4e8                      	 brsh YPos
+000249 e302                      	 ldi rTemp, 50
+00024a 16f0                      	 cp rStickInp, rTemp
+00024b f0e0                      	 brlo YNeg 
+00024c 9508                      	 ret
                                  
                                  
                                  	 
                                  	 stickXInput:
-00023c 92e0 007c                 	 sts ADMUX, rADMUXy
-00023e ec07                      	 ldi rTemp, 0b11000111
-00023f 9300 007a                 	 sts ADCSRA, rTemp
+00024d 92e0 007c                 	 sts ADMUX, rADMUXy
+00024f ec07                      	 ldi rTemp, 0b11000111
+000250 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 stickXLoop:
-000241 9100 007a                 	 lds rTemp, ADCSRA
-000243 fd06                      	 sbrc rTemp, ADSC
-000244 940c 022c                 	 jmp stickYLoop
-000246 9100 0078                 	 lds rTemp, ADCL
-000248 90f0 0079                 	 lds rStickInp, ADCH
+000252 9100 007a                 	 lds rTemp, ADCSRA
+000254 fd06                      	 sbrc rTemp, ADSC
+000255 940c 023d                 	 jmp stickYLoop
+000257 9100 0078                 	 lds rTemp, ADCL
+000259 90f0 0079                 	 lds rStickInp, ADCH
                                  	 
-00024a ec08                      	 ldi rTemp, 200
-00024b 16f0                      	 cp rStickInp, rTemp
-00024c f430                      	 brsh XNeg
-00024d e302                      	 ldi rTemp, 50
-00024e 16f0                      	 cp rStickInp, rTemp
-00024f f008                      	 brlo XPos
+00025b ec08                      	 ldi rTemp, 200
+00025c 16f0                      	 cp rStickInp, rTemp
+00025d f430                      	 brsh XNeg
+00025e e302                      	 ldi rTemp, 50
+00025f 16f0                      	 cp rStickInp, rTemp
+000260 f008                      	 brlo XPos
                                  	  
-000250 9508                      	 ret
+000261 9508                      	 ret
                                  
                                  	 
                                  	 XPos:
-000251 e072                      	 ldi rStickDirection , 2
-000252 9508                      	 ret
+000262 e072                      	 ldi rStickDirection , 2
+000263 9508                      	 ret
                                  
                                  	 XNeg:
-000253 e074                      	 ldi rStickDirection , 4
-000254 9508                      	 ret
+000264 e074                      	 ldi rStickDirection , 4
+000265 9508                      	 ret
                                  
                                  	 YPos:
-000255 e071                      	 ldi rStickDirection , 1
-000256 9508                      	 ret
+000266 e071                      	 ldi rStickDirection , 1
+000267 9508                      	 ret
                                  
                                  	 YNeg:
-000257 e073                      	 ldi rStickDirection , 3
-000258 9508                      	 ret
+000268 e073                      	 ldi rStickDirection , 3
+000269 9508                      	 ret
                                  
                                  	 //Sätter startvärden för ormen
                                  	 snakeSet:
-000259 e000                      	 ldi rTemp,0
-00025a 9300 014f                 	 sts isGrowing,rTemp
-00025c e002                      	 ldi rTemp, 2
-00025d 9300 014e                 	 sts currentMovment, rTemp
-00025f e002                      	 ldi rTemp, 2
-000260 9300 0149                 	 sts snakeLengthIndex, rTemp
-000262 ddff                      	 rcall resetSnakePoint
-000263 e102                      	 ldi rTemp, 0b00010010
-000264 9309                      	 ST Y+, rTemp
-000265 e202                      	 ldi rTemp,0b00100010
-000266 9309                      	 st Y+, rTemp
-000267 e302                      	 ldi rTemp,0b00110010
-000268 9309                      	 st Y+, rTemp
-000269 ddf8                      	 rcall resetSnakePoint
-00026a 9508                      	 ret
+00026a e000                      	 ldi rTemp,0
+00026b 9300 014f                 	 sts isGrowing,rTemp
+00026d e002                      	 ldi rTemp, 2
+00026e 9300 014e                 	 sts currentMovment, rTemp
+000270 e002                      	 ldi rTemp, 2
+000271 9300 0149                 	 sts snakeLengthIndex, rTemp
+000273 dded                      	 rcall resetSnakePoint
+000274 e102                      	 ldi rTemp, 0b00010010
+000275 9309                      	 ST Y+, rTemp
+000276 e202                      	 ldi rTemp,0b00100010
+000277 9309                      	 st Y+, rTemp
+000278 e302                      	 ldi rTemp,0b00110010
+000279 9309                      	 st Y+, rTemp
+00027a dde6                      	 rcall resetSnakePoint
+00027b 9508                      	 ret
                                  
                                  	 return:
-00026b 9508                      	 ret
+00027c 9508                      	 ret
                                  
                                  	 growSnake:
-00026c e090                      	 ldi rCount,0
-00026d 9390 014f                 	 sts isGrowing,rCount
-00026f 9100 0149                 	 lds rTemp, snakeLengthIndex
-000271 5f0f                      	 subi rTemp,-1
-000272 9300 0149                 	 sts snakeLengthIndex,rTemp
+00027d e090                      	 ldi rCount,0
+00027e 9390 014f                 	 sts isGrowing,rCount
+000280 9100 0149                 	 lds rTemp, snakeLengthIndex
+000282 5f0f                      	 subi rTemp,-1
+000283 9300 0149                 	 sts snakeLengthIndex,rTemp
                                  
                                  	 walkthroughSnake:
-000274 5f9f                      	 subi rCount,-1
-000275 5fcf                      	 subi YL,-1
-000276 1790                      	 cp rCount,rTemp
-000277 f7e1                      	 brne walkthroughSnake
+000285 5f9f                      	 subi rCount,-1
+000286 5fcf                      	 subi YL,-1
+000287 1790                      	 cp rCount,rTemp
+000288 f7e1                      	 brne walkthroughSnake
                                  
                                  	 reverseWalkthroughSnake:
-000278 5091                      	 subi rCount,1
-000279 50c1                      	 subi YL,1
-00027a 8108                      	 ld rTemp,Y
-00027b 5fcf                      	 subi YL,-1
-00027c 5f9f                      	 subi rCount,-1
-00027d 8308                      	 st Y, rTemp
-00027e 5091                      	 subi rCount,1
-00027f 50c1                      	 subi YL,1
-000280 3090                      	 cpi rCount,0
-000281 f7b1                      	 brne reverseWalkthroughSnake
-000282 dddf                      	 rcall resetSnakePoint
-000283 940c 028e                 	 jmp snakeUpdate
+000289 5091                      	 subi rCount,1
+00028a 50c1                      	 subi YL,1
+00028b 8108                      	 ld rTemp,Y
+00028c 5fcf                      	 subi YL,-1
+00028d 5f9f                      	 subi rCount,-1
+00028e 8308                      	 st Y, rTemp
+00028f 5091                      	 subi rCount,1
+000290 50c1                      	 subi YL,1
+000291 3090                      	 cpi rCount,0
+000292 f7b1                      	 brne reverseWalkthroughSnake
+000293 ddcd                      	 rcall resetSnakePoint
+000294 940c 029f                 	 jmp snakeUpdate
                                  
                                  	 snakeUpdateCheck:
-000285 9100 014a                 	 lds rTemp, updateCounter
-000287 5f0f                      	 subi rTemp, -1
-000288 9300 014a                 	 sts updateCounter, rTemp
-00028a 9100 014a                 	 lds rTemp, updateCounter
-00028c 3604                      	 cpi rTemp, 100
-00028d f2e8                      	 brlo return
+000296 9100 014a                 	 lds rTemp, updateCounter
+000298 5f0f                      	 subi rTemp, -1
+000299 9300 014a                 	 sts updateCounter, rTemp
+00029b 9100 014a                 	 lds rTemp, updateCounter
+00029d 3604                      	 cpi rTemp, 100
+00029e f2e8                      	 brlo return
                                  	 snakeUpdate:
-00028e 9100 014f                 	 lds rTemp,isGrowing
-000290 3000                      	 cpi rTemp,0
-000291 f6d1                      	 brne growSnake 	
-000292 e000                      	 ldi rTemp, 0
-000293 9300 014a                 	 sts updateCounter, rTemp
-000295 e090                      	 ldi rCount,0
+00029f 9100 014f                 	 lds rTemp,isGrowing
+0002a1 3000                      	 cpi rTemp,0
+0002a2 f6d1                      	 brne growSnake 	
+0002a3 e000                      	 ldi rTemp, 0
+0002a4 9300 014a                 	 sts updateCounter, rTemp
+0002a6 e090                      	 ldi rCount,0
                                  
                                  	 snakeUpdateSwitchBP:
-000296 5f9f                      	 subi rCount,-1
-000297 5fcf                      	 subi YL,-1
-000298 8138                      	 ld rTemp2,Y
-000299 50c1                      	 subi YL,1
-00029a 9339                      	 st Y+,rTemp2
-00029b 9100 0149                 	 lds rTemp, snakeLengthIndex
-00029d 1790                      	 cp rCount, rTemp
-00029e f7b9                      	 brne snakeUpdateSwitchBP
+0002a7 5f9f                      	 subi rCount,-1
+0002a8 5fcf                      	 subi YL,-1
+0002a9 8138                      	 ld rTemp2,Y
+0002aa 50c1                      	 subi YL,1
+0002ab 9339                      	 st Y+,rTemp2
+0002ac 9100 0149                 	 lds rTemp, snakeLengthIndex
+0002ae 1790                      	 cp rCount, rTemp
+0002af f7b9                      	 brne snakeUpdateSwitchBP
                                  
-00029f 9100 014e                 	 lds rTemp, currentMovment
+0002b0 9100 014e                 	 lds rTemp, currentMovment
                                  	 //sub rTemp,rStickDirection
-0002a1 3001                      	 cpi	rTemp,1
-0002a2 f031                      	 breq currentDirectionUp
+0002b2 3001                      	 cpi	rTemp,1
+0002b3 f031                      	 breq currentDirectionUp
                                  
-0002a3 3002                      	 cpi	rTemp,2
-0002a4 f041                      	 breq currentDirectionRight
+0002b4 3002                      	 cpi	rTemp,2
+0002b5 f041                      	 breq currentDirectionRight
                                  
-0002a5 3003                      	 cpi	rTemp,3
-0002a6 f051                      	 breq currentDirectionDown
+0002b6 3003                      	 cpi	rTemp,3
+0002b7 f051                      	 breq currentDirectionDown
                                  
-0002a7 3004                      	 cpi	rTemp,4
-0002a8 f061                      	 breq currentDirectionLeft
+0002b8 3004                      	 cpi	rTemp,4
+0002b9 f061                      	 breq currentDirectionLeft
                                  	 
                                  	 currentDirectionUp:
-0002a9 3073                      	 cpi rStickDirection,3
-0002aa f0b1                      	 breq noNewDirection
-0002ab 940c 02b9                 	 jmp newDirection
+0002ba 3073                      	 cpi rStickDirection,3
+0002bb f0b1                      	 breq noNewDirection
+0002bc 940c 02ca                 	 jmp newDirection
                                  
                                  	 currentDirectionRight:
-0002ad 3074                      	 cpi rStickDirection,4
-0002ae f091                      	 breq noNewDirection
-0002af 940c 02b9                 	 jmp newDirection
+0002be 3074                      	 cpi rStickDirection,4
+0002bf f091                      	 breq noNewDirection
+0002c0 940c 02ca                 	 jmp newDirection
                                  
                                  	 currentDirectionDown:
-0002b1 3071                      	 cpi rStickDirection,1
-0002b2 f071                      	 breq noNewDirection
-0002b3 940c 02b9                 	 jmp newDirection
+0002c2 3071                      	 cpi rStickDirection,1
+0002c3 f071                      	 breq noNewDirection
+0002c4 940c 02ca                 	 jmp newDirection
                                  
                                  	 currentDirectionLeft:
-0002b5 3072                      	 cpi rStickDirection,2
-0002b6 f051                      	 breq noNewDirection
-0002b7 940c 02b9                 	 jmp newDirection
+0002c6 3072                      	 cpi rStickDirection,2
+0002c7 f051                      	 breq noNewDirection
+0002c8 940c 02ca                 	 jmp newDirection
                                  
                                  	 newDirection:
                                  	 
-0002b9 3071                      	 cpi rStickDirection,1
-0002ba f149                      	 breq newDirectionUP
+0002ca 3071                      	 cpi rStickDirection,1
+0002cb f159                      	 breq newDirectionUP
                                  
-0002bb 3072                      	 cpi rStickDirection,2
-0002bc f161                      	 breq newDirectionRight
+0002cc 3072                      	 cpi rStickDirection,2
+0002cd f171                      	 breq newDirectionRight
                                  
-0002bd 3073                      	 cpi rStickDirection,3
-0002be f179                      	 breq newDirectionDown
+0002ce 3073                      	 cpi rStickDirection,3
+0002cf f189                      	 breq newDirectionDown
                                  
-0002bf 3074                      	 cpi rStickDirection,4
-0002c0 f191                      	 breq newDirectionLeft
+0002d0 3074                      	 cpi rStickDirection,4
+0002d1 f1a1                      	 breq newDirectionLeft
                                  
                                  
                                  	 noNewDirection:
-0002c1 3001                      	 cpi rTemp,1
-0002c2 f031                      	 breq noNewDirectionUp
+0002d2 3001                      	 cpi rTemp,1
+0002d3 f031                      	 breq noNewDirectionUp
                                  
-0002c3 3002                      	 cpi rTemp,2
-0002c4 f039                      	 breq noNewDirectionRight
+0002d4 3002                      	 cpi rTemp,2
+0002d5 f039                      	 breq noNewDirectionRight
                                  
-0002c5 3003                      	 cpi rTemp,3
-0002c6 f041                      	 breq noNewDirectionDown
+0002d6 3003                      	 cpi rTemp,3
+0002d7 f041                      	 breq noNewDirectionDown
                                  
-0002c7 3004                      	 cpi rTemp,4
-0002c8 f049                      	 breq noNewDirectionLeft
+0002d8 3004                      	 cpi rTemp,4
+0002d9 f049                      	 breq noNewDirectionLeft
                                  
                                  	 noNewDirectionUp:
                                  
-0002c9 e001                      	 ldi rTemp,1
-0002ca 940c 02d5                 	 jmp moveSnake
+0002da e001                      	 ldi rTemp,1
+0002db 940c 02e6                 	 jmp moveSnake
                                  
                                  	 noNewDirectionRight:
-0002cc ef00                      	 ldi rTemp,-16
-0002cd 940c 02d5                 	 jmp moveSnake
+0002dd ef00                      	 ldi rTemp,-16
+0002de 940c 02e6                 	 jmp moveSnake
                                  
                                  	 noNewDirectionDown:
-0002cf ef0f                      	 ldi rTemp,-1
-0002d0 940c 02d5                 	 jmp moveSnake
+0002e0 ef0f                      	 ldi rTemp,-1
+0002e1 940c 02e6                 	 jmp moveSnake
                                  
                                  	 noNewDirectionLeft:
-0002d2 e100                      	 ldi rTemp,16
-0002d3 940c 02d5                 	 jmp moveSnake
+0002e3 e100                      	 ldi rTemp,16
+0002e4 940c 02e6                 	 jmp moveSnake
                                  
                                  
                                  	 moveSnake:
-0002d5 8138                      	 ld rTemp2,Y
-0002d6 1b30                      	 sub rTemp2, rTemp
-0002d7 3930                      	 cpi rTemp2, 144
-0002d8 f4f8                      	 BRSH wallWrapX9
-0002d9 3130                      	 cpi rTemp2,16
-0002da f118                      	 BRLO wallWrapX0
-0002db 2f53                      	 mov rTemp3,rTemp2
-0002dc 705f                      	 andi rTemp3, 0b00001111
-0002dd 3059                      	 cpi rTemp3, 9
-0002de f528                      	 BRSH wallWrapY9
-0002df 3051                      	 cpi rTemp3, 1
-0002e0 f140                      	 BRLO wallWrapY0
-0002e1 8338                      	 st Y,rTemp2
-0002e2 dd7f                      	 rcall resetSnakePoint
-0002e3 9508                      	 ret
+0002e6 8138                      	 ld rTemp2,Y
+0002e7 1b30                      	 sub rTemp2, rTemp
+0002e8 3930                      	 cpi rTemp2, 144
+0002e9 f508                      	 BRSH wallWrapX9
+0002ea 3130                      	 cpi rTemp2,16
+0002eb f128                      	 BRLO wallWrapX0
+0002ec 2f53                      	 mov rTemp3,rTemp2
+0002ed 705f                      	 andi rTemp3, 0b00001111
+0002ee 3059                      	 cpi rTemp3, 9
+0002ef f538                      	 BRSH wallWrapY9
+0002f0 3051                      	 cpi rTemp3, 1
+0002f1 f150                      	 BRLO wallWrapY0
+0002f2 8338                      	 st Y,rTemp2
+0002f3 dd6d                      	 rcall resetSnakePoint
+                                 
+                                 	 checkCollisions:
+0002f4 d0b3                      	 rcall appleCollision
+0002f5 d0c7                      	 rcall snakeCollision
+0002f6 9508                      	 ret
                                  
                                  	 newDirectionUp:
-0002e4 9370 014e                 	 sts currentMovment, rStickDirection
-0002e6 e001                      	 ldi rTemp,1
-0002e7 940c 02d5                 	 jmp moveSnake
+0002f7 9370 014e                 	 sts currentMovment, rStickDirection
+0002f9 e001                      	 ldi rTemp,1
+0002fa 940c 02e6                 	 jmp moveSnake
                                  	 
                                  	 newDirectionRight:
-0002e9 9370 014e                 	 sts currentMovment, rStickDirection
-0002eb ef00                      	 ldi rTemp,-16
-0002ec 940c 02d5                 	 jmp moveSnake
+0002fc 9370 014e                 	 sts currentMovment, rStickDirection
+0002fe ef00                      	 ldi rTemp,-16
+0002ff 940c 02e6                 	 jmp moveSnake
                                  
                                  	 newDirectionDown:
-0002ee 9370 014e                 	 sts currentMovment, rStickDirection
-0002f0 ef0f                      	 ldi rTemp,-1
-0002f1 940c 02d5                 	 jmp moveSnake
+000301 9370 014e                 	 sts currentMovment, rStickDirection
+000303 ef0f                      	 ldi rTemp,-1
+000304 940c 02e6                 	 jmp moveSnake
                                  
                                  	 newDirectionLeft:
-0002f3 9370 014e                 	 sts currentMovment, rStickDirection
-0002f5 e100                      	 ldi rTemp,16
-0002f6 940c 02d5                 	 jmp moveSnake
+000306 9370 014e                 	 sts currentMovment, rStickDirection
+000308 e100                      	 ldi rTemp,16
+000309 940c 02e6                 	 jmp moveSnake
                                  
                                  	 wallWrapX9:
-0002f8 e05f                      	 ldi rTemp3, 0b00001111
-0002f9 2335                      	 and rTemp2,rTemp3
-0002fa 5f30                      	 subi rTemp2, -16
-0002fb 8338                      	 st Y,rTemp2
-0002fc dd65                      	 rcall resetSnakePoint
-0002fd 9508                      	 ret
+00030b e05f                      	 ldi rTemp3, 0b00001111
+00030c 2335                      	 and rTemp2,rTemp3
+00030d 5f30                      	 subi rTemp2, -16
+00030e 8338                      	 st Y,rTemp2
+00030f dd51                      	 rcall resetSnakePoint
+000310 9508                      	 ret
                                  
                                  	 wallWrapX0:
-0002fe e05f                      	 ldi rTemp3, 0b00001111
-0002ff 2335                      	 and rTemp2,rTemp3
-000300 5830                      	 subi rTemp2, -128
-000301 8338                      	 st Y,rTemp2
-000302 dd5f                      	 rcall resetSnakePoint
-000303 9508                      	 ret
+000311 e05f                      	 ldi rTemp3, 0b00001111
+000312 2335                      	 and rTemp2,rTemp3
+000313 5830                      	 subi rTemp2, -128
+000314 8338                      	 st Y,rTemp2
+000315 dd4b                      	 rcall resetSnakePoint
+000316 9508                      	 ret
                                  
                                  	 wallWrapY9:
-000304 7f30                      	 andi rTemp2,0b11110000
-000305 5f3f                      	 subi rTemp2, -1
-000306 8338                      	 st Y,rTemp2
-000307 dd5a                      	 rcall resetSnakePoint
-000308 9508                      	 ret
+000317 7f30                      	 andi rTemp2,0b11110000
+000318 5f3f                      	 subi rTemp2, -1
+000319 8338                      	 st Y,rTemp2
+00031a dd46                      	 rcall resetSnakePoint
+00031b 9508                      	 ret
                                  
                                  	 wallWrapY0:
-000309 7f30                      	 andi rTemp2,0b11110000
-00030a 5f38                      	 subi rTemp2, -8
-00030b 8338                      	 st Y,rTemp2
-00030c dd55                      	 rcall resetSnakePoint
-00030d 9508                      	 ret
+00031c 7f30                      	 andi rTemp2,0b11110000
+00031d 5f38                      	 subi rTemp2, -8
+00031e 8338                      	 st Y,rTemp2
+00031f dd41                      	 rcall resetSnakePoint
+000320 9508                      	 ret
                                  
                                  
                                  	 paintInit:
-00030e dd56                      	 rcall clearMatrix
-00030f e090                      	 ldi rCount,0
-000310 939f                      	 push rCount
+000321 dd42                      	 rcall clearMatrix
+000322 e090                      	 ldi rCount,0
+000323 939f                      	 push rCount
                                  
                                  	 snakePaint:
-000311 8138                      	 ld rTemp2, Y
-000312 2f53                      	 mov rTemp3,rTemp2
-000313 ef40                      	 ldi rTemp4,0b11110000
-000314 2334                      	 and rTemp2,rTemp4
-000315 9536                      	 LSR rTemp2
-000316 9536                      	 LSR rTemp2
-000317 9536                      	 LSR rTemp2
-000318 9536                      	 LSR rTemp2
-000319 e04f                      	 ldi rTemp4,0b00001111
-00031a 2354                      	 and rTemp3,rTemp4
+000324 8138                      	 ld rTemp2, Y
+000325 2f53                      	 mov rTemp3,rTemp2
+000326 ef40                      	 ldi rTemp4,0b11110000
+000327 2334                      	 and rTemp2,rTemp4
+000328 9536                      	 LSR rTemp2
+000329 9536                      	 LSR rTemp2
+00032a 9536                      	 LSR rTemp2
+00032b 9536                      	 LSR rTemp2
+00032c e04f                      	 ldi rTemp4,0b00001111
+00032d 2354                      	 and rTemp3,rTemp4
                                  	 
-00031b e009                      	 ldi rTemp,9
-00031c e091                      	 ldi rCount,1
-00031d 1b05                      	 sub rTemp, rTemp3
+00032e e009                      	 ldi rTemp,9
+00032f e091                      	 ldi rCount,1
+000330 1b05                      	 sub rTemp, rTemp3
                                  	 
                                  	 toggleMatrixrow:
-00031e 1795                      	 cp rCount,rTemp3 
-00031f f021                      	 breq setBitMatrix
-000320 9611                      	 adiw X,1
-000321 5f9f                      	 subi rCount,-1
-000322 1795                      	 cp rCount,rTemp3
-000323 f7d1                      	 brne toggleMatrixrow
+000331 1795                      	 cp rCount,rTemp3 
+000332 f021                      	 breq setBitMatrix
+000333 9611                      	 adiw X,1
+000334 5f9f                      	 subi rCount,-1
+000335 1795                      	 cp rCount,rTemp3
+000336 f7d1                      	 brne toggleMatrixrow
                                  	
                                  	
                                  	 setBitMatrix:
-000324 e091                      	 ldi rCount,1
-000325 914c                      	 ld rTemp4,X
-000326 e850                      	 ldi rTemp3, 0b10000000
-000327 1793                      	 cp rCount,rTemp2
-000328 f021                      	 breq orOperationMatrix
+000337 e091                      	 ldi rCount,1
+000338 914c                      	 ld rTemp4,X
+000339 e850                      	 ldi rTemp3, 0b10000000
+00033a 1793                      	 cp rCount,rTemp2
+00033b f021                      	 breq orOperationMatrix
                                  
                                  	 logicalShiftMatrixBit:
-000329 9556                      	 lsr rTemp3
-00032a 5f9f                      	 subi rCount,-1
-00032b 1793                      	 cp rCount,rTemp2
-00032c f7e1                      	 brne logicalShiftMatrixBit
+00033c 9556                      	 lsr rTemp3
+00033d 5f9f                      	 subi rCount,-1
+00033e 1793                      	 cp rCount,rTemp2
+00033f f7e1                      	 brne logicalShiftMatrixBit
                                  	 
                                  	 orOperationMatrix:
-00032d 2b45                      	 or rTemp4,rTemp3
-00032e 934c                      	 ST X,rTemp4
-00032f dd2f                      	 rcall resetMatPoint
+000340 2b45                      	 or rTemp4,rTemp3
+000341 934c                      	 ST X,rTemp4
+000342 dd1b                      	 rcall resetMatPoint
                                  	 
                                  
-000330 9621                      	 adiw Y,1
-000331 5f9f                      	 subi rCount,-1
-000332 9100 0149                 	 lds rTemp,snakeLengthIndex
-000334 5f0f                      	 subi rTemp,-1
-000335 919f                      	 pop rCount
-000336 5f9f                      	 subi rCount,-1
-000337 1790                      	 cp rCount,rTemp
-000338 939f                      	 push rCount
-000339 f6b9                      	 brne snakePaint
-00033a 919f                      	 pop rCount
-00033b dd26                      	 rcall resetSnakePoint
+000343 9621                      	 adiw Y,1
+000344 5f9f                      	 subi rCount,-1
+000345 9100 0149                 	 lds rTemp,snakeLengthIndex
+000347 5f0f                      	 subi rTemp,-1
+000348 919f                      	 pop rCount
+000349 5f9f                      	 subi rCount,-1
+00034a 1790                      	 cp rCount,rTemp
+00034b 939f                      	 push rCount
+00034c f6b9                      	 brne snakePaint
+00034d 919f                      	 pop rCount
+00034e dd12                      	 rcall resetSnakePoint
                                  
                                  	 //paint apple
                                  	 paintApple:
-00033c 9100 0108                 	 lds rTemp, apple
-00033e 2f30                      	 mov rTemp2, rTemp
-00033f 703f                      	 andi rTemp2, 0b00001111
-000340 7f00                           andi rTemp, 0b11110000
-000341 9506                      	 lsr rTemp
-000342 9506                      	 lsr rTemp
-000343 9506                      	 lsr rTemp
-000344 9506                      	 lsr rTemp
-000345 e090                      	 ldi rCount,0
+00034f 9100 0108                 	 lds rTemp, apple
+000351 2f30                      	 mov rTemp2, rTemp
+000352 703f                      	 andi rTemp2, 0b00001111
+000353 7f00                           andi rTemp, 0b11110000
+000354 9506                      	 lsr rTemp
+000355 9506                      	 lsr rTemp
+000356 9506                      	 lsr rTemp
+000357 9506                      	 lsr rTemp
+000358 e090                      	 ldi rCount,0
                                  
                                  	 appleMatrixRowToggle:
-000346 5f9f                      	 subi rCount,-1
-000347 1793                      	 cp rCount,rTemp2 
-000348 f019                      	 breq setAppleBitMatrix
-000349 9611                      	 adiw X,1
-00034a 940c 0346                 	 jmp appleMatrixRowToggle
+000359 5f9f                      	 subi rCount,-1
+00035a 1793                      	 cp rCount,rTemp2 
+00035b f019                      	 breq setAppleBitMatrix
+00035c 9611                      	 adiw X,1
+00035d 940c 0359                 	 jmp appleMatrixRowToggle
                                  	 
                                  	 
                                  	 setAppleBitMatrix:
-00034c e091                      	 ldi rCount,1
-00034d 914c                      	 ld rTemp4,X
-00034e e850                      	 ldi rTemp3, 0b10000000
-00034f 1790                      	 cp rCount,rTemp
-000350 f021                      	 breq appleOrOperationMatrix
+00035f e091                      	 ldi rCount,1
+000360 914c                      	 ld rTemp4,X
+000361 e850                      	 ldi rTemp3, 0b10000000
+000362 1790                      	 cp rCount,rTemp
+000363 f021                      	 breq appleOrOperationMatrix
                                  
                                  	 appleLogicalShiftMatrixBit:
-000351 9556                      	 lsr rTemp3
-000352 5f9f                      	 subi rCount,-1
-000353 1790                      	 cp rCount,rTemp
-000354 f7e1                      	 brne appleLogicalShiftMatrixBit
+000364 9556                      	 lsr rTemp3
+000365 5f9f                      	 subi rCount,-1
+000366 1790                      	 cp rCount,rTemp
+000367 f7e1                      	 brne appleLogicalShiftMatrixBit
                                  	 
                                  	 appleOrOperationMatrix:
-000355 2b45                      	 or rTemp4,rTemp3
-000356 934c                      	 ST X,rTemp4
-000357 dd07                      	 rcall resetMatPoint
-000358 9508                      	 ret
+000368 2b45                      	 or rTemp4,rTemp3
+000369 934c                      	 ST X,rTemp4
+00036a dcf3                      	 rcall resetMatPoint
+00036b 9508                      	 ret
                                  
                                  	 spawnApple:
-000359 e802                      	 ldi rTemp, 0b10000010
-00035a 9300 0108                 	 sts apple,rTemp
-00035c 9508                      	 ret
+00036c e802                      	 ldi rTemp, 0b10000010
+00036d 9300 0108                 	 sts apple,rTemp
+00036f 9508                      	 ret
                                  	 //X coordinate random
-00035d 9380 007c                 	 sts ADMUX, rADMUXx
-00035f ec07                      	 ldi rTemp, 0b11000111
-000360 9300 007a                 	 sts ADCSRA, rTemp
+000370 9380 007c                 	 sts ADMUX, rADMUXx
+000372 ec07                      	 ldi rTemp, 0b11000111
+000373 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 appleXLoop:
-000362 9100 007a                 	 lds rTemp, ADCSRA
-000364 fd06                      	 sbrc rTemp, ADSC
-000365 940c 0362                 	 jmp appleXLoop
-000367 9100 0078                 	 lds rTemp, ADCL
-000369 2f30                      	 mov rTemp2,rTemp
-00036a 9f03                      	 mul rTemp,rTemp2
-00036b 9f03                      	 mul rTemp,rTemp2
-00036c 9f03                      	 mul rTemp,rTemp2
-00036d 9f03                      	 mul rTemp,rTemp2
-00036e 9f03                      	 mul rTemp,rTemp2
-00036f 7007                      	 andi rTemp,0b0111
-000370 5f0f                      	 subi rTemp,-1
-000371 0f00                      	 lsl rTemp
-000372 0f00                           lsl rTemp
-000373 0f00                           lsl rTemp
-000374 0f00                      	 lsl rTemp
-000375 9300 0108                 	 sts apple, rTemp
-000377 9300 0100                 	 sts matrix,rTemp
+000375 9100 007a                 	 lds rTemp, ADCSRA
+000377 fd06                      	 sbrc rTemp, ADSC
+000378 940c 0375                 	 jmp appleXLoop
+00037a 9100 0078                 	 lds rTemp, ADCL
+00037c 2f30                      	 mov rTemp2,rTemp
+00037d 9f03                      	 mul rTemp,rTemp2
+00037e 9f03                      	 mul rTemp,rTemp2
+00037f 9f03                      	 mul rTemp,rTemp2
+000380 9f03                      	 mul rTemp,rTemp2
+000381 9f03                      	 mul rTemp,rTemp2
+000382 7007                      	 andi rTemp,0b0111
+000383 5f0f                      	 subi rTemp,-1
+000384 0f00                      	 lsl rTemp
+000385 0f00                           lsl rTemp
+000386 0f00                           lsl rTemp
+000387 0f00                      	 lsl rTemp
+000388 9300 0108                 	 sts apple, rTemp
+00038a 9300 0100                 	 sts matrix,rTemp
                                  
                                  	 //Y coordinate random
-000379 92e0 007c                 	 sts ADMUX, rADMUXy
-00037b ec07                      	 ldi rTemp, 0b11000111
-00037c 9300 007a                 	 sts ADCSRA, rTemp
+00038c 92e0 007c                 	 sts ADMUX, rADMUXy
+00038e ec07                      	 ldi rTemp, 0b11000111
+00038f 9300 007a                 	 sts ADCSRA, rTemp
                                  
                                  	 appleYLoop:
-00037e 9100 007a                 	 lds rTemp, ADCSRA
-000380 fd06                      	 sbrc rTemp, ADSC
-000381 940c 037e                 	 jmp appleYLoop
-000383 9100 0078                 	 lds rTemp, ADCL
-000385 9100 0078                 	 lds rTemp, ADCL
-000387 2f30                      	 mov rTemp2,rTemp
-000388 9f03                      	 mul rTemp,rTemp2
-000389 9f03                      	 mul rTemp,rTemp2
-00038a 9f03                      	 mul rTemp,rTemp2
-00038b 9f03                      	 mul rTemp,rTemp2
-00038c 9f03                      	 mul rTemp,rTemp2
-00038d 9130 0108                 	 lds rTemp2, apple
-00038f 7007                      	 andi rTemp,0b00000111
-000390 5f0f                      	 subi rTemp,-1
-000391 0f03                      	 add rTemp,rTemp2
-000392 9300 0108                 	 sts apple, rTemp
+000391 9100 007a                 	 lds rTemp, ADCSRA
+000393 fd06                      	 sbrc rTemp, ADSC
+000394 940c 0391                 	 jmp appleYLoop
+000396 9100 0078                 	 lds rTemp, ADCL
+000398 9100 0078                 	 lds rTemp, ADCL
+00039a 2f30                      	 mov rTemp2,rTemp
+00039b 9f03                      	 mul rTemp,rTemp2
+00039c 9f03                      	 mul rTemp,rTemp2
+00039d 9f03                      	 mul rTemp,rTemp2
+00039e 9f03                      	 mul rTemp,rTemp2
+00039f 9f03                      	 mul rTemp,rTemp2
+0003a0 9130 0108                 	 lds rTemp2, apple
+0003a2 7007                      	 andi rTemp,0b00000111
+0003a3 5f0f                      	 subi rTemp,-1
+0003a4 0f03                      	 add rTemp,rTemp2
+0003a5 9300 0108                 	 sts apple, rTemp
                                  	   
-000394 9508                      	 ret
+0003a7 9508                      	 ret
                                  
                                  
                                  	 appleCollision:
-000395 dccc                      	 rcall resetSnakePoint
-000396 9100 0108                 	 lds rTemp, apple
-000398 e090                      	 ldi rCount, 0
-000399 9130 0149                 	 lds rTemp2,snakeLengthIndex
+0003a8 dcb8                      	 rcall resetSnakePoint
+0003a9 9100 0108                 	 lds rTemp, apple
+0003ab e090                      	 ldi rCount, 0
+0003ac 9130 0149                 	 lds rTemp2,snakeLengthIndex
                                  	 findSnakeHead:
-00039b 5f9f                      	 subi rCount,-1
-00039c 5fcf                      	 subi YL,-1
-00039d 1793                      	 cp rCount,rTemp2
-00039e f7e1                      	 brne findSnakeHead
-00039f 8138                      	 ld rTemp2,Y
-0003a0 1730                      	 cp rTemp2,rTemp
-0003a1 f431                      	 brne return2
-0003a2 e041                      	 ldi rTemp4,0b00000001
-0003a3 9340 014f                 	 sts isGrowing,rTemp4
-0003a5 e608                      	 ldi rTemp,0b01101000
-0003a6 9300 0108                 	 sts apple,rTemp
+0003ae 5f9f                      	 subi rCount,-1
+0003af 5fcf                      	 subi YL,-1
+0003b0 1793                      	 cp rCount,rTemp2
+0003b1 f7e1                      	 brne findSnakeHead
+0003b2 8138                      	 ld rTemp2,Y
+0003b3 1730                      	 cp rTemp2,rTemp
+0003b4 f431                      	 brne return2
+0003b5 e041                      	 ldi rTemp4,0b00000001
+0003b6 9340 014f                 	 sts isGrowing,rTemp4
+0003b8 e608                      	 ldi rTemp,0b01101000
+0003b9 9300 0108                 	 sts apple,rTemp
                                  	 return2:
-0003a8 dcb9                      	 rcall resetSnakePoint
+0003bb dca5                      	 rcall resetSnakePoint
+0003bc 9508                      	 ret
+                                 
+                                 	 snakeCollision:
+0003bd 9100 0149                 	 lds rTemp, snakeLengthIndex
+0003bf e090                      	 ldi rCount,0
+                                 
+                                 	 findSnakeHeadCollision:
+0003c0 5f9f                      	 subi rCount,-1
+0003c1 5fcf                      	 subi YL,-1
+0003c2 1790                      	 cp rCount,rTemp
+0003c3 f7e1                      	 brne findSnakeHeadCollision
+0003c4 8108                      	 ld rTemp,Y
+0003c5 dc9b                      	 rcall resetSnakePoint
+                                 
+0003c6 e090                      	 ldi rCount,0
+0003c7 9130 0149                 	 lds rTemp2,snakeLengthIndex
+                                 
+                                 	 compareSnakeheadToBody:
+0003c9 9159                      	 ld rTemp3,Y+
+0003ca 5f9f                      	 subi rCount,-1
+0003cb 1705                      	 cp rTemp,rTemp3
+0003cc f021                      	 breq GAMEOVER
+0003cd 1793                      	 cp rCount,rTemp2
+0003ce f7d1                      	 brne compareSnakeheadToBody
+0003cf dc91                      	 rcall resetSnakePoint
+0003d0 9508                      	 ret
+                                 
+                                 	 GAMEOVER:
+0003d1 dca4                      	 rcall fillMatrix
+0003d2 dcb5                      	 rcall outputMatrix
+0003d3 940c 03d1                 	 jmp GAMEOVER
+                                 
+                                 
+                                 
 
 
 RESOURCE USE INFORMATION
@@ -2039,39 +2089,39 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :  14 y  :  16 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :  14 y  :  18 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   3 r15:   6 r16: 218 r17:   4 r18:   0 r19: 270 r20:  12 
-r21:  19 r22:  11 r23:  18 r24:   3 r25:  37 r26:   2 r27:   2 r28:   8 
+r13:   0 r14:   3 r15:   6 r16: 231 r17:   4 r18:   0 r19: 272 r20:  12 
+r21:  21 r22:  11 r23:  18 r24:   3 r25:  43 r26:   2 r27:   2 r28:   9 
 r29:   1 r30:   0 r31:   0 
 Registers used: 17 out of 35 (48.6%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   1 adiw  :   3 and   :   4 
 andi  :   7 asr   :   0 bclr  :   0 bld   :  64 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  21 brge  :   0 brhc  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  22 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   5 brlt  :   0 brmi  :   0 
-brne  :  10 brpl  :   0 brsh  :   4 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :  12 brpl  :   0 brsh  :   4 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :  64 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :  16 cpc   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :  19 cpc   :   0 
 cpi   :  24 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  21 
-ld    :  15 ldd   :   0 ldi   :  93 lds   :  46 lpm   :   0 lsl   :   4 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  22 
+ld    :  17 ldd   :   0 ldi   :  96 lds   :  48 lpm   :   0 lsl   :   4 
 lsr   :  10 mov   :   7 movw  :   0 mul   :  10 muls  :   0 mulsu :   0 
 neg   :   0 nop   :   1 or    :   2 ori   :   0 out   :  33 pop   :   2 
-push  :   2 rcall :  40 ret   :  23 reti  :   1 rjmp  :   0 rol   :   0 
+push  :   2 rcall :  45 ret   :  25 reti  :   1 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   4 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :  12 std   :   0 sts   : 122 
-sub   :   2 subi  :  28 swap  :   0 tst   :   0 wdr   :   0 
+sez   :   0 sleep :   0 spm   :   0 st    :  12 std   :   0 sts   : 130 
+sub   :   2 subi  :  31 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 34 out of 113 (30.1%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000754   1782      0   1782   32768   5.4%
+[.cseg] 0x000000 0x0007aa   1868      0   1868   32768   5.7%
 [.dseg] 0x000100 0x000150      0     80     80    2048   3.9%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
