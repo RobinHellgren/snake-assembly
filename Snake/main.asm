@@ -27,6 +27,7 @@ Cout:      .BYTE 1
 Dout:	  .BYTE 1
 currentMovment: .BYTE 1
 isGrowing:      .BYTE 1
+appleRand:		.BYTE 1
 
 //[Kodsegmentet]
 .CSEG
@@ -75,19 +76,17 @@ init:
 	 //sets the joystick direction 2
 	 ldi rStickDirection,2
 	 //Spawn Apple
+	 ldi rTemp,0b01100110
+	 sts appleRand,rTemp
 	 rcall spawnApple
 
 	 //main progam loop
 	 loop:
-	 //rcall snakeCollision
 	 rcall stickXInput
 	 rcall stickYInput
 	 rcall paintInit
 	 rcall snakeUpdateCheck
 	 
-	 
-	 
-	 //sts matrix, rStickDirection
 	 rcall outputMatrix
 	
 	 jmp loop
@@ -610,6 +609,7 @@ init:
 	 brsh YPos
 	 ldi rTemp, 50
 	 cp rStickInp, rTemp
+	 mov rTemp4,rTemp
 	 brlo YNeg 
 	 ret
 
@@ -626,6 +626,7 @@ init:
 	 jmp stickYLoop
 	 lds rTemp, ADCL
 	 lds rStickInp, ADCH
+	
 	 
 	 ldi rTemp, 200
 	 cp rStickInp, rTemp
@@ -636,21 +637,31 @@ init:
 	  
 	 ret
 
+	 addToAppleRand:
+	 lds rTemp,appleRand
+	 add rTemp, rStickInp
+	 sts appleRand, rTemp
+	 ret
+
 	 
 	 XPos:
 	 ldi rStickDirection , 2
+	 rcall addToAppleRand
 	 ret
 
 	 XNeg:
 	 ldi rStickDirection , 4
+	 rcall addToAppleRand
 	 ret
 
 	 YPos:
 	 ldi rStickDirection , 1
+	 rcall addToAppleRand
 	 ret
 
 	 YNeg:
 	 ldi rStickDirection , 3
+	 rcall addToAppleRand
 	 ret
 
 	 //Sätter startvärden för ormen
@@ -979,11 +990,21 @@ init:
 	 ret
 
 	 spawnApple:
-	 ldi rTemp, 0b10000010
+	 lds rTemp, appleRand
+	 mov rTemp2,rTemp
+	 andi rTemp,0b01110000
+	 andi rTemp2,0b00000111
+	 subi rTemp,-16
+	 subi rTemp2,-1
+	 or rTemp,rTemp2
 	 sts apple,rTemp
 	 ret
+
+	 /*ldi rTemp, 0b10000010
+	 sts apple,rTemp
+	 ret*/
 	 //X coordinate random
-	 sts ADMUX, rADMUXx
+	 /*sts ADMUX, rADMUXx
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
 
@@ -1031,7 +1052,7 @@ init:
 	 sts apple, rTemp
 	   
 	 ret
-
+	 */
 
 	 appleCollision:
 	 rcall resetSnakePoint
@@ -1048,8 +1069,7 @@ init:
 	 brne return2
 	 ldi rTemp4,0b00000001
 	 sts isGrowing,rTemp4
-	 ldi rTemp,0b01101000
-	 sts apple,rTemp
+	 rcall spawnApple
 	 return2:
 	 rcall resetSnakePoint
 	 ret
