@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Wed May 29 10:12:13 2019
+AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.asm Sun Jun 02 21:59:02 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1027,25 +1027,25 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  .ORG INT_VECTORS_SIZE
                                  init:
                                  
-                                 	 //Sätt värden på rADMUXx & rADMUXy
+                                 	 //Set values for the configuration of rADMUXx & rADMUXy
 000034 e604                      	 ldi rTemp, 0b01100100
 000035 2f80                      	 mov rADMUXx, rTemp
 000036 e605                      	 ldi rTemp, 0b01100101
 000037 2ee0                      	 mov rADMUXy, rTemp	
-                                      // Sätt stackpekaren till högsta minnesadressen
+                                      // Configure the stackpointer
 000038 e008                           ldi rTemp, HIGH(RAMEND)
 000039 bf0e                           out SPH, rTemp
 00003a ef0f                           ldi rTemp, LOW(RAMEND)
 00003b bf0d                           out SPL, rTemp
-                                 	 //sätt interupt biten till 0
+                                 	 //set the interupt bit to 0
 00003c e060                      	 ldi rInter, 0b00000000
-                                 	 //configuration till timer enheten
+                                 	 //configuration tp the timer unit
 00003d e003                      	 ldi rTemp, 0b011
 00003e bd05                      	 out TCCR0B, rTemp
 00003f e001                      	 ldi rTemp, 0b001
 000040 9300 006e                 	 sts TIMSK0, rTemp
 000042 9478                      	 sei
-                                 	 //configuration till led enheten
+                                 	 //configuration to led unit
 000043 e00f                      	 ldi rTemp, 0b00001111
 000044 b907                      	 out DDRC, rTemp
 000045 ef0f                      	 ldi rTemp, 0b11111111
@@ -1053,28 +1053,31 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000047 b904                      	 out DDRB, rTemp
 000048 e010                      	 ldi rZero, 0
 000049 e070                      	 ldi rStickDirection, 0
-                                 	 //tilldela minne till matrixen
+                                 	 //assign memory to the matrix representing the led screen
 00004a e0b1                      	 ldi XH, HIGH(matrix)
 00004b e0a0                      	 ldi XL, LOW(matrix)
 00004c d01a                      	 rcall clearMatrix
                                  	 //creates the snake
 00004d d22a                      	 rcall snakeSet
-                                 	 //sets the joystick direction 2
+                                 	 //sets the joystick direction to 2 for the initial movement
 00004e e072                      	 ldi rStickDirection,2
-                                 	 //Spawn Apple
+                                 	 //Spawn the Apple
 00004f e606                      	 ldi rTemp,0b01100110
 000050 9300 0150                 	 sts appleRand,rTemp
 000052 d327                      	 rcall spawnApple
                                  
                                  	 //main progam loop
                                  	 loop:
+                                 	 //gather the input from the joystick
 000053 d1fd                      	 rcall stickXInput
 000054 d1e6                      	 rcall stickYInput
+                                 	 //paint the objects to the matrix
 000055 d2d9                      	 rcall paintInit
+                                 	 //Update the state of the snake
 000056 d24d                      	 rcall snakeUpdateCheck
-                                 	 
+                                 	 //Output the matrix to the led screen
 000057 d033                      	 rcall outputMatrix
-                                 	
+                                 	 //repeat the main program loop
 000058 940c 0053                 	 jmp loop
                                  	 //wait for interupt
                                  	 wait:
@@ -1099,7 +1102,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000065 e0c9                      	 ldi YL, LOW(snake)
 000066 9508                      	 ret
                                  	  clearMatrix:
-                                 	 //lägg in värden i matrixen
+                                 	 //clear the matrix
 000067 e000                      	 ldi rTemp, 0b00000000
 000068 9300 0100                 	 sts matrix, rTemp
 00006a 9300 0101                 	 sts matrix+1, rTemp
@@ -1111,7 +1114,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000076 9300 0107                 	 sts matrix+7, rTemp
 000078 9508                      	 ret
                                  	 fillMatrix:
-                                 	 //lägg in värden i matrixen
+                                 	 //fill the matrix
 000079 ef0f                      	 ldi rTemp, 0b11111111
 00007a 9300 0100                 	 sts matrix, rTemp
 00007c 9300 0101                 	 sts matrix+1, rTemp
@@ -1124,7 +1127,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00008a 9508                      	 ret
                                  	 //output the matrix to the led display
                                  	 outputMatrix:
-                                 	 //1
+                                 	 //row 1 - translation to the output ports
 00008b 910d                      	 ld rTemp, X+
 00008c e031                      	 ldi rTemp2, 0b1
 00008d 9330 014c                 	 sts Cout, rTemp2
@@ -1166,6 +1169,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0000b1 f935                      	 bld rTemp2, 5
 0000b2 9330 014b                 	 sts Bout, rTemp2
                                  
+                                 	 //Output the translated values
 0000b4 9130 014d                 	 lds rTemp2, Dout
 0000b6 b93b                      	 out PortD, rTemp2
                                  
@@ -1174,13 +1178,14 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  
 0000ba 9130 014c                 	 lds rTemp2, Cout
 0000bc b938                      	 out PortC, rTemp2
-                                 	 
+                                 	 //wait for a interupt
 0000bd df9c                      	 rcall wait 
+                                 	 //turn off all the leds
 0000be df9e                      	 rcall dim
-                                 	 
+                                 	 //reset the interupt variable
 0000bf e060                      	 ldi rInter, 0
                                  
-                                 	 //2
+                                 	 //row 2 - translation to the output ports
 0000c0 910d                      	 ld rTemp, X+
 0000c1 e032                      	 ldi rTemp2, 0b10
 0000c2 9330 014c                 	 sts Cout, rTemp2
@@ -1236,7 +1241,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  	 
 0000f4 e060                      	 ldi rInter, 0
                                  	 
-                                 	 //3
+                                 	 //row 3 - translation to the output ports
 0000f5 910d                      	 ld rTemp, X+
 0000f6 e034                      	 ldi rTemp2, 0b100
 0000f7 9330 014c                 	 sts Cout, rTemp2
@@ -1291,7 +1296,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000128 df34                      	 rcall dim
                                  	 
 000129 e060                      	 ldi rInter, 0
-                                 	 //4
+                                 	 
+                                 	 //row 4 - translation to the output ports
 00012a 910d                      	 ld rTemp, X+
 00012b e038                      	 ldi rTemp2, 0b0001000
 00012c 9330 014c                 	 sts Cout, rTemp2
@@ -1346,7 +1352,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00015d deff                      	 rcall dim
                                  	 
 00015e e060                      	 ldi rInter, 0
-                                 	 //5
+                                 	 
+                                 	 //row 5 - translation to the output ports
 00015f 910d                      	 ld rTemp, X+
 000160 e030                      	 ldi rTemp2, 0
 000161 9330 014c                 	 sts Cout, rTemp2
@@ -1402,7 +1409,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000193 dec9                      	 rcall dim
                                  	 
 000194 e060                      	 ldi rInter, 0
-                                 	 //6
+                                 	 
+                                 	 //row 6 - translation to the output ports
 000195 910d                      	 ld rTemp, X+
 000196 e030                      	 ldi rTemp2, 0
 000197 9330 014c                 	 sts Cout, rTemp2
@@ -1458,7 +1466,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0001c9 de93                      	 rcall dim
                                  	 
 0001ca e060                      	 ldi rInter, 0
-                                 	 //7
+                                 	 
+                                 	 //row 7 - translation to the output ports
 0001cb 910d                      	 ld rTemp, X+
 0001cc e030                      	 ldi rTemp2, 0
 0001cd 9330 014c                 	 sts Cout, rTemp2
@@ -1514,7 +1523,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0001ff de5d                      	 rcall dim
                                  	 
 000200 e060                      	 ldi rInter, 0
-                                 	 //8
+                                 	 
+                                 	 //row 8 - translation to the output ports
 000201 910d                      	 ld rTemp, X+
 000202 e030                      	 ldi rTemp2, 0
 000203 9330 014c                 	 sts Cout, rTemp2
@@ -1570,26 +1580,30 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000235 de27                      	 rcall dim
                                  	 
 000236 e060                      	 ldi rInter, 0
+                                 	 //reset the matrix pointer
 000237 de29                      	 rcall resetMatPoint
 000238 9508                      	 ret
                                  	 
                                  	 
-                                 	 //interup subrutinen
+                                 	 //the interup subrutine
                                  	 interup:
 000239 e061                      	 ldi rInter, 0b00000001
 00023a 9518                      	 reti
-                                 
+                                 	 //Gather input from the Y axis of the joystick
                                  	 stickYInput:
+                                 	 //configure the AD unit
 00023b 9380 007c                 	 sts ADMUX, rADMUXx
 00023d ec07                      	 ldi rTemp, 0b11000111
 00023e 9300 007a                 	 sts ADCSRA, rTemp
-                                 
+                                 	 //loop untill the AD convertion is finished
                                  	 stickYLoop:
 000240 9100 007a                 	 lds rTemp, ADCSRA
 000242 fd06                      	 sbrc rTemp, ADSC
 000243 940c 0256                 	 jmp stickXLoop
+                                 	 //get the value from the AD converter
 000245 9100 0078                 	 lds rTemp, ADCL
 000247 90f0 0079                 	 lds rStickInp, ADCH
+                                 	 //check if the input is over the thresholds for either direction
 000249 ec08                      	 ldi rTemp, 200
 00024a 16f0                      	 cp rStickInp, rTemp
 00024b f530                      	 brsh YPos
@@ -1600,20 +1614,22 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000250 9508                      	 ret
                                  
                                  
-                                 	 
+                                 	 //Gather the input from the X-axis
                                  	 stickXInput:
+                                 	 //configure the AD converter
 000251 92e0 007c                 	 sts ADMUX, rADMUXy
 000253 ec07                      	 ldi rTemp, 0b11000111
 000254 9300 007a                 	 sts ADCSRA, rTemp
-                                 
+                                 	 //wait untill the converter is finished
                                  	 stickXLoop:
 000256 9100 007a                 	 lds rTemp, ADCSRA
 000258 fd06                      	 sbrc rTemp, ADSC
 000259 940c 0240                 	 jmp stickYLoop
+                                 	 //get the input from the joystick
 00025b 9100 0078                 	 lds rTemp, ADCL
 00025d 90f0 0079                 	 lds rStickInp, ADCH
                                  	
-                                 	 
+                                 	 //check in the input exceeds the thresholds and branch if they do
 00025f ec08                      	 ldi rTemp, 200
 000260 16f0                      	 cp rStickInp, rTemp
 000261 f468                      	 brsh XNeg
@@ -1629,28 +1645,28 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000269 9300 0150                 	 sts appleRand, rTemp
 00026b 9508                      	 ret
                                  
-                                 	 
+                                 	 //Change the direction to positive X
                                  	 XPos:
 00026c e072                      	 ldi rStickDirection , 2
 00026d dff8                      	 rcall addToAppleRand
 00026e 9508                      	 ret
-                                 
+                                 	 //Change the direction to negative X
                                  	 XNeg:
 00026f e074                      	 ldi rStickDirection , 4
 000270 dff5                      	 rcall addToAppleRand
 000271 9508                      	 ret
-                                 
+                                 	 //Change the direction to positive Y
                                  	 YPos:
 000272 e071                      	 ldi rStickDirection , 1
 000273 dff2                      	 rcall addToAppleRand
 000274 9508                      	 ret
-                                 
+                                 	 //Change the direction to negative Y
                                  	 YNeg:
 000275 e073                      	 ldi rStickDirection , 3
 000276 dfef                      	 rcall addToAppleRand
 000277 9508                      	 ret
                                  
-                                 	 //Sätter startvärden för ormen
+                                 	 //Sets initial values for the snake
                                  	 snakeSet:
 000278 e000                      	 ldi rTemp,0
 000279 9300 014f                 	 sts isGrowing,rTemp
@@ -1672,6 +1688,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00028a 9508                      	 ret
                                  
                                  	 growSnake:
+                                 	 //This part of the code is called up on if the isGrowing variabel is set to 1 extending the aray by one and then
+                                 	 //updating the all the bodyparts of the snake the coordinates of the next body part so that the body can grow corectly
 00028b e090                      	 ldi rCount,0
 00028c 9390 014f                 	 sts isGrowing,rCount
 00028e 9100 0149                 	 lds rTemp, snakeLengthIndex
@@ -1696,16 +1714,19 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00029f 3090                      	 cpi rCount,0
 0002a0 f7b1                      	 brne reverseWalkthroughSnake
 0002a1 ddc2                      	 rcall resetSnakePoint
-0002a2 940c 02ad                 	 jmp snakeUpdate
+0002a2 940c 02ad                 	 jmp snakeUpdate //When the snake is grown the code jumps back to snakeUpdate
                                  
                                  	 snakeUpdateCheck:
+                                 	 //updates and checks the updateCounter to see if its time to update the positions of the snake body, if not returning to the main loop
 0002a4 9100 014a                 	 lds rTemp, updateCounter
 0002a6 5f0f                      	 subi rTemp, -1
 0002a7 9300 014a                 	 sts updateCounter, rTemp
 0002a9 9100 014a                 	 lds rTemp, updateCounter
 0002ab 3604                      	 cpi rTemp, 100
 0002ac f2e8                      	 brlo return
+                                 
                                  	 snakeUpdate:
+                                 	 //Checks if the snake should grow if so jumping to growSnake if not setting the the initial values for snakeUpdateSwitchBP
 0002ad 9100 014f                 	 lds rTemp,isGrowing
 0002af 3000                      	 cpi rTemp,0
 0002b0 f6d1                      	 brne growSnake 	
@@ -1714,6 +1735,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0002b4 e090                      	 ldi rCount,0
                                  
                                  	 snakeUpdateSwitchBP:
+                                 	 //Runs throung the whole body of the snake giving eack bodypart the value of the next in the array untill reaching the last bodypart before the head
 0002b5 5f9f                      	 subi rCount,-1
 0002b6 5fcf                      	 subi YL,-1
 0002b7 8138                      	 ld rTemp2,Y
@@ -1722,9 +1744,11 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0002ba 9100 0149                 	 lds rTemp, snakeLengthIndex
 0002bc 1790                      	 cp rCount, rTemp
 0002bd f7b9                      	 brne snakeUpdateSwitchBP
+                                 	 //when the head is reached the head will move one step in the direction indicated by the joystick
+                                 	 //or if no need direction is indicated cotinuing in the same direction as in previus update
                                  
 0002be 9100 014e                 	 lds rTemp, currentMovment
-                                 	 //sub rTemp,rStickDirection
+                                 	 
 0002c0 3001                      	 cpi	rTemp,1
 0002c1 f031                      	 breq currentDirectionUp
                                  
@@ -1773,6 +1797,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  
                                  
                                  	 noNewDirection:
+                                 	 //called upon i ther is no new input from the joystick then seting the value the should be subtracted from the coordinates to give the snake head it's new possition
 0002e0 3001                      	 cpi rTemp,1
 0002e1 f031                      	 breq noNewDirectionUp
                                  
@@ -1804,6 +1829,8 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  
                                  
                                  	 moveSnake:
+                                 	 //updates the snakes heads position to the correct coordinates by loading the current coordinates and updating the based on the value set earlier eigthe in noNewDirection or newDirection
+                                 	 //here the code also checks if the head has moved outside of the ledmatrix and if so loads the correct wallWrap subroutine to move the head to the opposit side if the ledmatrix
 0002f4 8138                      	 ld rTemp2,Y
 0002f5 1b30                      	 sub rTemp2, rTemp
 0002f6 3930                      	 cpi rTemp2, 144
@@ -1820,11 +1847,13 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000301 dd62                      	 rcall resetSnakePoint
                                  
                                  	 checkCollisions:
+                                 	 //calls upon the Collision subroutines before returning to the main loop
 000302 d082                      	 rcall appleCollision
 000303 d094                      	 rcall snakeCollision
 000304 9508                      	 ret
                                  
                                  	 newDirectionUp:
+                                 	 //called upon i there is new input from the joystick then seting the value the should be subtracted from the coordinates to give the snake head it's new possition
 000305 9370 014e                 	 sts currentMovment, rStickDirection
 000307 e001                      	 ldi rTemp,1
 000308 940c 02f4                 	 jmp moveSnake
@@ -1843,6 +1872,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000314 9370 014e                 	 sts currentMovment, rStickDirection
 000316 e100                      	 ldi rTemp,16
 000317 940c 02f4                 	 jmp moveSnake
+                                 
                                  
                                  	 wallWrapX9:
 000319 e05f                      	 ldi rTemp3, 0b00001111
@@ -1876,11 +1906,15 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  
                                  
                                  	 paintInit:
+                                 	 //This part of the code calls upon the subroutine clearMatrix and resets the counter to 0 and saves it to the stack before continuing
 00032f dd37                      	 rcall clearMatrix
 000330 e090                      	 ldi rCount,0
 000331 939f                      	 push rCount
                                  
                                  	 snakePaint:
+                                 	 //Here the diffrent parts of the snake is read and split up into two regestrys one for the x coordinate and one for the y coordinate.
+                                 	 //After whick the 4 least significant bits is removed from the x coordinate and the 4 most significant bits are removed from  the y coordinates.
+                                 	 //The x coordinate being the 4 most significant bits needs to be logicaly shifted to the right until they become the 4 least significant bits so it gives us the coorect value.
 000332 8138                      	 ld rTemp2, Y
 000333 2f53                      	 mov rTemp3,rTemp2
 000334 ef40                      	 ldi rTemp4,0b11110000
@@ -1893,10 +1927,11 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00033b 2354                      	 and rTemp3,rTemp4
                                  	 
 00033c e009                      	 ldi rTemp,9
-00033d e091                      	 ldi rCount,1
+00033d e091                      	 ldi rCount,1 //This is why we need to save rCount to the stack
 00033e 1b05                      	 sub rTemp, rTemp3
                                  	 
                                  	 toggleMatrixrow:
+                                 	 //This part of the code selects the correct row
 00033f 1795                      	 cp rCount,rTemp3 
 000340 f021                      	 breq setBitMatrix
 000341 9611                      	 adiw X,1
@@ -1906,6 +1941,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
                                  	
                                  	
                                  	 setBitMatrix:
+                                 	 //sets the initial values needed for logicalShiftMatrixBit
 000345 e091                      	 ldi rCount,1
 000346 914c                      	 ld rTemp4,X
 000347 e850                      	 ldi rTemp3, 0b10000000
@@ -1913,17 +1949,20 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000349 f021                      	 breq orOperationMatrix
                                  
                                  	 logicalShiftMatrixBit:
+                                 	 //sets sets the right bit in the row of the matrix to 1 by shifting a 1 throuh a byte starting at the most significant bits until its i the correct position
 00034a 9556                      	 lsr rTemp3
 00034b 5f9f                      	 subi rCount,-1
 00034c 1793                      	 cp rCount,rTemp2
 00034d f7e1                      	 brne logicalShiftMatrixBit
                                  	 
                                  	 orOperationMatrix:
+                                 	 //makes an or operation with prevously loades values from the row and the bit we wish to set to one
 00034e 2b45                      	 or rTemp4,rTemp3
 00034f 934c                      	 ST X,rTemp4
 000350 dd10                      	 rcall resetMatPoint
                                  	 
-                                 
+                                 	 //The pointer is then moved one step  to look at the next part of the snake body, checking if the is the head if not this loop is repeated
+                                 	 //otherwise the snake pointer is reset and the apple will be loaded into the matrix 
 000351 9621                      	 adiw Y,1
 000352 5f9f                      	 subi rCount,-1
 000353 9100 0149                 	 lds rTemp,snakeLengthIndex
@@ -1936,7 +1975,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 00035b 919f                      	 pop rCount
 00035c dd07                      	 rcall resetSnakePoint
                                  
-                                 	 //paint apple
+                                 	 //paintApple works in a similar way as the snakePaint does except for just being a single byte instead of an array of bytes
                                  	 paintApple:
 00035d 9100 0108                 	 lds rTemp, apple
 00035f 2f30                      	 mov rTemp2, rTemp
@@ -1976,6 +2015,7 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000379 9508                      	 ret
                                  
                                  	 spawnApple:
+                                 	 //this takes the value prevusly generated and stored in appleRand and sets the new position of the apple
 00037a 9100 0150                 	 lds rTemp, appleRand
 00037c 2f30                      	 mov rTemp2,rTemp
 00037d 7700                      	 andi rTemp,0b01110000
@@ -1986,66 +2026,18 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000382 9300 0108                 	 sts apple,rTemp
 000384 9508                      	 ret
                                  
-                                 	 /*ldi rTemp, 0b10000010
-                                 	 sts apple,rTemp
-                                 	 ret*/
-                                 	 //X coordinate random
-                                 	 /*sts ADMUX, rADMUXx
-                                 	 ldi rTemp, 0b11000111
-                                 	 sts ADCSRA, rTemp
-                                 
-                                 	 appleXLoop:
-                                 	 lds rTemp, ADCSRA
-                                 	 sbrc rTemp, ADSC
-                                 	 jmp appleXLoop
-                                 	 lds rTemp, ADCL
-                                 	 mov rTemp2,rTemp
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 andi rTemp,0b0111
-                                 	 subi rTemp,-1
-                                 	 lsl rTemp
-                                      lsl rTemp
-                                      lsl rTemp
-                                 	 lsl rTemp
-                                 	 sts apple, rTemp
-                                 	 sts matrix,rTemp
-                                 
-                                 	 //Y coordinate random
-                                 	 sts ADMUX, rADMUXy
-                                 	 ldi rTemp, 0b11000111
-                                 	 sts ADCSRA, rTemp
-                                 
-                                 	 appleYLoop:
-                                 	 lds rTemp, ADCSRA
-                                 	 sbrc rTemp, ADSC
-                                 	 jmp appleYLoop
-                                 	 lds rTemp, ADCL
-                                 	 lds rTemp, ADCL
-                                 	 mov rTemp2,rTemp
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 mul rTemp,rTemp2
-                                 	 lds rTemp2, apple
-                                 	 andi rTemp,0b00000111
-                                 	 subi rTemp,-1
-                                 	 add rTemp,rTemp2
-                                 	 sts apple, rTemp
-                                 	   
-                                 	 ret
-                                 	 */
                                  
                                  	 appleCollision:
+                                 	 //Sets the initial values needed for finding the head of the snake which is the last position of the snake array
 000385 dcde                      	 rcall resetSnakePoint
 000386 9100 0108                 	 lds rTemp, apple
 000388 e090                      	 ldi rCount, 0
 000389 9130 0149                 	 lds rTemp2,snakeLengthIndex
+                                 
                                  	 findSnakeHead:
+                                 	 //moves the snake pointer to the head of the snake and the compares it's coordinates the apples coordinate if
+                                 	 //they are the same the variable isGrowing is set to 1 and a new apple is spawned before returning to the main loop.
+                                 	 //If the coordinates doesent the códe returns to the main loop without changing any values
 00038b 5f9f                      	 subi rCount,-1
 00038c 5fcf                      	 subi YL,-1
 00038d 1793                      	 cp rCount,rTemp2
@@ -2056,11 +2048,13 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 000392 e041                      	 ldi rTemp4,0b00000001
 000393 9340 014f                 	 sts isGrowing,rTemp4
 000395 dfe4                      	 rcall spawnApple
+                                 
                                  	 return2:
 000396 dccd                      	 rcall resetSnakePoint
 000397 9508                      	 ret
                                  
                                  	 snakeCollision:
+                                 	 //works in a similar manner as the appleCollision except for that it compares the heads coordinates to the rest of the body
 000398 9100 0149                 	 lds rTemp, snakeLengthIndex
 00039a e090                      	 ldi rCount,0
                                  
@@ -2086,10 +2080,10 @@ AVRASM ver. 2.2.7  C:\Users\Martin\Documents\GitHub\snake-assembly\Snake\main.as
 0003ab 9508                      	 ret
                                  
                                  	 GAMEOVER:
+                                 	 //If the snake has collided with itself teh GAMEOVER loop is called filling all the matrix position with 1 to make the entire screen light up
 0003ac dccc                      	 rcall fillMatrix
 0003ad dcdd                      	 rcall outputMatrix
 0003ae 940c 03ac                 	 jmp GAMEOVER
-                                 
                                  
                                  
 

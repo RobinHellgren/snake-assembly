@@ -41,25 +41,25 @@ appleRand:		.BYTE 1
 .ORG INT_VECTORS_SIZE
 init:
 
-	 //Sätt värden på rADMUXx & rADMUXy
+	 //Set values for the configuration of rADMUXx & rADMUXy
 	 ldi rTemp, 0b01100100
 	 mov rADMUXx, rTemp
 	 ldi rTemp, 0b01100101
 	 mov rADMUXy, rTemp	
-     // Sätt stackpekaren till högsta minnesadressen
+     // Configure the stackpointer
      ldi rTemp, HIGH(RAMEND)
      out SPH, rTemp
      ldi rTemp, LOW(RAMEND)
      out SPL, rTemp
-	 //sätt interupt biten till 0
+	 //set the interupt bit to 0
 	 ldi rInter, 0b00000000
-	 //configuration till timer enheten
+	 //configuration tp the timer unit
 	 ldi rTemp, 0b011
 	 out TCCR0B, rTemp
 	 ldi rTemp, 0b001
 	 sts TIMSK0, rTemp
 	 sei
-	 //configuration till led enheten
+	 //configuration to led unit
 	 ldi rTemp, 0b00001111
 	 out DDRC, rTemp
 	 ldi rTemp, 0b11111111
@@ -67,28 +67,31 @@ init:
 	 out DDRB, rTemp
 	 ldi rZero, 0
 	 ldi rStickDirection, 0
-	 //tilldela minne till matrixen
+	 //assign memory to the matrix representing the led screen
 	 ldi XH, HIGH(matrix)
 	 ldi XL, LOW(matrix)
 	 rcall clearMatrix
 	 //creates the snake
 	 rcall snakeSet
-	 //sets the joystick direction 2
+	 //sets the joystick direction to 2 for the initial movement
 	 ldi rStickDirection,2
-	 //Spawn Apple
+	 //Spawn the Apple
 	 ldi rTemp,0b01100110
 	 sts appleRand,rTemp
 	 rcall spawnApple
 
 	 //main progam loop
 	 loop:
+	 //gather the input from the joystick
 	 rcall stickXInput
 	 rcall stickYInput
+	 //paint the objects to the matrix
 	 rcall paintInit
+	 //Update the state of the snake
 	 rcall snakeUpdateCheck
-	 
+	 //Output the matrix to the led screen
 	 rcall outputMatrix
-	
+	 //repeat the main program loop
 	 jmp loop
 	 //wait for interupt
 	 wait:
@@ -113,7 +116,7 @@ init:
 	 ldi YL, LOW(snake)
 	 ret
 	  clearMatrix:
-	 //lägg in värden i matrixen
+	 //clear the matrix
 	 ldi rTemp, 0b00000000
 	 sts matrix, rTemp
 	 sts matrix+1, rTemp
@@ -125,7 +128,7 @@ init:
 	 sts matrix+7, rTemp
 	 ret
 	 fillMatrix:
-	 //lägg in värden i matrixen
+	 //fill the matrix
 	 ldi rTemp, 0b11111111
 	 sts matrix, rTemp
 	 sts matrix+1, rTemp
@@ -138,7 +141,7 @@ init:
 	 ret
 	 //output the matrix to the led display
 	 outputMatrix:
-	 //1
+	 //row 1 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0b1
 	 sts Cout, rTemp2
@@ -180,6 +183,7 @@ init:
 	 bld rTemp2, 5
 	 sts Bout, rTemp2
 
+	 //Output the translated values
 	 lds rTemp2, Dout
 	 out PortD, rTemp2
 
@@ -188,13 +192,14 @@ init:
 
 	 lds rTemp2, Cout
 	 out PortC, rTemp2
-	 
+	 //wait for a interupt
 	 rcall wait 
+	 //turn off all the leds
 	 rcall dim
-	 
+	 //reset the interupt variable
 	 ldi rInter, 0
 
-	 //2
+	 //row 2 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0b10
 	 sts Cout, rTemp2
@@ -250,7 +255,7 @@ init:
 	 
 	 ldi rInter, 0
 	 
-	 //3
+	 //row 3 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0b100
 	 sts Cout, rTemp2
@@ -305,7 +310,8 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
-	 //4
+	 
+	 //row 4 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0b0001000
 	 sts Cout, rTemp2
@@ -360,7 +366,8 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
-	 //5
+	 
+	 //row 5 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0
 	 sts Cout, rTemp2
@@ -416,7 +423,8 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
-	 //6
+	 
+	 //row 6 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0
 	 sts Cout, rTemp2
@@ -472,7 +480,8 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
-	 //7
+	 
+	 //row 7 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0
 	 sts Cout, rTemp2
@@ -528,7 +537,8 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
-	 //8
+	 
+	 //row 8 - translation to the output ports
 	 ld rTemp, X+
 	 ldi rTemp2, 0
 	 sts Cout, rTemp2
@@ -584,26 +594,30 @@ init:
 	 rcall dim
 	 
 	 ldi rInter, 0
+	 //reset the matrix pointer
 	 rcall resetMatPoint
 	 ret
 	 
 	 
-	 //interup subrutinen
+	 //the interup subrutine
 	 interup:
 	 ldi rInter, 0b00000001
 	 reti
-
+	 //Gather input from the Y axis of the joystick
 	 stickYInput:
+	 //configure the AD unit
 	 sts ADMUX, rADMUXx
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
-
+	 //loop untill the AD convertion is finished
 	 stickYLoop:
 	 lds rTemp, ADCSRA
 	 sbrc rTemp, ADSC
 	 jmp stickXLoop
+	 //get the value from the AD converter
 	 lds rTemp, ADCL
 	 lds rStickInp, ADCH
+	 //check if the input is over the thresholds for either direction
 	 ldi rTemp, 200
 	 cp rStickInp, rTemp
 	 brsh YPos
@@ -614,20 +628,22 @@ init:
 	 ret
 
 
-	 
+	 //Gather the input from the X-axis
 	 stickXInput:
+	 //configure the AD converter
 	 sts ADMUX, rADMUXy
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
-
+	 //wait untill the converter is finished
 	 stickXLoop:
 	 lds rTemp, ADCSRA
 	 sbrc rTemp, ADSC
 	 jmp stickYLoop
+	 //get the input from the joystick
 	 lds rTemp, ADCL
 	 lds rStickInp, ADCH
 	
-	 
+	 //check in the input exceeds the thresholds and branch if they do
 	 ldi rTemp, 200
 	 cp rStickInp, rTemp
 	 brsh XNeg
@@ -643,28 +659,28 @@ init:
 	 sts appleRand, rTemp
 	 ret
 
-	 
+	 //Change the direction to positive X
 	 XPos:
 	 ldi rStickDirection , 2
 	 rcall addToAppleRand
 	 ret
-
+	 //Change the direction to negative X
 	 XNeg:
 	 ldi rStickDirection , 4
 	 rcall addToAppleRand
 	 ret
-
+	 //Change the direction to positive Y
 	 YPos:
 	 ldi rStickDirection , 1
 	 rcall addToAppleRand
 	 ret
-
+	 //Change the direction to negative Y
 	 YNeg:
 	 ldi rStickDirection , 3
 	 rcall addToAppleRand
 	 ret
 
-	 //Sätter startvärden för ormen
+	 //Sets initial values for the snake
 	 snakeSet:
 	 ldi rTemp,0
 	 sts isGrowing,rTemp
@@ -686,6 +702,8 @@ init:
 	 ret
 
 	 growSnake:
+	 //This part of the code is called up on if the isGrowing variabel is set to 1 extending the aray by one and then
+	 //updating the all the bodyparts of the snake the coordinates of the next body part so that the body can grow corectly
 	 ldi rCount,0
 	 sts isGrowing,rCount
 	 lds rTemp, snakeLengthIndex
@@ -710,16 +728,19 @@ init:
 	 cpi rCount,0
 	 brne reverseWalkthroughSnake
 	 rcall resetSnakePoint
-	 jmp snakeUpdate
+	 jmp snakeUpdate //When the snake is grown the code jumps back to snakeUpdate
 
 	 snakeUpdateCheck:
+	 //updates and checks the updateCounter to see if its time to update the positions of the snake body, if not returning to the main loop
 	 lds rTemp, updateCounter
 	 subi rTemp, -1
 	 sts updateCounter, rTemp
 	 lds rTemp, updateCounter
 	 cpi rTemp, 100
 	 brlo return
+
 	 snakeUpdate:
+	 //Checks if the snake should grow if so jumping to growSnake if not setting the the initial values for snakeUpdateSwitchBP
 	 lds rTemp,isGrowing
 	 cpi rTemp,0
 	 brne growSnake 	
@@ -728,6 +749,7 @@ init:
 	 ldi rCount,0
 
 	 snakeUpdateSwitchBP:
+	 //Runs throung the whole body of the snake giving eack bodypart the value of the next in the array untill reaching the last bodypart before the head
 	 subi rCount,-1
 	 subi YL,-1
 	 ld rTemp2,Y
@@ -736,9 +758,11 @@ init:
 	 lds rTemp, snakeLengthIndex
 	 cp rCount, rTemp
 	 brne snakeUpdateSwitchBP
+	 //when the head is reached the head will move one step in the direction indicated by the joystick
+	 //or if no need direction is indicated cotinuing in the same direction as in previus update
 
 	 lds rTemp, currentMovment
-	 //sub rTemp,rStickDirection
+	 
 	 cpi	rTemp,1
 	 breq currentDirectionUp
 
@@ -787,6 +811,7 @@ init:
 
 
 	 noNewDirection:
+	 //called upon i ther is no new input from the joystick then seting the value the should be subtracted from the coordinates to give the snake head it's new possition
 	 cpi rTemp,1
 	 breq noNewDirectionUp
 
@@ -818,6 +843,8 @@ init:
 
 
 	 moveSnake:
+	 //updates the snakes heads position to the correct coordinates by loading the current coordinates and updating the based on the value set earlier eigthe in noNewDirection or newDirection
+	 //here the code also checks if the head has moved outside of the ledmatrix and if so loads the correct wallWrap subroutine to move the head to the opposit side if the ledmatrix
 	 ld rTemp2,Y
 	 sub rTemp2, rTemp
 	 cpi rTemp2, 144
@@ -834,11 +861,13 @@ init:
 	 rcall resetSnakePoint
 
 	 checkCollisions:
+	 //calls upon the Collision subroutines before returning to the main loop
 	 rcall appleCollision
 	 rcall snakeCollision
 	 ret
 
 	 newDirectionUp:
+	 //called upon i there is new input from the joystick then seting the value the should be subtracted from the coordinates to give the snake head it's new possition
 	 sts currentMovment, rStickDirection
 	 ldi rTemp,1
 	 jmp moveSnake
@@ -857,6 +886,7 @@ init:
 	 sts currentMovment, rStickDirection
 	 ldi rTemp,16
 	 jmp moveSnake
+
 
 	 wallWrapX9:
 	 ldi rTemp3, 0b00001111
@@ -890,11 +920,15 @@ init:
 
 
 	 paintInit:
+	 //This part of the code calls upon the subroutine clearMatrix and resets the counter to 0 and saves it to the stack before continuing
 	 rcall clearMatrix
 	 ldi rCount,0
 	 push rCount
 
 	 snakePaint:
+	 //Here the diffrent parts of the snake is read and split up into two regestrys one for the x coordinate and one for the y coordinate.
+	 //After whick the 4 least significant bits is removed from the x coordinate and the 4 most significant bits are removed from  the y coordinates.
+	 //The x coordinate being the 4 most significant bits needs to be logicaly shifted to the right until they become the 4 least significant bits so it gives us the coorect value.
 	 ld rTemp2, Y
 	 mov rTemp3,rTemp2
 	 ldi rTemp4,0b11110000
@@ -907,10 +941,11 @@ init:
 	 and rTemp3,rTemp4
 	 
 	 ldi rTemp,9
-	 ldi rCount,1
+	 ldi rCount,1 //This is why we need to save rCount to the stack
 	 sub rTemp, rTemp3
 	 
 	 toggleMatrixrow:
+	 //This part of the code selects the correct row
 	 cp rCount,rTemp3 
 	 breq setBitMatrix
 	 adiw X,1
@@ -920,6 +955,7 @@ init:
 	
 	
 	 setBitMatrix:
+	 //sets the initial values needed for logicalShiftMatrixBit
 	 ldi rCount,1
 	 ld rTemp4,X
 	 ldi rTemp3, 0b10000000
@@ -927,17 +963,20 @@ init:
 	 breq orOperationMatrix
 
 	 logicalShiftMatrixBit:
+	 //sets sets the right bit in the row of the matrix to 1 by shifting a 1 throuh a byte starting at the most significant bits until its i the correct position
 	 lsr rTemp3
 	 subi rCount,-1
 	 cp rCount,rTemp2
 	 brne logicalShiftMatrixBit
 	 
 	 orOperationMatrix:
+	 //makes an or operation with prevously loades values from the row and the bit we wish to set to one
 	 or rTemp4,rTemp3
 	 ST X,rTemp4
 	 rcall resetMatPoint
 	 
-
+	 //The pointer is then moved one step  to look at the next part of the snake body, checking if the is the head if not this loop is repeated
+	 //otherwise the snake pointer is reset and the apple will be loaded into the matrix 
 	 adiw Y,1
 	 subi rCount,-1
 	 lds rTemp,snakeLengthIndex
@@ -950,7 +989,7 @@ init:
 	 pop rCount
 	 rcall resetSnakePoint
 
-	 //paint apple
+	 //paintApple works in a similar way as the snakePaint does except for just being a single byte instead of an array of bytes
 	 paintApple:
 	 lds rTemp, apple
 	 mov rTemp2, rTemp
@@ -990,6 +1029,7 @@ init:
 	 ret
 
 	 spawnApple:
+	 //this takes the value prevusly generated and stored in appleRand and sets the new position of the apple
 	 lds rTemp, appleRand
 	 mov rTemp2,rTemp
 	 andi rTemp,0b01110000
@@ -1000,66 +1040,18 @@ init:
 	 sts apple,rTemp
 	 ret
 
-	 /*ldi rTemp, 0b10000010
-	 sts apple,rTemp
-	 ret*/
-	 //X coordinate random
-	 /*sts ADMUX, rADMUXx
-	 ldi rTemp, 0b11000111
-	 sts ADCSRA, rTemp
-
-	 appleXLoop:
-	 lds rTemp, ADCSRA
-	 sbrc rTemp, ADSC
-	 jmp appleXLoop
-	 lds rTemp, ADCL
-	 mov rTemp2,rTemp
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 andi rTemp,0b0111
-	 subi rTemp,-1
-	 lsl rTemp
-     lsl rTemp
-     lsl rTemp
-	 lsl rTemp
-	 sts apple, rTemp
-	 sts matrix,rTemp
-
-	 //Y coordinate random
-	 sts ADMUX, rADMUXy
-	 ldi rTemp, 0b11000111
-	 sts ADCSRA, rTemp
-
-	 appleYLoop:
-	 lds rTemp, ADCSRA
-	 sbrc rTemp, ADSC
-	 jmp appleYLoop
-	 lds rTemp, ADCL
-	 lds rTemp, ADCL
-	 mov rTemp2,rTemp
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 lds rTemp2, apple
-	 andi rTemp,0b00000111
-	 subi rTemp,-1
-	 add rTemp,rTemp2
-	 sts apple, rTemp
-	   
-	 ret
-	 */
 
 	 appleCollision:
+	 //Sets the initial values needed for finding the head of the snake which is the last position of the snake array
 	 rcall resetSnakePoint
 	 lds rTemp, apple
 	 ldi rCount, 0
 	 lds rTemp2,snakeLengthIndex
+
 	 findSnakeHead:
+	 //moves the snake pointer to the head of the snake and the compares it's coordinates the apples coordinate if
+	 //they are the same the variable isGrowing is set to 1 and a new apple is spawned before returning to the main loop.
+	 //If the coordinates doesent the códe returns to the main loop without changing any values
 	 subi rCount,-1
 	 subi YL,-1
 	 cp rCount,rTemp2
@@ -1070,11 +1062,13 @@ init:
 	 ldi rTemp4,0b00000001
 	 sts isGrowing,rTemp4
 	 rcall spawnApple
+
 	 return2:
 	 rcall resetSnakePoint
 	 ret
 
 	 snakeCollision:
+	 //works in a similar manner as the appleCollision except for that it compares the heads coordinates to the rest of the body
 	 lds rTemp, snakeLengthIndex
 	 ldi rCount,0
 
@@ -1100,9 +1094,9 @@ init:
 	 ret
 
 	 GAMEOVER:
+	 //If the snake has collided with itself teh GAMEOVER loop is called filling all the matrix position with 1 to make the entire screen light up
 	 rcall fillMatrix
 	 rcall outputMatrix
 	 jmp GAMEOVER
-
 
 
