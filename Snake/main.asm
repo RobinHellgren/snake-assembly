@@ -27,6 +27,7 @@ Cout:      .BYTE 1
 Dout:	  .BYTE 1
 currentMovment: .BYTE 1
 isGrowing:      .BYTE 1
+appleRand:		.BYTE 1
 
 //[Kodsegmentet]
 .CSEG
@@ -75,11 +76,12 @@ init:
 	 //sets the joystick direction 2
 	 ldi rStickDirection,2
 	 //Spawn Apple
-	 rcall spawnApple
+	 ldi rTemp,0b01100110
+	 sts apple,rTemp
 
 	 //main progam loop
 	 loop:
-	 //rcall snakeCollision
+	 rcall appleRand
 	 rcall stickXInput
 	 rcall stickYInput
 	 rcall paintInit
@@ -727,7 +729,6 @@ init:
 	 brne snakeUpdateSwitchBP
 
 	 lds rTemp, currentMovment
-	 //sub rTemp,rStickDirection
 	 cpi	rTemp,1
 	 breq currentDirectionUp
 
@@ -979,57 +980,61 @@ init:
 	 ret
 
 	 spawnApple:
-	 ldi rTemp, 0b10000010
-	 sts apple,rTemp
+	 /*lds rTemp, apple
+	 mov rTemp2, rTemp
+	 andi rTemp2, 0b00000111
+	 andi rTemp, 0b00000111
+	 subi rTemp,-1
+	 lsl rTemp
+	 lsl rTemp
+	 lsl rTemp
+	 lsl rTemp
+	 subi rTemp2,-1
+	 or rTemp,rTemp2
+	 sts apple, rTemp*/
 	 ret
+
+	 randomiseApple:
+	 
 	 //X coordinate random
 	 sts ADMUX, rADMUXx
 	 ldi rTemp, 0b11000111
 	 sts ADCSRA, rTemp
 
 	 appleXLoop:
+
 	 lds rTemp, ADCSRA
 	 sbrc rTemp, ADSC
 	 jmp appleXLoop
 	 lds rTemp, ADCL
-	 mov rTemp2,rTemp
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 andi rTemp,0b0111
-	 subi rTemp,-1
-	 lsl rTemp
-     lsl rTemp
-     lsl rTemp
-	 lsl rTemp
-	 sts apple, rTemp
-	 sts matrix,rTemp
+	 lds rTemp2, appleRand
+	 add rTemp,rTemp2
+	 sts appleRand, rTemp
+	 ret
 
 	 //Y coordinate random
 	 sts ADMUX, rADMUXy
-	 ldi rTemp, 0b11000111
-	 sts ADCSRA, rTemp
+	 ldi rTemp4, 0b11000111
+	 sts ADCSRA, rTemp4
 
 	 appleYLoop:
-	 lds rTemp, ADCSRA
-	 sbrc rTemp, ADSC
+	 
+	 lds rTemp4, ADCSRA
+	 sbrc rTemp4, ADSC
 	 jmp appleYLoop
-	 lds rTemp, ADCL
-	 lds rTemp, ADCL
-	 mov rTemp2,rTemp
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
-	 mul rTemp,rTemp2
+	 lds rTemp4, ADCL
+	 
+	 ldi rTemp4, 126
+	 andi rTemp,0b0111
+	 mov rTemp2,rTemp4
+	 mul rTemp4,rTemp2
+	 movw rTemp4, r0
 	 lds rTemp2, apple
-	 andi rTemp,0b00000111
-	 subi rTemp,-1
-	 add rTemp,rTemp2
+	 andi rTemp4,0b00000111
+	 subi rTemp4,-1
+
+	 or rTemp, rTemp4
 	 sts apple, rTemp
-	   
 	 ret
 
 
@@ -1048,8 +1053,9 @@ init:
 	 brne return2
 	 ldi rTemp4,0b00000001
 	 sts isGrowing,rTemp4
-	 ldi rTemp,0b01101000
-	 sts apple,rTemp
+	 //ldi rTemp,0b01101000
+	 //sts apple,rTemp
+	 rcall spawnApple
 	 return2:
 	 rcall resetSnakePoint
 	 ret
@@ -1083,6 +1089,7 @@ init:
 	 rcall fillMatrix
 	 rcall outputMatrix
 	 jmp GAMEOVER
+
 
 
 
